@@ -75,12 +75,14 @@ object SmallPreviewBinder {
                 R.string.wallpaper_preview_card_content_description_editable,
                 foldedStateDescription,
             )
-        val wallpaperSurface =
-            view.requireViewById<SurfaceView>(R.id.wallpaper_surface).apply {
-                // When putting the surface on top for full transition, the card view is behind the
-                // surface view so we need to apply radius on surface view instead
-                cornerRadius = previewCard.radius
-            }
+        val wallpaperSurface = view.requireViewById<SurfaceView>(R.id.wallpaper_surface)
+
+        // Don't set radius for set wallpaper dialog
+        if (!viewModel.showSetWallpaperDialog.value) {
+            // When putting the surface on top for full transition, the card view is behind the
+            // surface view so we need to apply radius on surface view instead
+            wallpaperSurface.cornerRadius = previewCard.radius
+        }
         val workspaceSurface: SurfaceView = view.requireViewById(R.id.workspace_surface)
 
         motionLayout?.addTransitionListener(
