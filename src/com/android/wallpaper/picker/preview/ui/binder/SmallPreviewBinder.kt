@@ -33,7 +33,7 @@ import com.android.wallpaper.R
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.common.preview.ui.view.CustomizationSurfaceView
-import com.android.wallpaper.picker.customization.ui.CustomizationPickerActivity2
+import com.android.wallpaper.picker.customization.ui.CustomizationPickerFragment2
 import com.android.wallpaper.picker.preview.ui.fragment.SmallPreviewFragment
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
@@ -86,7 +86,7 @@ object SmallPreviewBinder {
         val workspaceSurface: SurfaceView = view.requireViewById(R.id.workspace_surface)
 
         motionLayout?.addTransitionListener(
-            object : CustomizationPickerActivity2.EmptyTransitionListener {
+            object : CustomizationPickerFragment2.EmptyTransitionListener {
                 override fun onTransitionStarted(
                     motionLayout: MotionLayout?,
                     startId: Int,

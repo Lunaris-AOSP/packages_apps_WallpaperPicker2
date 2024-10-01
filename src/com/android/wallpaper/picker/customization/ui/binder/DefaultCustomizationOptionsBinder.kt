@@ -42,23 +42,32 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         viewModel: CustomizationPickerViewModel2,
         colorUpdateViewModel: ColorUpdateViewModel,
         lifecycleOwner: LifecycleOwner,
+        navigateToWallpaperCategoriesScreen: (screen: Screen) -> Unit,
     ) {
-        val optionLockWallpaper =
+        val moreWallpapersLock =
             lockScreenCustomizationOptionEntries
                 .find {
                     it.first ==
                         DefaultCustomizationOptionUtil.DefaultLockCustomizationOption.WALLPAPER
                 }
                 ?.second
-        val moreWallpapersLock = optionLockWallpaper?.findViewById<TextView>(R.id.more_wallpapers)
-        val optionHomeWallpaper =
+                ?.findViewById<TextView>(R.id.more_wallpapers)
+        val moreWallpapersHome =
             homeScreenCustomizationOptionEntries
                 .find {
                     it.first ==
                         DefaultCustomizationOptionUtil.DefaultHomeCustomizationOption.WALLPAPER
                 }
                 ?.second
-        val moreWallpapersHome = optionHomeWallpaper?.findViewById<TextView>(R.id.more_wallpapers)
+                ?.findViewById<TextView>(R.id.more_wallpapers)
+
+        moreWallpapersLock?.setOnClickListener {
+            navigateToWallpaperCategoriesScreen.invoke(Screen.LOCK_SCREEN)
+        }
+
+        moreWallpapersHome?.setOnClickListener {
+            navigateToWallpaperCategoriesScreen.invoke(Screen.HOME_SCREEN)
+        }
 
         ColorUpdateBinder.bind(
             setColor = { color ->
