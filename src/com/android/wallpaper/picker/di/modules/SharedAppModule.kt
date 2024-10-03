@@ -30,6 +30,7 @@ import com.android.wallpaper.module.MultiPanesChecker
 import com.android.wallpaper.module.NetworkStatusNotifier
 import com.android.wallpaper.network.Requester
 import com.android.wallpaper.network.WallpaperRequester
+import com.android.wallpaper.picker.MyPhotosStarter
 import com.android.wallpaper.picker.category.client.DefaultWallpaperCategoryClient
 import com.android.wallpaper.picker.category.client.DefaultWallpaperCategoryClientImpl
 import com.android.wallpaper.picker.category.client.LiveWallpapersClient
@@ -40,6 +41,7 @@ import com.android.wallpaper.picker.category.domain.interactor.MyPhotosInteracto
 import com.android.wallpaper.picker.category.domain.interactor.ThirdPartyCategoryInteractor
 import com.android.wallpaper.picker.category.domain.interactor.implementations.MyPhotosInteractorImpl
 import com.android.wallpaper.picker.category.domain.interactor.implementations.ThirdPartyCategoryInteractorImpl
+import com.android.wallpaper.picker.category.ui.view.MyPhotosStarterImpl
 import com.android.wallpaper.picker.customization.data.content.WallpaperClient
 import com.android.wallpaper.picker.customization.data.content.WallpaperClientImpl
 import com.android.wallpaper.picker.network.data.DefaultNetworkStatusRepository
@@ -110,7 +112,7 @@ abstract class SharedAppModule {
     @Binds
     @Singleton
     abstract fun bindThirdPartyCategoryInteractor(
-        impl: ThirdPartyCategoryInteractorImpl,
+        impl: ThirdPartyCategoryInteractorImpl
     ): ThirdPartyCategoryInteractor
 
     @Binds
@@ -132,6 +134,10 @@ abstract class SharedAppModule {
     @Binds @Singleton abstract fun bindWallpaperClient(impl: WallpaperClientImpl): WallpaperClient
 
     @Binds @Singleton abstract fun bindWallpaperParser(impl: WallpaperParserImpl): WallpaperParser
+
+    @Binds
+    @Singleton
+    abstract fun bindWallpaperPickerDelegate2(impl: MyPhotosStarterImpl): MyPhotosStarter
 
     companion object {
 
@@ -164,10 +170,7 @@ abstract class SharedAppModule {
         @Singleton
         @BroadcastRunning
         fun provideBroadcastRunningLooper(): Looper {
-            return HandlerThread(
-                    "BroadcastRunning",
-                    Process.THREAD_PRIORITY_BACKGROUND,
-                )
+            return HandlerThread("BroadcastRunning", Process.THREAD_PRIORITY_BACKGROUND)
                 .apply {
                     start()
                     looper.setSlowLogThresholdMs(

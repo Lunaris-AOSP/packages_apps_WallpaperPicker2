@@ -74,7 +74,7 @@ object CategoriesBinder {
                                 // Perform navigation with event.data
                                 navigationHandler(navigationEvent, null)
                             }
-                            CategoriesViewModel.NavigationEvent.NavigateToPhotosPicker -> {
+                            is CategoriesViewModel.NavigationEvent.NavigateToPhotosPicker -> {
                                 navigationHandler(navigationEvent) {
                                     viewModel.updateMyPhotosCategory()
                                 }
