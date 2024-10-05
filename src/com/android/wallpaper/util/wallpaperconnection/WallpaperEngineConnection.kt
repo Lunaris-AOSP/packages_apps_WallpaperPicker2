@@ -81,7 +81,7 @@ class WallpaperEngineConnection(
     override fun onLocalWallpaperColorsChanged(
         area: RectF?,
         colors: WallpaperColors?,
-        displayId: Int
+        displayId: Int,
     ) {
         // Do nothing intended.
     }
@@ -130,7 +130,7 @@ class WallpaperEngineConnection(
                         Int::class.javaPrimitiveType,
                         Int::class.javaPrimitiveType,
                         Rect::class.java,
-                        Int::class.javaPrimitiveType
+                        Int::class.javaPrimitiveType,
                     )
                 preUMethod.invoke(
                     wallpaperService,
@@ -141,7 +141,7 @@ class WallpaperEngineConnection(
                     surfaceView.width,
                     surfaceView.height,
                     Rect(0, 0, 0, 0),
-                    surfaceView.display.displayId
+                    surfaceView.display.displayId,
                 )
             } catch (e: Exception) {
                 when (e) {

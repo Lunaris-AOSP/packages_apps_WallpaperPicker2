@@ -169,7 +169,7 @@ class WallpaperConnectionUtils @Inject constructor() {
                         event.x.toInt(),
                         event.y.toInt(),
                         0,
-                        null
+                        null,
                     )
                 } else if (action == MotionEvent.ACTION_POINTER_UP) {
                     engine.dispatchWallpaperCommand(
@@ -177,7 +177,7 @@ class WallpaperConnectionUtils @Inject constructor() {
                         event.getX(pointerIndex).toInt(),
                         event.getY(pointerIndex).toInt(),
                         0,
-                        null
+                        null,
                     )
                 }
             } catch (e: RemoteException) {
@@ -226,7 +226,7 @@ class WallpaperConnectionUtils @Inject constructor() {
 
     private suspend fun bindWallpaperService(
         context: Context,
-        intent: Intent
+        intent: Intent,
     ): Pair<ServiceConnection, IWallpaperService> =
         suspendCancellableCoroutine {
             k: CancellableContinuation<Pair<ServiceConnection, IWallpaperService>> ->
@@ -235,7 +235,7 @@ class WallpaperConnectionUtils @Inject constructor() {
                     object : WallpaperServiceConnection.WallpaperServiceConnectionListener {
                         override fun onWallpaperServiceConnected(
                             serviceConnection: ServiceConnection,
-                            wallpaperService: IWallpaperService
+                            wallpaperService: IWallpaperService,
                         ) {
                             if (k.isActive) {
                                 k.resumeWith(
@@ -251,7 +251,7 @@ class WallpaperConnectionUtils @Inject constructor() {
                     serviceConnection,
                     Context.BIND_AUTO_CREATE or
                         Context.BIND_IMPORTANT or
-                        Context.BIND_ALLOW_ACTIVITY_STARTS
+                        Context.BIND_ALLOW_ACTIVITY_STARTS,
                 )
             if (!success && k.isActive) {
                 k.resumeWith(Result.failure(Exception("Fail to bind the live wallpaper service.")))
@@ -318,7 +318,7 @@ class WallpaperConnectionUtils @Inject constructor() {
         val surfacePosition = parentSurface.holder.surfaceFrame
         metrics.postScale(
             surfacePosition.width().toFloat() / displayMetrics.x,
-            surfacePosition.height().toFloat() / displayMetrics.y
+            surfacePosition.height().toFloat() / displayMetrics.y,
         )
         metrics.getValues(values)
         return values
