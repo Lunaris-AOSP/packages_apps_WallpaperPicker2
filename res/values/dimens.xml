@@ -263,6 +263,10 @@
     <dimen name="home_screen_overlay_top_clipping">90dp</dimen>
     <dimen name="home_screen_overlay_bottom_clipping">40dp</dimen>
 
+    <!-- Apply button -->
+    <dimen name="apply_button_corner_radius">100dp</dimen>
+    <dimen name="apply_button_width">70dp</dimen>
+
     <!-- Set wallpaper button -->
     <dimen name="set_wallpaper_button_horizontal_padding">18dp</dimen>
     <dimen name="set_wallpaper_button_vertical_padding">10dp</dimen>

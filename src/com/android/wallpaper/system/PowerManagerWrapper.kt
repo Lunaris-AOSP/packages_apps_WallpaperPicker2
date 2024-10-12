@@ -16,18 +16,6 @@
 
 package com.android.wallpaper.system
 
-import android.app.UiModeManager.ContrastChangeListener
-import java.util.concurrent.Executor
-
-interface UiModeManagerWrapper {
-
-    fun addContrastChangeListener(executor: Executor, listener: ContrastChangeListener)
-
-    fun removeContrastChangeListener(listener: ContrastChangeListener)
-
-    fun getContrast(): Float?
-
-    fun getIsNightModeActivated(): Boolean
-
-    fun setNightModeActivated(isActive: Boolean)
+interface PowerManagerWrapper {
+    fun getIsPowerSaveMode(): Boolean?
 }

@@ -48,6 +48,8 @@ import com.android.wallpaper.picker.network.data.DefaultNetworkStatusRepository
 import com.android.wallpaper.picker.network.data.NetworkStatusRepository
 import com.android.wallpaper.picker.network.domain.DefaultNetworkStatusInteractor
 import com.android.wallpaper.picker.network.domain.NetworkStatusInteractor
+import com.android.wallpaper.system.PowerManagerImpl
+import com.android.wallpaper.system.PowerManagerWrapper
 import com.android.wallpaper.system.UiModeManagerImpl
 import com.android.wallpaper.system.UiModeManagerWrapper
 import com.android.wallpaper.util.WallpaperParser
@@ -118,6 +120,10 @@ abstract class SharedAppModule {
     @Binds
     @Singleton
     abstract fun bindUiModeManagerWrapper(impl: UiModeManagerImpl): UiModeManagerWrapper
+
+    @Binds
+    @Singleton
+    abstract fun bindPowerManagerWrapper(impl: PowerManagerImpl): PowerManagerWrapper
 
     @Binds
     @Singleton
