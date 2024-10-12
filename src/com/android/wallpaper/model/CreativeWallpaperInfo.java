@@ -84,7 +84,7 @@ public class CreativeWallpaperInfo extends LiveWallpaperInfo {
             @Nullable String description, String contentDescription, Uri configPreviewUri,
             Uri cleanPreviewUri, Uri deleteUri, Uri thumbnailUri, Uri shareUri, String groupName,
             boolean isCurrent) {
-        this(info, /* visibleTitle= */ false, /* collectionId= */ null);
+        this(info, /* visibleTitle= */ false, info.getPackageName());
         mTitle = title;
         mAuthor = author;
         mDescription = description;
@@ -99,7 +99,7 @@ public class CreativeWallpaperInfo extends LiveWallpaperInfo {
     }
 
     public CreativeWallpaperInfo(WallpaperInfo info, boolean isCurrent) {
-        this(info, false, null);
+        this(info, false, info.getPackageName());
         mIsCurrent = isCurrent;
     }
 

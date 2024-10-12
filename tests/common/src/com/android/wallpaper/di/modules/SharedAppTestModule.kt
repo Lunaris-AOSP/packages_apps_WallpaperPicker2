@@ -39,6 +39,7 @@ import com.android.wallpaper.picker.network.data.DefaultNetworkStatusRepository
 import com.android.wallpaper.picker.network.data.NetworkStatusRepository
 import com.android.wallpaper.picker.network.domain.DefaultNetworkStatusInteractor
 import com.android.wallpaper.picker.network.domain.NetworkStatusInteractor
+import com.android.wallpaper.system.PowerManagerWrapper
 import com.android.wallpaper.system.UiModeManagerWrapper
 import com.android.wallpaper.testing.FakeCategoriesLoadingStatusInteractor
 import com.android.wallpaper.testing.FakeCategoryInteractor
@@ -47,6 +48,7 @@ import com.android.wallpaper.testing.FakeDefaultCategoryFactory
 import com.android.wallpaper.testing.FakeDefaultWallpaperCategoryRepository
 import com.android.wallpaper.testing.FakeLiveWallpaperClientImpl
 import com.android.wallpaper.testing.FakeMyPhotosInteractor
+import com.android.wallpaper.testing.FakePowerManager
 import com.android.wallpaper.testing.FakeThirdPartyCategoryInteractor
 import com.android.wallpaper.testing.FakeUiModeManager
 import com.android.wallpaper.testing.FakeWallpaperClient
@@ -122,14 +124,12 @@ internal abstract class SharedAppTestModule {
 
     @Binds
     @Singleton
-    abstract fun bindLiveWallpaperClient(
-        impl: FakeLiveWallpaperClientImpl,
-    ): LiveWallpapersClient
+    abstract fun bindLiveWallpaperClient(impl: FakeLiveWallpaperClientImpl): LiveWallpapersClient
 
     @Binds
     @Singleton
     abstract fun bindLoadingStatusInteractor(
-        impl: FakeCategoriesLoadingStatusInteractor,
+        impl: FakeCategoriesLoadingStatusInteractor
     ): CategoriesLoadingStatusInteractor
 
     // Use the test dispatcher for work intended for the main thread
@@ -158,6 +158,10 @@ internal abstract class SharedAppTestModule {
     @Binds
     @Singleton
     abstract fun bindUiModeManagerWrapper(impl: FakeUiModeManager): UiModeManagerWrapper
+
+    @Binds
+    @Singleton
+    abstract fun bindPowerManagerWrapper(impl: FakePowerManager): PowerManagerWrapper
 
     @Binds @Singleton abstract fun bindWallpaperClient(impl: FakeWallpaperClient): WallpaperClient
 

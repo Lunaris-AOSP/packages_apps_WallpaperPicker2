@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package com.android.wallpaper.system
+package com.android.wallpaper.testing
 
-import android.app.UiModeManager.ContrastChangeListener
-import java.util.concurrent.Executor
+import com.android.wallpaper.system.PowerManagerWrapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-interface UiModeManagerWrapper {
+@Singleton
+class FakePowerManager @Inject constructor() : PowerManagerWrapper {
+    private var isPowerSaveMode = false
 
-    fun addContrastChangeListener(executor: Executor, listener: ContrastChangeListener)
+    override fun getIsPowerSaveMode(): Boolean {
+        return isPowerSaveMode
+    }
 
-    fun removeContrastChangeListener(listener: ContrastChangeListener)
-
-    fun getContrast(): Float?
-
-    fun getIsNightModeActivated(): Boolean
-
-    fun setNightModeActivated(isActive: Boolean)
+    fun setIsPowerSaveMode(isActive: Boolean) {
+        isPowerSaveMode = isActive
+    }
 }

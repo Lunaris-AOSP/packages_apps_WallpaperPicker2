@@ -16,18 +16,18 @@
 
 package com.android.wallpaper.system
 
-import android.app.UiModeManager.ContrastChangeListener
-import java.util.concurrent.Executor
+import android.content.Context
+import android.os.PowerManager
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-interface UiModeManagerWrapper {
+@Singleton
+class PowerManagerImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    PowerManagerWrapper {
+    private val powerManager = context.getSystemService(PowerManager::class.java)
 
-    fun addContrastChangeListener(executor: Executor, listener: ContrastChangeListener)
-
-    fun removeContrastChangeListener(listener: ContrastChangeListener)
-
-    fun getContrast(): Float?
-
-    fun getIsNightModeActivated(): Boolean
-
-    fun setNightModeActivated(isActive: Boolean)
+    override fun getIsPowerSaveMode(): Boolean? {
+        return powerManager?.isPowerSaveMode
+    }
 }
