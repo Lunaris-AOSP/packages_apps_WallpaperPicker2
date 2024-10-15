@@ -114,14 +114,16 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                 container,
                 /* attachToRoot= */ false,
             )
-        val motionLayout =
-            if (BaseFlags.get().isNewPickerUi())
-                currentView.findViewById<MotionLayout>(R.id.small_preview_motion_layout)
+        val isNewPickerUi = BaseFlags.get().isNewPickerUi()
+        val smallPreview =
+            if (isNewPickerUi) currentView.findViewById<MotionLayout>(R.id.small_preview_container)
             else null
+        val previewPager =
+            if (isNewPickerUi) currentView.findViewById<MotionLayout>(R.id.preview_pager) else null
 
         setUpToolbar(currentView, /* upArrow= */ true, /* transparentToolbar= */ true)
-        bindScreenPreview(currentView, motionLayout, isFirstBindingDeferred)
-        bindPreviewActions(currentView, motionLayout)
+        bindScreenPreview(currentView, smallPreview, isFirstBindingDeferred)
+        bindPreviewActions(currentView, smallPreview)
 
         SetWallpaperButtonBinder.bind(
             button = currentView.requireViewById(R.id.button_set_wallpaper),
@@ -214,7 +216,7 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
 
     private fun bindScreenPreview(
         view: View,
-        motionLayout: MotionLayout?,
+        smallPreview: MotionLayout?,
         isFirstBindingDeferred: CompletableDeferred<Boolean>,
     ) {
         val currentNavDestId = checkNotNull(findNavController().currentDestination?.id)
@@ -225,7 +227,7 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
             DualPreviewSelectorBinder.bind(
                 tabs,
                 dualPreviewView,
-                motionLayout,
+                smallPreview,
                 wallpaperPreviewViewModel,
                 appContext,
                 viewLifecycleOwner,
@@ -250,8 +252,8 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
         } else {
             PreviewSelectorBinder.bind(
                 tabs,
-                view.requireViewById(R.id.pager_previews),
-                motionLayout,
+                view.findViewById(R.id.pager_previews),
+                smallPreview,
                 displayUtils.getRealSize(displayUtils.getWallpaperDisplay()),
                 wallpaperPreviewViewModel,
                 appContext,
@@ -285,22 +287,17 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
         }
     }
 
-    private fun bindPreviewActions(view: View, motionLayout: MotionLayout?) {
+    private fun bindPreviewActions(view: View, smallPreview: MotionLayout?) {
         val actionButtonGroup = view.findViewById<PreviewActionGroup>(R.id.action_button_group)
         val floatingSheet = view.findViewById<PreviewActionFloatingSheet>(R.id.floating_sheet)
         if (actionButtonGroup == null || floatingSheet == null) {
             return
         }
 
-        val motionLayout =
-            if (BaseFlags.get().isNewPickerUi())
-                view.findViewById<MotionLayout>(R.id.small_preview_motion_layout)
-            else null
-
         PreviewActionsBinder.bind(
             actionGroup = actionButtonGroup,
             floatingSheet = floatingSheet,
-            motionLayout = motionLayout,
+            smallPreview = smallPreview,
             previewViewModel = wallpaperPreviewViewModel,
             actionsViewModel = wallpaperPreviewViewModel.previewActionsViewModel,
             deviceDisplayType = displayUtils.getCurrentDisplayType(requireActivity()),

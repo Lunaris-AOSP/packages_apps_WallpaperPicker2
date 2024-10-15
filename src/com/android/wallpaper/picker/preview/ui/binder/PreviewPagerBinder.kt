@@ -71,7 +71,7 @@ object PreviewPagerBinder {
                 SmallPreviewBinder.bind(
                     applicationContext = applicationContext,
                     view = viewHolder.itemView.requireViewById(R.id.preview),
-                    motionLayout = motionLayout,
+                    smallPreview = motionLayout,
                     viewModel = wallpaperPreviewViewModel,
                     screen = wallpaperPreviewViewModel.smallPreviewTabs[position],
                     displaySize = previewDisplaySize,

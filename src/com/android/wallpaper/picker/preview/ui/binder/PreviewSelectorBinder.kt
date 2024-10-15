@@ -22,6 +22,7 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.transition.Transition
 import androidx.viewpager2.widget.ViewPager2
+import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.picker.preview.ui.view.PreviewTabs
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
@@ -33,8 +34,8 @@ object PreviewSelectorBinder {
 
     fun bind(
         tabs: PreviewTabs?,
-        previewsViewPager: ViewPager2,
-        motionLayout: MotionLayout?,
+        previewsViewPager: ViewPager2?,
+        smallPreview: MotionLayout?,
         previewDisplaySize: Point,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
         applicationContext: Context,
@@ -47,21 +48,37 @@ object PreviewSelectorBinder {
         navigate: (View) -> Unit,
     ) {
         // set up previews view pager
-        PreviewPagerBinder.bind(
-            applicationContext,
-            viewLifecycleOwner,
-            motionLayout,
-            previewsViewPager,
-            wallpaperPreviewViewModel,
-            previewDisplaySize,
-            currentNavDestId,
-            transition,
-            transitionConfig,
-            wallpaperConnectionUtils,
-            isFirstBindingDeferred,
-            navigate,
-        )
+        if (BaseFlags.get().isNewPickerUi()) {
+            PreviewPagerBinder2.bind(
+                applicationContext,
+                viewLifecycleOwner,
+                checkNotNull(smallPreview),
+                wallpaperPreviewViewModel,
+                previewDisplaySize,
+                currentNavDestId,
+                transition,
+                transitionConfig,
+                wallpaperConnectionUtils,
+                isFirstBindingDeferred,
+                navigate,
+            )
+        } else {
+            PreviewPagerBinder.bind(
+                applicationContext,
+                viewLifecycleOwner,
+                smallPreview,
+                checkNotNull(previewsViewPager),
+                wallpaperPreviewViewModel,
+                previewDisplaySize,
+                currentNavDestId,
+                transition,
+                transitionConfig,
+                wallpaperConnectionUtils,
+                isFirstBindingDeferred,
+                navigate,
+            )
 
-        tabs?.let { TabsBinder.bind(it, wallpaperPreviewViewModel, viewLifecycleOwner) }
+            tabs?.let { TabsBinder.bind(it, wallpaperPreviewViewModel, viewLifecycleOwner) }
+        }
     }
 }

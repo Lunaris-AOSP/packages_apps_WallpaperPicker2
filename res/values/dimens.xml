@@ -422,4 +422,9 @@
     <dimen name="floating_tab_toolbar_tab_icon_margin_end">8dp</dimen>
     <dimen name="floating_tab_toolbar_tab_divider_width">8dp</dimen>
     <dimen name="floating_tab_toolbar_text_max_width">140dp</dimen>
+
+    <!-- Dimensions for multi-crop handheld small preview -->
+    <dimen name="handheld_small_preview_pager_margin_top">12dp</dimen>
+    <dimen name="handheld_small_preview_pager_margin_bottom">26dp</dimen>
+    <dimen name="handheld_small_preview_action_group_margin_bottom">12dp</dimen>
 </resources>

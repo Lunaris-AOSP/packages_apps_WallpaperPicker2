@@ -56,7 +56,7 @@ object PreviewActionsBinder {
     fun bind(
         actionGroup: PreviewActionGroup,
         floatingSheet: PreviewActionFloatingSheet,
-        motionLayout: MotionLayout? = null,
+        smallPreview: MotionLayout? = null,
         previewViewModel: WallpaperPreviewViewModel,
         actionsViewModel: PreviewActionsViewModel,
         deviceDisplayType: DeviceDisplayType,
@@ -81,10 +81,10 @@ object PreviewActionsBinder {
                     // when the view is not gone.
                     if (newState == STATE_HIDDEN) {
                         actionsViewModel.onFloatingSheetCollapsed()
-                        if (BaseFlags.get().isNewPickerUi()) motionLayout?.transitionToStart()
+                        if (BaseFlags.get().isNewPickerUi()) smallPreview?.transitionToStart()
                         else floatingSheet.isInvisible = true
                     } else {
-                        if (BaseFlags.get().isNewPickerUi()) motionLayout?.transitionToEnd()
+                        if (BaseFlags.get().isNewPickerUi()) smallPreview?.transitionToEnd()
                         else floatingSheet.isInvisible = false
                     }
                 }
@@ -94,9 +94,9 @@ object PreviewActionsBinder {
         val noActionChecked = !actionsViewModel.isAnyActionChecked()
         if (BaseFlags.get().isNewPickerUi()) {
             if (noActionChecked) {
-                motionLayout?.transitionToStart()
+                smallPreview?.transitionToStart()
             } else {
-                motionLayout?.transitionToEnd()
+                smallPreview?.transitionToEnd()
             }
         } else {
             floatingSheet.isInvisible = noActionChecked

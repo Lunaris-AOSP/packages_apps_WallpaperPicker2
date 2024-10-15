@@ -25,9 +25,11 @@
 
     <ConstraintSet android:id="@+id/floating_sheet_gone">
         <Constraint
-            android:id="@+id/pager_previews"
+            android:id="@+id/preview_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/handheld_small_preview_pager_margin_top"
+            android:layout_marginBottom="@dimen/handheld_small_preview_pager_margin_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +40,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:alpha="1"
-            app:layout_constraintTop_toBottomOf="@+id/pager_previews"
+            android:layout_marginBottom="@dimen/handheld_small_preview_action_group_margin_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/preview_pager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -47,6 +50,7 @@
             android:id="@+id/floating_sheet"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/handheld_small_preview_action_group_margin_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="parent" />
@@ -54,9 +58,11 @@
 
     <ConstraintSet android:id="@+id/floating_sheet_visible">
         <Constraint
-            android:id="@+id/pager_previews"
+            android:id="@+id/preview_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/handheld_small_preview_pager_margin_top"
+            android:layout_marginBottom="@dimen/handheld_small_preview_pager_margin_bottom"
             app:layout_constraintBottom_toTopOf="@+id/floating_sheet"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +73,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:alpha="0"
-            app:layout_constraintTop_toBottomOf="@+id/pager_previews"
+            android:layout_marginBottom="@dimen/handheld_small_preview_action_group_margin_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/preview_pager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -76,6 +83,7 @@
             android:id="@+id/floating_sheet"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/handheld_small_preview_action_group_margin_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />

@@ -46,7 +46,7 @@ object DualPreviewPagerBinder {
     fun bind(
         dualPreviewView: DualPreviewViewPager,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
-        motionLayout: MotionLayout?,
+        smallPreview: MotionLayout?,
         applicationContext: Context,
         viewLifecycleOwner: LifecycleOwner,
         currentNavDestId: Int,
@@ -126,7 +126,7 @@ object DualPreviewPagerBinder {
                     SmallPreviewBinder.bind(
                         applicationContext = applicationContext,
                         view = dualDisplayAspectRatioLayout.requireViewById(display.getViewId()),
-                        motionLayout = motionLayout,
+                        smallPreview = smallPreview,
                         viewModel = wallpaperPreviewViewModel,
                         viewLifecycleOwner = viewLifecycleOwner,
                         screen = wallpaperPreviewViewModel.smallPreviewTabs[positionLTR],

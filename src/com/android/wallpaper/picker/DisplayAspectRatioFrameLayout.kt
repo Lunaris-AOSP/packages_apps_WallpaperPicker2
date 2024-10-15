@@ -21,16 +21,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.core.view.children
+import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.util.ScreenSizeCalculator
+import kotlin.math.max
 
 /**
  * [FrameLayout] that sizes its children using a fixed aspect ratio that is the same as that of the
  * display.
  */
-class DisplayAspectRatioFrameLayout(
-    context: Context,
-    attrs: AttributeSet?,
-) : FrameLayout(context, attrs) {
+class DisplayAspectRatioFrameLayout(context: Context, attrs: AttributeSet?) :
+    FrameLayout(context, attrs) {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -43,6 +43,7 @@ class DisplayAspectRatioFrameLayout(
         //
         // If you need to use this class to force the height dimension based on the width instead,
         // you will need to flip the logic below.
+        var maxWidth = 0
         children.forEach { child ->
             val childWidth =
                 (child.measuredHeight / screenAspectRatio).toInt().coerceAtMost(measuredWidth)
@@ -56,6 +57,15 @@ class DisplayAspectRatioFrameLayout(
                     },
                     MeasureSpec.EXACTLY,
                 ),
+            )
+            maxWidth = max(maxWidth, child.measuredWidth)
+        }
+
+        if (BaseFlags.get().isNewPickerUi()) {
+            // Makes width wrap content
+            setMeasuredDimension(
+                resolveSize(maxWidth, widthMeasureSpec),
+                resolveSize(measuredHeight, heightMeasureSpec),
             )
         }
     }

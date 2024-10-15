@@ -17,7 +17,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
+    android:id="@+id/small_preview_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -54,7 +54,7 @@
     <!-- Set clipToPadding to false so that during transition scaling, child card view is not
     clipped to the header bar -->
     <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/small_preview_motion_layout"
+        android:id="@+id/small_preview_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
@@ -65,7 +65,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layoutDescription="@xml/small_preview_layout_scene">
+        app:layoutDescription="@xml/small_preview_container_layout_scene">
 
         <com.android.wallpaper.picker.preview.ui.view.DualPreviewViewPager
             android:id="@+id/pager_previews"
