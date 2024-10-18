@@ -15,13 +15,12 @@
   -->
 
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:motion="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Transition
         android:id="@+id/show_floating_sheet"
-        motion:constraintSetStart="@id/floating_sheet_gone"
-        motion:constraintSetEnd="@id/floating_sheet_visible" />
+        app:constraintSetStart="@id/floating_sheet_gone"
+        app:constraintSetEnd="@id/floating_sheet_visible" />
 
     <ConstraintSet android:id="@+id/floating_sheet_gone">
         <Constraint
@@ -87,5 +86,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/show_apply_wallpaper">
+        <Constraint
+            android:id="@+id/preview_pager"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/preview_action_group_container" />
+
+        <Constraint
+            android:id="@+id/preview_action_group_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/preview_pager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <Constraint
+            android:id="@+id/floating_sheet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
     </ConstraintSet>
 </MotionScene>

@@ -81,10 +81,12 @@ object PreviewActionsBinder {
                     // when the view is not gone.
                     if (newState == STATE_HIDDEN) {
                         actionsViewModel.onFloatingSheetCollapsed()
-                        if (BaseFlags.get().isNewPickerUi()) smallPreview?.transitionToStart()
+                        if (BaseFlags.get().isNewPickerUi())
+                            smallPreview?.transitionToState(R.id.floating_sheet_gone)
                         else floatingSheet.isInvisible = true
                     } else {
-                        if (BaseFlags.get().isNewPickerUi()) smallPreview?.transitionToEnd()
+                        if (BaseFlags.get().isNewPickerUi())
+                            smallPreview?.transitionToState(R.id.floating_sheet_visible)
                         else floatingSheet.isInvisible = false
                     }
                 }
@@ -94,9 +96,9 @@ object PreviewActionsBinder {
         val noActionChecked = !actionsViewModel.isAnyActionChecked()
         if (BaseFlags.get().isNewPickerUi()) {
             if (noActionChecked) {
-                smallPreview?.transitionToStart()
+                smallPreview?.transitionToState(R.id.floating_sheet_gone)
             } else {
-                smallPreview?.transitionToEnd()
+                smallPreview?.transitionToState(R.id.floating_sheet_visible)
             }
         } else {
             floatingSheet.isInvisible = noActionChecked

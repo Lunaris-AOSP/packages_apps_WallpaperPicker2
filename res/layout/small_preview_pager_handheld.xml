@@ -22,19 +22,76 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/preview_pager_motion_scene_handheld">
 
+    <LinearLayout
+        android:id="@+id/apply_wallpaper_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/apply_wallpaper_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/apply_wallpaper_title_text"
+            android:textAppearance="@style/SettingsLibTextAppearance.Primary.Headline.Large"  />
+
+        <TextView
+            android:id="@+id/apply_wallpaper_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/SettingsLibTextAppearance.Primary.Title.Small" />
+    </LinearLayout>
+
     <include layout="@layout/small_preview_handheld_card_view2"
         android:id="@+id/lock_preview" />
+
+    <CheckBox
+        android:id="@+id/lock_preview_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:button="@drawable/checkbox_circle_shape"
+        android:text="@string/set_wallpaper_lock_screen_destination"
+        android:visibility="gone"/>
 
     <include layout="@layout/small_preview_handheld_card_view2"
         android:id="@+id/home_preview" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_end"
+    <CheckBox
+        android:id="@+id/home_preview_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="16dp"
-        app:layout_constraintGuide_percent="1" />
+        android:gravity="center_vertical"
+        android:button="@drawable/checkbox_circle_shape"
+        android:text="@string/set_wallpaper_home_screen_destination"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/apply_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/apply_button_background_variant"
+        android:gravity="center"
+        android:minHeight="56dp"
+        android:text="@string/apply_btn"
+        android:textColor="@color/system_on_primary"
+        android:textAppearance="@style/WallpaperPicker.Preview.TextAppearance.NoAllCaps"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/cancel_button_background_variant"
+        android:gravity="center"
+        android:minHeight="56dp"
+        android:text="@string/cancel"
+        android:textColor="@color/system_primary"
+        android:textAppearance="@style/WallpaperPicker.Preview.TextAppearance.NoAllCaps"
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_center"

@@ -427,4 +427,12 @@
     <dimen name="handheld_small_preview_pager_margin_top">12dp</dimen>
     <dimen name="handheld_small_preview_pager_margin_bottom">26dp</dimen>
     <dimen name="handheld_small_preview_action_group_margin_bottom">12dp</dimen>
+    <dimen name="handheld_small_preview_pager_margin_start">16dp</dimen>
+    <dimen name="handheld_small_preview_pager_margin_end">16dp</dimen>
+    <dimen name="handheld_small_preview_space_between_preview">16dp</dimen>
+    <dimen name="handheld_apply_wallpaper_screen_margin_horizontal">24dp</dimen>
+    <dimen name="handheld_apply_wallpaper_screen_margin_bottom">34dp</dimen>
+    <dimen name="handheld_apply_wallpaper_screen_button_space">8dp</dimen>
+    <dimen name="handheld_apply_wallpaper_screen_header_margin_vertical">16dp</dimen>
+    <dimen name="handheld_apply_wallpaper_preview_button_margin_bottom">28dp</dimen>
 </resources>

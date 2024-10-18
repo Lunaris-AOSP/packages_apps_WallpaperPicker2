@@ -35,6 +35,8 @@ import com.android.wallpaper.picker.preview.data.repository.ImageEffectsReposito
 import com.android.wallpaper.picker.preview.domain.interactor.PreviewActionsInteractor
 import com.android.wallpaper.picker.preview.domain.interactor.WallpaperPreviewInteractor
 import com.android.wallpaper.picker.preview.shared.model.FullPreviewCropModel
+import com.android.wallpaper.picker.preview.shared.model.SmallPreviewPagerStateModel
+import com.android.wallpaper.picker.preview.shared.model.isPagerState
 import com.android.wallpaper.picker.preview.ui.WallpaperPreviewActivity
 import com.android.wallpaper.picker.preview.ui.binder.PreviewTooltipBinder
 import com.android.wallpaper.util.DisplayUtils
@@ -99,10 +101,63 @@ constructor(
 
     val smallPreviewTabs = Screen.entries.toList()
 
+    private val _smallPreviewPagerState = MutableStateFlow<SmallPreviewPagerStateModel?>(null)
+    val smallPreviewPagerState = _smallPreviewPagerState.asStateFlow()
+
+    /**
+     * The current small preview tab when user is at pager state.
+     *
+     * Null if preview selected tab hasn't changed from main screen selected tab.
+     */
+    val smallPreviewPagerSelectedTab: Flow<Screen?> =
+        smallPreviewPagerState
+            .filter { it == null || it.isPagerState() }
+            .map {
+                when (it) {
+                    SmallPreviewPagerStateModel.LOCK_SCREEN -> Screen.LOCK_SCREEN
+                    SmallPreviewPagerStateModel.HOME_SCREEN -> Screen.HOME_SCREEN
+                    else -> null
+                }
+            }
+
     private val _smallPreviewSelectedTab = MutableStateFlow(getWallpaperPreviewSource())
     val smallPreviewSelectedTab = _smallPreviewSelectedTab.asStateFlow()
-    val smallPreviewSelectedTabIndex = smallPreviewSelectedTab.map { smallPreviewTabs.indexOf(it) }
 
+    /**
+     * The selected preview pager tab from user's perspective.
+     *
+     * If preview pager has not changed, it's the selected tab on main screen, otherwise it's
+     * preview pager selected tab.
+     */
+    val smallPreviewCombinedSelectedTab: Flow<Screen> =
+        combine(_smallPreviewSelectedTab.asStateFlow(), smallPreviewPagerSelectedTab) {
+            previewTab,
+            pagerTab ->
+            pagerTab ?: previewTab
+        }
+
+    val smallPreviewSelectedTabIndex =
+        smallPreviewCombinedSelectedTab.map { smallPreviewTabs.indexOf(it) }
+
+    private val _smallPreviewBackPressed = MutableStateFlow(false)
+    val smallPreviewBackPressed = _smallPreviewBackPressed.asStateFlow()
+
+    /**
+     * The selected tab on the small preview it should go back to from apply wallpaper screen when
+     * back pressed.
+     */
+    val applyWallpaperBackPressedScreen: Flow<Screen> =
+        combine(smallPreviewPagerState, smallPreviewBackPressed, smallPreviewCombinedSelectedTab) {
+                state,
+                pressed,
+                tab ->
+                if (pressed && state == SmallPreviewPagerStateModel.APPLY_WALLPAPER_SCREEN) {
+                    tab
+                } else null
+            }
+            .filterNotNull()
+
+    /** Deprecated: use [smallPreviewCombinedSelectedTab] for new picker UI. */
     fun getSmallPreviewTabIndex(): Int {
         return smallPreviewTabs.indexOf(smallPreviewSelectedTab.value)
     }
@@ -113,6 +168,19 @@ constructor(
 
     fun setSmallPreviewSelectedTabIndex(index: Int) {
         _smallPreviewSelectedTab.value = smallPreviewTabs[index]
+    }
+
+    fun setSmallPreviewPagerStateModel(state: SmallPreviewPagerStateModel?) {
+        _smallPreviewPagerState.value = state
+    }
+
+    /** Returns true if the press should be consumed before reaching back press dispatcher. */
+    fun handleSmallPreviewBackPressed(pressed: Boolean): Boolean {
+        _smallPreviewBackPressed.value = pressed
+        return smallPreviewPagerState.value.let {
+            it == SmallPreviewPagerStateModel.APPLY_WALLPAPER_SCREEN ||
+                it == SmallPreviewPagerStateModel.TRANS
+        }
     }
 
     fun updateDisplayConfiguration() {
@@ -164,10 +232,7 @@ constructor(
             if (model is StaticWallpaperModel && !model.isDownloadableWallpaper()) {
                 staticWallpaperPreviewViewModel.updateCropHintsInfo(
                     cropHints.mapValues {
-                        FullPreviewCropModel(
-                            cropHint = it.value,
-                            cropSizeModel = null,
-                        )
+                        FullPreviewCropModel(cropHint = it.value, cropSizeModel = null)
                     }
                 )
             }
@@ -230,11 +295,7 @@ constructor(
                 }
             FullWallpaperPreviewViewModel(
                 wallpaper = wallpaper,
-                config =
-                    FullPreviewConfigViewModel(
-                        config.screen,
-                        config.deviceDisplayType,
-                    ),
+                config = FullPreviewConfigViewModel(config.screen, config.deviceDisplayType),
                 displaySize = displaySize,
                 allowUserCropping =
                     wallpaper is StaticWallpaperModel && !wallpaper.isDownloadableWallpaper(),
@@ -440,14 +501,9 @@ constructor(
             }
         }
 
-    fun setDefaultFullPreviewConfigViewModel(
-        deviceDisplayType: DeviceDisplayType,
-    ) {
+    fun setDefaultFullPreviewConfigViewModel(deviceDisplayType: DeviceDisplayType) {
         _fullPreviewConfigViewModel.value =
-            FullPreviewConfigViewModel(
-                Screen.HOME_SCREEN,
-                deviceDisplayType,
-            )
+            FullPreviewConfigViewModel(Screen.HOME_SCREEN, deviceDisplayType)
     }
 
     fun resetFullPreviewConfigViewModel() {

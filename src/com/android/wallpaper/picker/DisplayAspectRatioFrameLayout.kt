@@ -28,6 +28,10 @@ import kotlin.math.max
 /**
  * [FrameLayout] that sizes its children using a fixed aspect ratio that is the same as that of the
  * display.
+ *
+ * Uses the initial height to calculate width based on the display ratio, then use the new width to
+ * get the new height, this will wrap the child view inside like wrap content for both width and
+ * height, for this to work the width must be wrap_content or 0dp and the height cannot be 0dp.
  */
 class DisplayAspectRatioFrameLayout(context: Context, attrs: AttributeSet?) :
     FrameLayout(context, attrs) {
@@ -45,28 +49,32 @@ class DisplayAspectRatioFrameLayout(context: Context, attrs: AttributeSet?) :
         // you will need to flip the logic below.
         var maxWidth = 0
         children.forEach { child ->
+            // Calculate child width from height based on display ratio, max at parent width.
             val childWidth =
                 (child.measuredHeight / screenAspectRatio).toInt().coerceAtMost(measuredWidth)
             child.measure(
                 MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(
                     if (childWidth < measuredWidth) {
+                        // Child width not capped, height is the same.
                         child.measuredHeight
                     } else {
+                        // Child width capped at parent width, recalculates height based on ratio.
                         (childWidth * screenAspectRatio).toInt()
                     },
                     MeasureSpec.EXACTLY,
                 ),
             )
+            // Find max width among all children.
             maxWidth = max(maxWidth, child.measuredWidth)
         }
 
         if (BaseFlags.get().isNewPickerUi()) {
+            // New height based on the new width
+            val newHeight = (maxWidth * screenAspectRatio).toInt()
+
             // Makes width wrap content
-            setMeasuredDimension(
-                resolveSize(maxWidth, widthMeasureSpec),
-                resolveSize(measuredHeight, heightMeasureSpec),
-            )
+            setMeasuredDimension(resolveSize(maxWidth, widthMeasureSpec), newHeight)
         }
     }
 }
