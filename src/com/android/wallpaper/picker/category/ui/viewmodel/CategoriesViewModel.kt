@@ -24,11 +24,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.wallpaper.R
+import com.android.wallpaper.asset.ContentUriAsset
+import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.module.PackageStatusNotifier
 import com.android.wallpaper.module.PackageStatusNotifier.PackageStatus
 import com.android.wallpaper.picker.category.domain.interactor.CategoriesLoadingStatusInteractor
 import com.android.wallpaper.picker.category.domain.interactor.CategoryInteractor
 import com.android.wallpaper.picker.category.domain.interactor.CreativeCategoryInteractor
+import com.android.wallpaper.picker.category.domain.interactor.CuratedPhotosInteractor
 import com.android.wallpaper.picker.category.domain.interactor.MyPhotosInteractor
 import com.android.wallpaper.picker.category.domain.interactor.ThirdPartyCategoryInteractor
 import com.android.wallpaper.picker.category.ui.view.SectionCardinality
@@ -44,6 +47,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
 
 /** Top level [ViewModel] for the categories screen */
@@ -53,6 +57,7 @@ class CategoriesViewModel
 constructor(
     private val singleCategoryInteractor: CategoryInteractor,
     private val creativeCategoryInteractor: CreativeCategoryInteractor,
+    private val curatedPhotosInteractor: CuratedPhotosInteractor,
     private val myPhotosInteractor: MyPhotosInteractor,
     private val thirdPartyCategoryInteractor: ThirdPartyCategoryInteractor,
     private val loadindStatusInteractor: CategoriesLoadingStatusInteractor,
@@ -64,7 +69,8 @@ constructor(
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents = _navigationEvents.asSharedFlow()
 
-    // Helps to make sure that categories are fetched when picker main page is opened
+    // Calling this method ensures that we are able to trigger loading of categories when user
+    // enters the picker main page.
     fun initialize() {
         Log.i(TAG, "Initializing Categories!")
     }
@@ -256,34 +262,89 @@ constructor(
                 )
             }
 
+    // Handles the MyPhotos block case. In case there is nothing returned from the PhotosApp,
+    // we emit an empty value so it can be filtered out from the categories screen.
+    // TODO: Handle the case when user isn't logged into GooglePhotos
     private val myPhotosSectionViewModel: Flow<SectionViewModel> =
-        myPhotosInteractor.category.distinctUntilChanged().map { category ->
-            SectionViewModel(
-                tileViewModels =
-                    listOf(
-                        TileViewModel(
-                            defaultDrawable = category.imageCategoryData?.defaultDrawable,
-                            thumbnailAsset = category.imageCategoryData?.thumbnailAsset,
-                            text = category.commonCategoryData.title,
-                            maxCategoriesInRow = SectionCardinality.Single,
-                        ) {
-                            // TODO(b/352081782): trigger the effect with effect controller
-                            navigateToPhotosPicker(null)
-                        }
-                    ),
-                columnCount = 3,
-                sectionTitle = context.getString(R.string.choose_a_wallpaper_section_title),
-            )
-        }
+        if (BaseFlags.get().isNewPickerUi()) {
+                curatedPhotosInteractor.category.distinctUntilChanged().map { category ->
+                    SectionViewModel(
+                        tileViewModels =
+                            category.collectionCategoryData?.wallpaperModels?.map { wallpaperModel
+                                ->
+                                val staticWallpaperModel =
+                                    wallpaperModel as? WallpaperModel.StaticWallpaperModel
+                                TileViewModel(
+                                    defaultDrawable = null,
+                                    thumbnailAsset =
+                                        ContentUriAsset(
+                                            context,
+                                            staticWallpaperModel?.imageWallpaperData?.uri,
+                                        ),
+                                    text = category.commonCategoryData.title,
+                                    maxCategoriesInRow = SectionCardinality.Single,
+                                ) {
+                                    navigateToPreviewScreen(
+                                        wallpaperModel,
+                                        CategoryType.MyPhotosCategories,
+                                    )
+                                }
+                            } ?: emptyList(),
+                        columnCount = 3,
+                        sectionTitle =
+                            context.getString(R.string.choose_a_curated_photo_section_title),
+                        displayType = DisplayType.Carousel,
+                    ) {
+                        navigateToPhotosPicker(null)
+                    }
+                }
+            } else {
+                myPhotosInteractor.category.distinctUntilChanged().map { category ->
+                    SectionViewModel(
+                        tileViewModels =
+                            listOf(
+                                TileViewModel(
+                                    defaultDrawable = category.imageCategoryData?.defaultDrawable,
+                                    thumbnailAsset = category.imageCategoryData?.thumbnailAsset,
+                                    text = category.commonCategoryData.title,
+                                    maxCategoriesInRow = SectionCardinality.Single,
+                                ) {
+                                    // TODO(b/352081782): trigger the effect with effect controller
+                                    navigateToPhotosPicker(null)
+                                }
+                            ),
+                        columnCount = 3,
+                        sectionTitle = context.getString(R.string.choose_a_wallpaper_section_title),
+                    )
+                }
+            }
+            .onEmpty {
+                emit(
+                    SectionViewModel(
+                        tileViewModels = emptyList(),
+                        columnCount = 0,
+                        sectionTitle = "No Photos Available",
+                    )
+                )
+            }
 
+    // The ordering of addition of viewModels here decides the final ordering how sections would
+    // appear in the categories page.
     val sections: Flow<List<SectionViewModel>> =
         combine(individualSectionViewModels, creativeSectionViewModel, myPhotosSectionViewModel) {
             individualViewModels,
             creativeViewModel,
             myPhotosViewModel ->
             buildList {
-                add(creativeViewModel)
-                add(myPhotosViewModel)
+                if (BaseFlags.get().isNewPickerUi()) {
+                    if (myPhotosViewModel.tileViewModels.isNotEmpty()) {
+                        add(myPhotosViewModel)
+                    }
+                    add(creativeViewModel)
+                } else {
+                    add(creativeViewModel)
+                    add(myPhotosViewModel)
+                }
                 addAll(individualViewModels)
             }
         }
@@ -314,6 +375,11 @@ constructor(
         DefaultCategories,
         CreativeCategories,
         MyPhotosCategories,
+        Default,
+    }
+
+    enum class DisplayType {
+        Carousel,
         Default,
     }
 

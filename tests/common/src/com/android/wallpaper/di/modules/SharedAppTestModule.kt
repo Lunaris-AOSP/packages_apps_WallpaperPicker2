@@ -92,6 +92,10 @@ internal abstract class SharedAppTestModule {
 
     @Binds
     @Singleton
+    abstract fun bindMyPhotosInteractor(impl: FakeMyPhotosInteractor): MyPhotosInteractor
+
+    @Binds
+    @Singleton
     abstract fun bindNetworkStatusRepository(
         impl: DefaultNetworkStatusRepository
     ): NetworkStatusRepository
@@ -130,10 +134,6 @@ internal abstract class SharedAppTestModule {
 
     // Use the test scope as the main scope to match the test dispatcher
     @Binds @Singleton @MainDispatcher abstract fun bindMainScope(impl: TestScope): CoroutineScope
-
-    @Binds
-    @Singleton
-    abstract fun bindMyPhotosInteractor(impl: FakeMyPhotosInteractor): MyPhotosInteractor
 
     @Binds
     @Singleton
