@@ -36,7 +36,7 @@ object DualPreviewSelectorBinder {
     fun bind(
         tabs: PreviewTabs?,
         dualPreviewView: DualPreviewViewPager,
-        motionLayout: MotionLayout?,
+        smallPreview: MotionLayout?,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
         applicationContext: Context,
         viewLifecycleOwner: LifecycleOwner,
@@ -50,7 +50,7 @@ object DualPreviewSelectorBinder {
         DualPreviewPagerBinder.bind(
             dualPreviewView,
             wallpaperPreviewViewModel,
-            motionLayout,
+            smallPreview,
             applicationContext,
             viewLifecycleOwner,
             currentNavDestId,

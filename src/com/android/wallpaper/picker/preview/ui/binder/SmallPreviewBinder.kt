@@ -30,6 +30,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.Transition
 import androidx.transition.TransitionListenerAdapter
 import com.android.wallpaper.R
+import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.preview.ui.fragment.SmallPreviewFragment
@@ -45,7 +46,8 @@ object SmallPreviewBinder {
     fun bind(
         applicationContext: Context,
         view: View,
-        motionLayout: MotionLayout? = null,
+        smallPreview: MotionLayout? = null,
+        previewPager: MotionLayout? = null,
         viewModel: WallpaperPreviewViewModel,
         screen: Screen,
         displaySize: Point,
@@ -176,7 +178,11 @@ object SmallPreviewBinder {
                         }
                         .collect { onClick ->
                             if (onClick != null) {
-                                view.setOnClickListener { onClick() }
+                                if (BaseFlags.get().isNewPickerUi()) {
+                                    // TODO: Set click listener for motion layout
+                                } else {
+                                    view.setOnClickListener { onClick() }
+                                }
                             } else {
                                 view.setOnClickListener(null)
                             }

@@ -30,11 +30,10 @@ import kotlinx.coroutines.CompletableDeferred
 
 /** Binds and synchronizes the tab and preview view pagers. */
 object PreviewSelectorBinder {
-
     fun bind(
         tabs: PreviewTabs?,
-        previewsViewPager: ViewPager2,
-        motionLayout: MotionLayout?,
+        previewsViewPager: ViewPager2?,
+        smallPreview: MotionLayout?,
         previewDisplaySize: Point,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
         applicationContext: Context,
@@ -46,12 +45,11 @@ object PreviewSelectorBinder {
         isFirstBindingDeferred: CompletableDeferred<Boolean>,
         navigate: (View) -> Unit,
     ) {
-        // set up previews view pager
         PreviewPagerBinder.bind(
             applicationContext,
             viewLifecycleOwner,
-            motionLayout,
-            previewsViewPager,
+            smallPreview,
+            checkNotNull(previewsViewPager),
             wallpaperPreviewViewModel,
             previewDisplaySize,
             currentNavDestId,
@@ -61,7 +59,6 @@ object PreviewSelectorBinder {
             isFirstBindingDeferred,
             navigate,
         )
-
         tabs?.let { TabsBinder.bind(it, wallpaperPreviewViewModel, viewLifecycleOwner) }
     }
 }

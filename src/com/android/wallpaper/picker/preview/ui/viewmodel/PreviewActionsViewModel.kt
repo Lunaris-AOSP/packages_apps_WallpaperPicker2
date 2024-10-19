@@ -74,7 +74,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 /** View model for the preview action buttons */
@@ -302,7 +301,9 @@ constructor(
                     title = it.title,
                     subtitle = it.subtitle,
                     wallpaperActions = it.actions,
-                    wallpaperEffectSwitchListener = { interactor.turnOnCreativeEffect(it) },
+                    wallpaperEffectSwitchListener = { actionPosition ->
+                        interactor.turnOnCreativeEffect(actionPosition)
+                    },
                 )
             }
         }
