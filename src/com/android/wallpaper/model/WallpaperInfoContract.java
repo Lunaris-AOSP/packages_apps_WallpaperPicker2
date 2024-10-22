@@ -37,6 +37,8 @@ public final class WallpaperInfoContract {
     public static final String WALLPAPER_SHARE_URI = "wallpaper_share_uri";
     public static final String WALLPAPER_GROUP_NAME = "wallpaper_group_name";
     public static final String WALLPAPER_IS_APPLIED = "wallpaper_is_applied";
+    public static final String WALLPAPER_IS_NEW_CREATIVE_WALLPAPER =
+            "wallpaper_is_new_creative_wallpaper";
     public static final String WALLPAPER_EFFECTS_SECTION_TITLE =
             "wallpaper_effects_bottom_sheet_title";
     public static final String WALLPAPER_EFFECTS_SECTION_SUBTITLE =

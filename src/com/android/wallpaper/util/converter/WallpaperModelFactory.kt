@@ -139,6 +139,7 @@ interface WallpaperModelFactory {
                 contentDescription = contentDescription,
                 isCurrent = isCurrent,
                 creativeWallpaperEffectsData = getCreativeWallpaperEffectData(),
+                isNewCreativeWallpaper = isNewCreativeWallpaper,
             )
         }
 

@@ -30,4 +30,5 @@ data class CreativeWallpaperData(
     val contentDescription: String?,
     val isCurrent: Boolean,
     val creativeWallpaperEffectsData: CreativeWallpaperEffectsData?,
+    val isNewCreativeWallpaper: Boolean,
 )
