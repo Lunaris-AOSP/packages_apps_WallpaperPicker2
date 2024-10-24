@@ -44,6 +44,7 @@ import com.android.wallpaper.picker.AppbarFragment
 import com.android.wallpaper.picker.customization.ui.CustomizationPickerFragment2
 import com.android.wallpaper.picker.preview.shared.model.SmallPreviewPagerStateModel
 import com.android.wallpaper.picker.preview.ui.binder.ApplyWallpaperScreenBinder
+import com.android.wallpaper.picker.di.modules.MainDispatcher
 import com.android.wallpaper.picker.preview.ui.binder.DualPreviewSelectorBinder
 import com.android.wallpaper.picker.preview.ui.binder.PreviewActionsBinder
 import com.android.wallpaper.picker.preview.ui.binder.PreviewSelectorBinder
@@ -64,6 +65,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -74,6 +76,7 @@ import kotlinx.coroutines.launch
 class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
 
     @Inject @ApplicationContext lateinit var appContext: Context
+    @Inject @MainDispatcher lateinit var mainScope: CoroutineScope
     @Inject lateinit var displayUtils: DisplayUtils
     @Inject lateinit var logger: UserEventLogger
     @Inject lateinit var imageEffectDialogUtil: ImageEffectDialogUtil
@@ -300,6 +303,7 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                 smallPreview,
                 wallpaperPreviewViewModel,
                 appContext,
+                mainScope,
                 viewLifecycleOwner,
                 currentNavDestId,
                 (reenterTransition as Transition?),
@@ -323,6 +327,7 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
             if (isNewPickerUi) {
                 SmallPreviewScreenBinder.bind(
                     applicationContext = appContext,
+                    mainScope = mainScope,
                     lifecycleOwner = viewLifecycleOwner,
                     fragmentLayout = view as MotionLayout,
                     viewModel = wallpaperPreviewViewModel,
@@ -355,6 +360,7 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                     displayUtils.getRealSize(displayUtils.getWallpaperDisplay()),
                     wallpaperPreviewViewModel,
                     appContext,
+                    mainScope,
                     viewLifecycleOwner,
                     currentNavDestId,
                     (reenterTransition as Transition?),

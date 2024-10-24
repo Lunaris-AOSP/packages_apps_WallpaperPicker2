@@ -324,6 +324,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                         if (displayUtils.isOnWallpaperDisplay(activity))
                             previewViewModel.wallpaperDisplaySize.value
                         else previewViewModel.smallerDisplaySize,
+                    mainScope = mainScope,
                     lifecycleOwner = this@CustomizationPickerFragment2,
                     wallpaperConnectionUtils = wallpaperConnectionUtils,
                     isFirstBindingDeferred = CompletableDeferred(isFirstBinding),

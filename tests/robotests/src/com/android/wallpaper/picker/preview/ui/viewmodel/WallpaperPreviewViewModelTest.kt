@@ -51,6 +51,7 @@ import com.android.wallpaper.testing.FakeDisplaysProvider.Companion.HANDHELD
 import com.android.wallpaper.testing.FakeImageEffectsRepository
 import com.android.wallpaper.testing.FakeLiveWallpaperDownloader
 import com.android.wallpaper.testing.FakeWallpaperClient
+import com.android.wallpaper.testing.ShadowWallpaperInfo
 import com.android.wallpaper.testing.TestInjector
 import com.android.wallpaper.testing.TestWallpaperPreferences
 import com.android.wallpaper.testing.WallpaperModelUtils
@@ -70,6 +71,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
@@ -78,10 +80,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
+import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowContentResolver
+import org.robolectric.shadows.ShadowLooper
 
 @HiltAndroidTest
 @OptIn(ExperimentalCoroutinesApi::class)
+@Config(shadows = [ShadowWallpaperInfo::class])
 @RunWith(RobolectricTestRunner::class)
 class WallpaperPreviewViewModelTest {
     @get:Rule var hiltRule = HiltAndroidRule(this)
@@ -91,12 +96,12 @@ class WallpaperPreviewViewModelTest {
     private lateinit var staticWallpapaperPreviewViewModel: StaticWallpaperPreviewViewModel
     private lateinit var wallpaperPreviewRepository: WallpaperPreviewRepository
     private lateinit var startActivityIntent: Intent
+    private lateinit var effectsWallpaperInfo: WallpaperInfo
     @HomeScreenPreviewUtils private lateinit var homePreviewUtils: PreviewUtils
     @LockScreenPreviewUtils private lateinit var lockPreviewUtils: PreviewUtils
-
-    @Inject @ApplicationContext lateinit var appContext: Context
     @Inject lateinit var testDispatcher: TestDispatcher
     @Inject lateinit var testScope: TestScope
+    @Inject @ApplicationContext lateinit var appContext: Context
     @Inject lateinit var testInjector: TestInjector
     @Inject lateinit var wallpaperDownloader: FakeLiveWallpaperDownloader
     @Inject lateinit var wallpaperPreferences: TestWallpaperPreferences
@@ -140,6 +145,7 @@ class WallpaperPreviewViewModelTest {
             }
         val intent = Intent(WallpaperService.SERVICE_INTERFACE).setClassName(packageName, className)
         pm.addResolveInfoForIntent(intent, resolveInfo)
+        effectsWallpaperInfo = WallpaperInfo(appContext, resolveInfo)
 
         startActivityIntent =
             Intent.makeMainActivity(ComponentName(appContext, PreviewTestActivity::class.java))
@@ -218,17 +224,13 @@ class WallpaperPreviewViewModelTest {
     fun clickSmallPreview_isSelectedPreview_updatesFullWallpaperPreviewConfig() =
         testScope.runTest {
             val model = WallpaperModelUtils.getStaticWallpaperModel("testId", "testCollection")
-            updateFullWallpaperFlow(
-                model,
-                WhichPreview.PREVIEW_CURRENT,
-                listOf(HANDHELD),
-            )
+            updateFullWallpaperFlow(model, WhichPreview.PREVIEW_CURRENT, listOf(HANDHELD))
             wallpaperPreviewViewModel.setSmallPreviewSelectedTab(Screen.LOCK_SCREEN)
             val onLockPreviewClicked =
                 collectLastValue(
                     wallpaperPreviewViewModel.onSmallPreviewClicked(
                         Screen.LOCK_SCREEN,
-                        DeviceDisplayType.SINGLE
+                        DeviceDisplayType.SINGLE,
                     ) {}
                 )
 
@@ -287,10 +289,7 @@ class WallpaperPreviewViewModelTest {
             // Set a crop and confirm via clicking button
             wallpaperPreviewViewModel.staticWallpaperPreviewViewModel.fullPreviewCropModels[
                     FOLDABLE_UNFOLDED_LAND.displaySize] =
-                FullPreviewCropModel(
-                    cropHint = newCropRect,
-                    cropSizeModel = null,
-                )
+                FullPreviewCropModel(cropHint = newCropRect, cropSizeModel = null)
             collectLastValue(wallpaperPreviewViewModel.onCropButtonClick)()?.invoke()
 
             val cropHintsInfo =
@@ -298,6 +297,52 @@ class WallpaperPreviewViewModelTest {
             assertThat(cropHintsInfo).containsKey(FOLDABLE_UNFOLDED_LAND.displaySize)
             assertThat(cropHintsInfo?.get(FOLDABLE_UNFOLDED_LAND.displaySize)?.cropHint)
                 .isEqualTo(newCropRect)
+        }
+
+    @Test
+    fun previewLiveWallpaper_disablesCropping() =
+        testScope.runTest {
+            val model =
+                WallpaperModelUtils.getLiveWallpaperModel(
+                    wallpaperId = "testWallpaperId",
+                    collectionId = "testCollectionId",
+                    systemWallpaperInfo = effectsWallpaperInfo,
+                )
+            updateFullWallpaperFlow(model, WhichPreview.PREVIEW_CURRENT, listOf(HANDHELD))
+
+            wallpaperPreviewViewModel.onSmallPreviewClicked(
+                Screen.HOME_SCREEN,
+                DeviceDisplayType.SINGLE,
+            ) {}
+
+            val onCropButtonClick = collectLastValue(wallpaperPreviewViewModel.onCropButtonClick)()
+            assertThat(onCropButtonClick).isNull()
+        }
+
+    @Test
+    fun clickSetWallpaperButton_showsSetWallpaperDialog() =
+        testScope.runTest {
+            val onSetWallpaperButtonClicked =
+                collectLastValue(wallpaperPreviewViewModel.onSetWallpaperButtonClicked)
+            val newCropRect = Rect(10, 10, 10, 10)
+            val model =
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId",
+                    collectionId = "testCollection",
+                )
+            wallpaperPreviewRepository.setWallpaperModel(model)
+            wallpaperPreviewViewModel.staticWallpaperPreviewViewModel.updateCropHintsInfo(
+                mapOf(
+                    FOLDABLE_UNFOLDED_LAND.displaySize to
+                        FullPreviewCropModel(cropHint = newCropRect, cropSizeModel = null)
+                )
+            )
+            executePendingWork(this)
+
+            onSetWallpaperButtonClicked()?.invoke()
+
+            val showDialog = collectLastValue(wallpaperPreviewViewModel.showSetWallpaperDialog)()
+            assertThat(showDialog).isTrue()
         }
 
     /**
@@ -336,5 +381,16 @@ class WallpaperPreviewViewModelTest {
                 }
             )
         scenario.onActivity { setEverything(it) }
+    }
+
+    private fun executePendingWork(testScope: TestScope) {
+        // Run suspendCancellableCoroutine in assetDetail's decodeRawDimensions
+        testScope.runCurrent()
+        // Run handler.post in TestAsset.decodeRawDimensions
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+        // Run suspendCancellableCoroutine in assetDetail's decodeBitmap
+        testScope.runCurrent()
+        // Run handler.post in TestAsset.decodeBitmap
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
     }
 }

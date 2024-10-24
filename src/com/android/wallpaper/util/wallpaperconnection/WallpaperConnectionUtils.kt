@@ -21,7 +21,6 @@ import android.view.SurfaceView
 import com.android.app.tracing.TraceUtils.traceAsync
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.data.WallpaperModel.LiveWallpaperModel
-import com.android.wallpaper.util.WallpaperConnection
 import com.android.wallpaper.util.WallpaperConnection.WhichPreview
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import java.lang.ref.WeakReference
@@ -39,7 +38,7 @@ import kotlinx.coroutines.sync.withLock
 @ActivityRetainedScoped
 class WallpaperConnectionUtils @Inject constructor() {
 
-    // engineMap and surfaceControlMap are used for disconnecting wallpaper services.
+    // The engineMap and the surfaceControlMap are used for disconnecting wallpaper services.
     private val wallpaperConnectionMap = ConcurrentHashMap<String, Deferred<WallpaperConnection>>()
     // Note that when one wallpaper engine's render is mirrored to a new surface view, we call
     // engine.mirrorSurfaceControl() and will have a new surface control instance.
@@ -117,7 +116,6 @@ class WallpaperConnectionUtils @Inject constructor() {
     }
 
     suspend fun disconnectAll(context: Context) {
-        disconnectAllServices(context)
         surfaceControlMap.keys.map { key ->
             mutex.withLock {
                 surfaceControlMap[key]?.let { surfaceControls ->
@@ -127,6 +125,7 @@ class WallpaperConnectionUtils @Inject constructor() {
             }
         }
         surfaceControlMap.clear()
+        disconnectAllServices(context)
     }
 
     /**

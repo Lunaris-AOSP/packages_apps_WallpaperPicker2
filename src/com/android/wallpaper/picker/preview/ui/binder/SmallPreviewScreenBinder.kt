@@ -33,11 +33,13 @@ import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewMo
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 object SmallPreviewScreenBinder {
     fun bind(
         applicationContext: Context,
+        mainScope: CoroutineScope,
         lifecycleOwner: LifecycleOwner,
         fragmentLayout: MotionLayout,
         viewModel: WallpaperPreviewViewModel,
@@ -56,6 +58,7 @@ object SmallPreviewScreenBinder {
 
         PreviewPagerBinder2.bind(
             applicationContext,
+            mainScope = mainScope,
             lifecycleOwner,
             smallPreview,
             viewModel,

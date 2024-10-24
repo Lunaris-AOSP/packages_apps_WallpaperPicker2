@@ -26,6 +26,7 @@ import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Common base preview binder that is only responsible for binding the workspace and wallpaper, and
@@ -44,6 +45,7 @@ object BasePreviewBinder {
         screen: Screen,
         deviceDisplayType: DeviceDisplayType,
         displaySize: Point,
+        mainScope: CoroutineScope,
         lifecycleOwner: LifecycleOwner,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
         isFirstBindingDeferred: CompletableDeferred<Boolean>,
@@ -59,6 +61,7 @@ object BasePreviewBinder {
             screen = screen,
             displaySize = displaySize,
             deviceDisplayType = deviceDisplayType,
+            mainScope = mainScope,
             viewLifecycleOwner = lifecycleOwner,
             wallpaperConnectionUtils = wallpaperConnectionUtils,
             isFirstBindingDeferred = isFirstBindingDeferred,

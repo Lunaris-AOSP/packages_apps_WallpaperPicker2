@@ -38,6 +38,7 @@ import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewMo
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.launch
 
@@ -52,6 +53,7 @@ object SmallPreviewBinder {
         screen: Screen,
         displaySize: Point,
         deviceDisplayType: DeviceDisplayType,
+        mainScope: CoroutineScope,
         viewLifecycleOwner: LifecycleOwner,
         currentNavDestId: Int,
         navigate: ((View) -> Unit)? = null,
@@ -209,6 +211,7 @@ object SmallPreviewBinder {
             viewModel = viewModel,
             displaySize = displaySize,
             applicationContext = applicationContext,
+            mainScope = mainScope,
             viewLifecycleOwner = viewLifecycleOwner,
             deviceDisplayType = deviceDisplayType,
             wallpaperConnectionUtils = wallpaperConnectionUtils,
