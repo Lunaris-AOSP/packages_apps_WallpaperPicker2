@@ -20,10 +20,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
@@ -39,12 +40,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.transition.Transition
 import com.android.wallpaper.R
 import com.android.wallpaper.config.BaseFlags
+import com.android.wallpaper.model.Screen
 import com.android.wallpaper.module.logging.UserEventLogger
 import com.android.wallpaper.picker.AppbarFragment
 import com.android.wallpaper.picker.customization.ui.CustomizationPickerFragment2
-import com.android.wallpaper.picker.preview.shared.model.SmallPreviewPagerStateModel
-import com.android.wallpaper.picker.preview.ui.binder.ApplyWallpaperScreenBinder
 import com.android.wallpaper.picker.di.modules.MainDispatcher
+import com.android.wallpaper.picker.preview.ui.binder.ApplyWallpaperScreenBinder
 import com.android.wallpaper.picker.preview.ui.binder.DualPreviewSelectorBinder
 import com.android.wallpaper.picker.preview.ui.binder.PreviewActionsBinder
 import com.android.wallpaper.picker.preview.ui.binder.PreviewSelectorBinder
@@ -128,17 +129,18 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
             else null
         val previewPager =
             if (isNewPickerUi) currentView.findViewById<MotionLayout>(R.id.preview_pager) else null
-        previewPager?.let { setUpTransitionListener(it) }
-
-        val onBackPressedCallback =
-            if (isNewPickerUi) {
-                requireActivity().onBackPressedDispatcher.let {
-                    it.addCallback {
-                        isEnabled = wallpaperPreviewViewModel.handleSmallPreviewBackPressed(true)
-                        if (!isEnabled) it.onBackPressed()
-                    }
+        previewPager?.let {
+            setUpTransitionListener(it)
+            setUpTapListener(it)
+        }
+        if (isNewPickerUi) {
+            requireActivity().onBackPressedDispatcher.let {
+                it.addCallback {
+                    isEnabled = wallpaperPreviewViewModel.handleBackPressed()
+                    if (!isEnabled) it.onBackPressed()
                 }
-            } else null
+            }
+        }
 
         setUpToolbar(currentView, /* upArrow= */ true, /* transparentToolbar= */ true)
         bindScreenPreview(
@@ -147,22 +149,15 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
             isFirstBindingDeferred,
             isFoldable,
             isNewPickerUi,
-            onBackPressedCallback,
         )
         bindPreviewActions(currentView, smallPreview)
 
         if (isNewPickerUi) {
             ApplyWallpaperScreenBinder.bind(
-                nextButton = currentView.requireViewById(R.id.button_next),
                 cancelButton = checkNotNull(previewPager).requireViewById(R.id.cancel_button),
                 viewModel = wallpaperPreviewViewModel,
                 lifecycleOwner = viewLifecycleOwner,
-                navigateUp = { requireActivity().onBackPressedDispatcher.onBackPressed() },
-            ) {
-                (currentView as MotionLayout).transitionToState(R.id.hide_fragment_header)
-                checkNotNull(smallPreview).transitionToState(R.id.show_apply_wallpaper)
-                previewPager.transitionToState(R.id.apply_wallpaper_preview_only)
-            }
+            )
         } else {
             SetWallpaperButtonBinder.bind(
                 button = currentView.requireViewById(R.id.button_set_wallpaper),
@@ -251,31 +246,40 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
     private fun setUpTransitionListener(previewPager: MotionLayout) {
         previewPager.addTransitionListener(
             object : CustomizationPickerFragment2.EmptyTransitionListener {
-                override fun onTransitionStarted(
-                    motionLayout: MotionLayout?,
-                    startId: Int,
-                    endId: Int,
-                ) {
-                    wallpaperPreviewViewModel.setSmallPreviewPagerStateModel(
-                        SmallPreviewPagerStateModel.TRANS
-                    )
-                }
-
                 override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                    wallpaperPreviewViewModel.setSmallPreviewPagerStateModel(
-                        when (currentId) {
-                            R.id.lock_preview_selected -> SmallPreviewPagerStateModel.LOCK_SCREEN
-                            R.id.home_preview_selected -> SmallPreviewPagerStateModel.HOME_SCREEN
-                            R.id.apply_wallpaper_preview_only ->
-                                SmallPreviewPagerStateModel.TRANS_TO_APPLY_WALLPAPER_SCREEN
-                            R.id.apply_wallpaper_all ->
-                                SmallPreviewPagerStateModel.APPLY_WALLPAPER_SCREEN
-                            else -> null
-                        }
-                    )
+                    if (
+                        currentId == R.id.lock_preview_selected ||
+                            currentId == R.id.home_preview_selected
+                    ) {
+                        // When user swipes to lock or home screen, we need to update the state of
+                        // the selected tab in the view model
+                        wallpaperPreviewViewModel.setSmallPreviewSelectedTab(
+                            if (currentId == R.id.lock_preview_selected) Screen.LOCK_SCREEN
+                            else Screen.HOME_SCREEN
+                        )
+                    } else if (currentId == R.id.apply_wallpaper_preview_only) {
+                        // When transition to state of apply wallpaper preview only, it should
+                        // always proceed to transition to the apply wallpaper all state to also
+                        // fade in the action buttons at the bottom.
+                        previewPager.transitionToState(R.id.apply_wallpaper_all)
+                    }
                 }
             }
         )
+    }
+
+    private fun setUpTapListener(previewPager: MotionLayout) {
+        val gestureDetector =
+            GestureDetector(
+                requireContext().applicationContext,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onSingleTapUp(e: MotionEvent): Boolean {
+                        wallpaperPreviewViewModel.handlePagerTapped()
+                        return true
+                    }
+                },
+            )
+        previewPager.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
     }
 
     private fun createSetWallpaperProgressDialog(activity: Activity): AlertDialog {
@@ -290,9 +294,7 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
         isFirstBindingDeferred: CompletableDeferred<Boolean>,
         isFoldable: Boolean,
         isNewPickerUi: Boolean,
-        onBackPressedCallback: OnBackPressedCallback?,
     ) {
-        val currentNavDestId = checkNotNull(findNavController().currentDestination?.id)
         val tabs = view.findViewById<PreviewTabs>(R.id.preview_tabs_container)
         if (isFoldable) {
             val dualPreviewView: DualPreviewViewPager = view.requireViewById(R.id.pager_previews)
@@ -305,7 +307,6 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                 appContext,
                 mainScope,
                 viewLifecycleOwner,
-                currentNavDestId,
                 (reenterTransition as Transition?),
                 wallpaperPreviewViewModel.fullPreviewConfigViewModel.value,
                 wallpaperConnectionUtils,
@@ -333,24 +334,25 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                     viewModel = wallpaperPreviewViewModel,
                     previewDisplaySize =
                         displayUtils.getRealSize(displayUtils.getWallpaperDisplay()),
-                    currentNavDestId = currentNavDestId,
                     transition = (reenterTransition as Transition?),
                     transitionConfig = wallpaperPreviewViewModel.fullPreviewConfigViewModel.value,
                     wallpaperConnectionUtils = wallpaperConnectionUtils,
                     isFirstBindingDeferred = isFirstBindingDeferred,
-                    onBackPressedCallback = checkNotNull(onBackPressedCallback),
                 ) { sharedElement ->
                     val extras =
                         FragmentNavigatorExtras(sharedElement to FULL_PREVIEW_SHARED_ELEMENT_ID)
                     // Set to false on small-to-full preview transition to remove surfaceView jank.
                     (view as ViewGroup).isTransitionGroup = false
-                    findNavController()
-                        .navigate(
-                            resId = R.id.action_smallPreviewFragment_to_fullPreviewFragment,
-                            args = null,
-                            navOptions = null,
-                            navigatorExtras = extras,
-                        )
+                    findNavController().let {
+                        if (it.currentDestination?.id == R.id.smallPreviewFragment) {
+                            it.navigate(
+                                resId = R.id.action_smallPreviewFragment_to_fullPreviewFragment,
+                                args = null,
+                                navOptions = null,
+                                navigatorExtras = extras,
+                            )
+                        }
+                    }
                 }
             } else {
                 PreviewSelectorBinder.bind(
@@ -362,7 +364,6 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                     appContext,
                     mainScope,
                     viewLifecycleOwner,
-                    currentNavDestId,
                     (reenterTransition as Transition?),
                     wallpaperPreviewViewModel.fullPreviewConfigViewModel.value,
                     wallpaperConnectionUtils,
@@ -372,13 +373,16 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                         FragmentNavigatorExtras(sharedElement to FULL_PREVIEW_SHARED_ELEMENT_ID)
                     // Set to false on small-to-full preview transition to remove surfaceView jank.
                     (view as ViewGroup).isTransitionGroup = false
-                    findNavController()
-                        .navigate(
-                            resId = R.id.action_smallPreviewFragment_to_fullPreviewFragment,
-                            args = null,
-                            navOptions = null,
-                            navigatorExtras = extras,
-                        )
+                    findNavController().let {
+                        if (it.currentDestination?.id == R.id.smallPreviewFragment) {
+                            it.navigate(
+                                resId = R.id.action_smallPreviewFragment_to_fullPreviewFragment,
+                                args = null,
+                                navOptions = null,
+                                navigatorExtras = extras,
+                            )
+                        }
+                    }
                 }
             }
         }

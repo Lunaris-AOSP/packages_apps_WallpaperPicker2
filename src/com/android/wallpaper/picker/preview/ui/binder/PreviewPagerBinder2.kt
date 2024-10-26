@@ -37,11 +37,10 @@ object PreviewPagerBinder2 {
     fun bind(
         applicationContext: Context,
         mainScope: CoroutineScope,
-        viewLifecycleOwner: LifecycleOwner,
+        lifecycleOwner: LifecycleOwner,
         smallPreview: MotionLayout,
-        wallpaperPreviewViewModel: WallpaperPreviewViewModel,
+        viewModel: WallpaperPreviewViewModel,
         previewDisplaySize: Point,
-        currentNavDestId: Int,
         transition: Transition?,
         transitionConfig: FullPreviewConfigViewModel?,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
@@ -53,8 +52,8 @@ object PreviewPagerBinder2 {
             val container = previewPager.requireViewById<View>(it)
             PreviewTooltipBinder.bindSmallPreviewTooltip(
                 tooltipStub = container.requireViewById(R.id.small_preview_tooltip_stub),
-                viewModel = wallpaperPreviewViewModel.smallTooltipViewModel,
-                lifecycleOwner = viewLifecycleOwner,
+                viewModel = viewModel.smallTooltipViewModel,
+                lifecycleOwner = lifecycleOwner,
             )
 
             SmallPreviewBinder.bind(
@@ -62,13 +61,13 @@ object PreviewPagerBinder2 {
                 view = container.requireViewById(R.id.preview),
                 smallPreview = smallPreview,
                 previewPager = previewPager,
-                viewModel = wallpaperPreviewViewModel,
-                screen = wallpaperPreviewViewModel.smallPreviewTabs[pagerItems.indexOf(it)],
+                viewModel = viewModel,
+                screen = viewModel.smallPreviewTabs[pagerItems.indexOf(it)],
                 displaySize = previewDisplaySize,
                 deviceDisplayType = DeviceDisplayType.SINGLE,
                 mainScope = mainScope,
-                viewLifecycleOwner = viewLifecycleOwner,
-                currentNavDestId = currentNavDestId,
+                viewLifecycleOwner = lifecycleOwner,
+                currentNavDestId = R.id.smallPreviewFragment,
                 transition = transition,
                 transitionConfig = transitionConfig,
                 isFirstBindingDeferred = isFirstBindingDeferred,

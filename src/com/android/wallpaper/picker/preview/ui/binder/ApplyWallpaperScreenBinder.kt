@@ -17,7 +17,6 @@
 package com.android.wallpaper.picker.preview.ui.binder
 
 import android.widget.Button
-import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -29,41 +28,15 @@ import kotlinx.coroutines.launch
 object ApplyWallpaperScreenBinder {
 
     fun bind(
-        nextButton: Button,
         cancelButton: Button,
         viewModel: WallpaperPreviewViewModel,
         lifecycleOwner: LifecycleOwner,
-        navigateUp: () -> Unit,
-        navigate: () -> Unit,
     ) {
-        cancelButton.setOnClickListener { navigateUp() }
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.isSetWallpaperButtonVisible.collect { nextButton.isVisible = it }
-                }
-
-                launch {
-                    viewModel.isSetWallpaperButtonEnabled.collect { nextButton.isEnabled = it }
-                }
-
-                launch {
-                    viewModel.onSetWallpaperButtonClicked.collect { onClicked ->
-                        nextButton.setOnClickListener(
-                            if (onClicked != null) {
-                                { onClicked.invoke() }
-                            } else {
-                                null
-                            }
-                        )
-                    }
-                }
-
-                launch {
-                    viewModel.showSetWallpaperDialog.collect {
-                        if (it) {
-                            navigate.invoke()
-                        }
+                    viewModel.onCancelButtonClicked.collect { onClicked ->
+                        cancelButton.setOnClickListener { onClicked() }
                     }
                 }
             }

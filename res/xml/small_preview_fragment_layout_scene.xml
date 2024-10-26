@@ -19,10 +19,10 @@
 
     <Transition
         android:id="@+id/show_apply_wallpaper_screen"
-        app:constraintSetStart="@id/show_full_fragment"
-        app:constraintSetEnd="@id/hide_fragment_header" />
+        app:constraintSetStart="@id/show_full_page"
+        app:constraintSetEnd="@id/hide_page_header" />
 
-    <ConstraintSet android:id="@+id/show_full_fragment">
+    <ConstraintSet android:id="@+id/show_full_page">
         <Constraint
             android:id="@+id/toolbar_container"
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Constraint
-            android:id="@+id/button_set_wallpaper"
+            android:id="@+id/button_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/set_wallpaper_button_margin_end"
@@ -52,7 +52,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
     </ConstraintSet>
 
-    <ConstraintSet android:id="@+id/hide_fragment_header">
+    <ConstraintSet android:id="@+id/hide_page_header">
         <Constraint
             android:id="@+id/toolbar_container"
             android:layout_width="match_parent"
@@ -63,7 +63,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Constraint
-            android:id="@+id/button_set_wallpaper"
+            android:id="@+id/button_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/set_wallpaper_button_margin_end"

@@ -36,10 +36,12 @@ import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.preview.ui.fragment.SmallPreviewFragment
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
+import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel.Companion.PreviewScreen
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 object SmallPreviewBinder {
@@ -174,19 +176,23 @@ object SmallPreviewBinder {
                 }
 
                 if (R.id.smallPreviewFragment == currentNavDestId) {
-                    viewModel
-                        .onSmallPreviewClicked(screen, deviceDisplayType) {
-                            navigate?.invoke(previewCard)
+                    combine(
+                            viewModel.onSmallPreviewClicked(screen, deviceDisplayType) {
+                                navigate?.invoke(previewCard)
+                            },
+                            viewModel.currentPreviewScreen,
+                            viewModel.smallPreviewSelectedTab,
+                        ) { onClick, previewScreen, tab ->
+                            Triple(onClick, previewScreen, tab)
                         }
-                        .collect { onClick ->
-                            if (onClick != null) {
-                                if (BaseFlags.get().isNewPickerUi()) {
-                                    // TODO: Set click listener for motion layout
-                                } else {
-                                    view.setOnClickListener { onClick() }
+                        .collect { (onClick, previewScreen, tab) ->
+                            if (BaseFlags.get().isNewPickerUi()) {
+                                if (previewScreen == PreviewScreen.FULL_PREVIEW && tab == screen) {
+                                    onClick?.invoke()
                                 }
                             } else {
-                                view.setOnClickListener(null)
+                                onClick?.let { view.setOnClickListener { it() } }
+                                    ?: view.setOnClickListener(null)
                             }
                         }
                 } else if (R.id.setWallpaperDialog == currentNavDestId) {

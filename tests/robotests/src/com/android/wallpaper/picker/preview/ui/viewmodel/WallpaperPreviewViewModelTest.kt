@@ -44,6 +44,7 @@ import com.android.wallpaper.picker.preview.data.repository.ImageEffectsReposito
 import com.android.wallpaper.picker.preview.data.repository.WallpaperPreviewRepository
 import com.android.wallpaper.picker.preview.shared.model.FullPreviewCropModel
 import com.android.wallpaper.picker.preview.shared.model.ImageEffectsModel
+import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel.Companion.PreviewScreen
 import com.android.wallpaper.testing.FakeContentProvider
 import com.android.wallpaper.testing.FakeDisplaysProvider
 import com.android.wallpaper.testing.FakeDisplaysProvider.Companion.FOLDABLE_UNFOLDED_LAND
@@ -173,6 +174,106 @@ class WallpaperPreviewViewModelTest {
         staticWallpapaperPreviewViewModel =
             wallpaperPreviewViewModel.staticWallpaperPreviewViewModel
     }
+
+    @Test
+    fun testBackPress_onFullPreviewScreen() =
+        testScope.runTest {
+            val currentPreviewScreen =
+                collectLastValue(wallpaperPreviewViewModel.currentPreviewScreen)
+            wallpaperPreviewViewModel.handlePagerTapped()
+
+            val handled = wallpaperPreviewViewModel.handleBackPressed()
+
+            assertThat(handled).isFalse()
+            assertThat(currentPreviewScreen()).isEqualTo(PreviewScreen.SMALL_PREVIEW)
+        }
+
+    @Test
+    fun testBackPress_onApplyWallpaperScreen() =
+        testScope.runTest {
+            val currentPreviewScreen =
+                collectLastValue(wallpaperPreviewViewModel.currentPreviewScreen)
+            val onNextButtonClicked =
+                collectLastValue(wallpaperPreviewViewModel.onNextButtonClicked)
+            val model =
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId",
+                    collectionId = "testCollection",
+                )
+            wallpaperPreviewRepository.setWallpaperModel(model)
+            executePendingWork(this)
+            // Navigates to apply wallpaper screen
+            onNextButtonClicked()?.invoke()
+
+            val handled = wallpaperPreviewViewModel.handleBackPressed()
+
+            assertThat(handled).isTrue()
+            assertThat(currentPreviewScreen()).isEqualTo(PreviewScreen.SMALL_PREVIEW)
+        }
+
+    @Test
+    fun clickNextButton_setsApplyWallpaperScreen() =
+        testScope.runTest {
+            val onNextButtonClicked =
+                collectLastValue(wallpaperPreviewViewModel.onNextButtonClicked)
+            val model =
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId",
+                    collectionId = "testCollection",
+                )
+            wallpaperPreviewRepository.setWallpaperModel(model)
+            executePendingWork(this)
+
+            onNextButtonClicked()?.invoke()
+
+            assertThat(wallpaperPreviewViewModel.currentPreviewScreen.value)
+                .isEqualTo(PreviewScreen.APPLY_WALLPAPER)
+        }
+
+    @Test
+    fun clickCancelButton_setsSmallPreviewScreen() =
+        testScope.runTest {
+            val onCancelButtonClicked =
+                collectLastValue(wallpaperPreviewViewModel.onCancelButtonClicked)
+            val onNextButtonClicked =
+                collectLastValue(wallpaperPreviewViewModel.onNextButtonClicked)
+            val model =
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId",
+                    collectionId = "testCollection",
+                )
+            wallpaperPreviewRepository.setWallpaperModel(model)
+            executePendingWork(this)
+            // Navigates to apply wallpaper screen
+            onNextButtonClicked()?.invoke()
+
+            onCancelButtonClicked()?.invoke()
+
+            assertThat(wallpaperPreviewViewModel.currentPreviewScreen.value)
+                .isEqualTo(PreviewScreen.SMALL_PREVIEW)
+        }
+
+    @Test
+    fun navigatesUpOnApplyWallpaperScreen_setsSmallPreviewScreen() =
+        testScope.runTest {
+            val onNextButtonClicked =
+                collectLastValue(wallpaperPreviewViewModel.onNextButtonClicked)
+            val model =
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId",
+                    collectionId = "testCollection",
+                )
+            wallpaperPreviewRepository.setWallpaperModel(model)
+            executePendingWork(this)
+            // Navigates to apply wallpaper screen
+            onNextButtonClicked()?.invoke()
+
+            val shouldHandleBackPress = wallpaperPreviewViewModel.handleBackPressed()
+
+            assertThat(shouldHandleBackPress).isTrue()
+            assertThat(wallpaperPreviewViewModel.currentPreviewScreen.value)
+                .isEqualTo(PreviewScreen.SMALL_PREVIEW)
+        }
 
     @Test
     fun startActivity_withViewAsHome_setsToViewModel() {

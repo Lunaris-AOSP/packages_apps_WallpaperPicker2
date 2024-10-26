@@ -81,6 +81,7 @@ class FullPreviewFragment : Hilt_FullPreviewFragment() {
         navigateUpListener =
             NavController.OnDestinationChangedListener { _, destination, _ ->
                 if (destination.id == R.id.smallPreviewFragment) {
+                    wallpaperPreviewViewModel.handleBackPressed()
                     currentView.findViewById<View>(R.id.crop_wallpaper_button)?.isVisible = false
                     currentView.findViewById<View>(R.id.full_preview_tooltip_stub)?.isVisible =
                         false
@@ -126,6 +127,7 @@ class FullPreviewFragment : Hilt_FullPreviewFragment() {
             viewModel = wallpaperPreviewViewModel,
             lifecycleOwner = viewLifecycleOwner,
         ) {
+            wallpaperPreviewViewModel.handleBackPressed()
             findNavController().popBackStack()
         }
 
@@ -151,7 +153,6 @@ class FullPreviewFragment : Hilt_FullPreviewFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         navigateUpListener?.let { findNavController().removeOnDestinationChangedListener(it) }
     }
 
