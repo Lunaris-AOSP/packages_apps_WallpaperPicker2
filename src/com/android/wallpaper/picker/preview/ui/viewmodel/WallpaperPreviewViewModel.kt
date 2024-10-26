@@ -35,8 +35,6 @@ import com.android.wallpaper.picker.preview.data.repository.ImageEffectsReposito
 import com.android.wallpaper.picker.preview.domain.interactor.PreviewActionsInteractor
 import com.android.wallpaper.picker.preview.domain.interactor.WallpaperPreviewInteractor
 import com.android.wallpaper.picker.preview.shared.model.FullPreviewCropModel
-import com.android.wallpaper.picker.preview.shared.model.SmallPreviewPagerStateModel
-import com.android.wallpaper.picker.preview.shared.model.isPagerState
 import com.android.wallpaper.picker.preview.ui.WallpaperPreviewActivity
 import com.android.wallpaper.picker.preview.ui.binder.PreviewTooltipBinder
 import com.android.wallpaper.util.DisplayUtils
@@ -54,6 +52,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
@@ -99,65 +98,37 @@ constructor(
     // On orientation change, the fragment's onCreateView will be called again.
     var isCurrentlyEditingCreativeWallpaper = false
 
+    private val _currentPreviewScreen = MutableStateFlow(PreviewScreen.SMALL_PREVIEW)
+    val currentPreviewScreen = _currentPreviewScreen.asStateFlow()
+
     val smallPreviewTabs = Screen.entries.toList()
-
-    private val _smallPreviewPagerState = MutableStateFlow<SmallPreviewPagerStateModel?>(null)
-    val smallPreviewPagerState = _smallPreviewPagerState.asStateFlow()
-
-    /**
-     * The current small preview tab when user is at pager state.
-     *
-     * Null if preview selected tab hasn't changed from main screen selected tab.
-     */
-    val smallPreviewPagerSelectedTab: Flow<Screen?> =
-        smallPreviewPagerState
-            .filter { it == null || it.isPagerState() }
-            .map {
-                when (it) {
-                    SmallPreviewPagerStateModel.LOCK_SCREEN -> Screen.LOCK_SCREEN
-                    SmallPreviewPagerStateModel.HOME_SCREEN -> Screen.HOME_SCREEN
-                    else -> null
-                }
-            }
 
     private val _smallPreviewSelectedTab = MutableStateFlow(getWallpaperPreviewSource())
     val smallPreviewSelectedTab = _smallPreviewSelectedTab.asStateFlow()
 
+    val smallPreviewSelectedTabIndex = smallPreviewSelectedTab.map { smallPreviewTabs.indexOf(it) }
+
     /**
-     * The selected preview pager tab from user's perspective.
-     *
-     * If preview pager has not changed, it's the selected tab on main screen, otherwise it's
-     * preview pager selected tab.
+     * Returns true if back pressed is handled due to conditions like users at a secondary screen.
      */
-    val smallPreviewCombinedSelectedTab: Flow<Screen> =
-        combine(_smallPreviewSelectedTab.asStateFlow(), smallPreviewPagerSelectedTab) {
-            previewTab,
-            pagerTab ->
-            pagerTab ?: previewTab
+    fun handleBackPressed(): Boolean {
+        if (_currentPreviewScreen.value == PreviewScreen.APPLY_WALLPAPER) {
+            _currentPreviewScreen.value = PreviewScreen.SMALL_PREVIEW
+            return true
+        } else if (_currentPreviewScreen.value == PreviewScreen.FULL_PREVIEW) {
+            _currentPreviewScreen.value = PreviewScreen.SMALL_PREVIEW
+            // TODO(b/367374790): Returns true when shared element transition is removed
+            return false
         }
+        return false
+    }
 
-    val smallPreviewSelectedTabIndex =
-        smallPreviewCombinedSelectedTab.map { smallPreviewTabs.indexOf(it) }
+    fun handlePagerTapped() {
+        if (_currentPreviewScreen.value == PreviewScreen.SMALL_PREVIEW) {
+            _currentPreviewScreen.value = PreviewScreen.FULL_PREVIEW
+        }
+    }
 
-    private val _smallPreviewBackPressed = MutableStateFlow(false)
-    val smallPreviewBackPressed = _smallPreviewBackPressed.asStateFlow()
-
-    /**
-     * The selected tab on the small preview it should go back to from apply wallpaper screen when
-     * back pressed.
-     */
-    val applyWallpaperBackPressedScreen: Flow<Screen> =
-        combine(smallPreviewPagerState, smallPreviewBackPressed, smallPreviewCombinedSelectedTab) {
-                state,
-                pressed,
-                tab ->
-                if (pressed && state == SmallPreviewPagerStateModel.APPLY_WALLPAPER_SCREEN) {
-                    tab
-                } else null
-            }
-            .filterNotNull()
-
-    /** Deprecated: use [smallPreviewCombinedSelectedTab] for new picker UI. */
     fun getSmallPreviewTabIndex(): Int {
         return smallPreviewTabs.indexOf(smallPreviewSelectedTab.value)
     }
@@ -168,19 +139,6 @@ constructor(
 
     fun setSmallPreviewSelectedTabIndex(index: Int) {
         _smallPreviewSelectedTab.value = smallPreviewTabs[index]
-    }
-
-    fun setSmallPreviewPagerStateModel(state: SmallPreviewPagerStateModel?) {
-        _smallPreviewPagerState.value = state
-    }
-
-    /** Returns true if the press should be consumed before reaching back press dispatcher. */
-    fun handleSmallPreviewBackPressed(pressed: Boolean): Boolean {
-        _smallPreviewBackPressed.value = pressed
-        return smallPreviewPagerState.value.let {
-            it == SmallPreviewPagerStateModel.APPLY_WALLPAPER_SCREEN ||
-                it == SmallPreviewPagerStateModel.TRANS
-        }
     }
 
     fun updateDisplayConfiguration() {
@@ -353,6 +311,17 @@ constructor(
             } else null
         }
 
+    val onNextButtonClicked: Flow<(() -> Unit)?> =
+        isSetWallpaperButtonEnabled.map {
+            if (it) {
+                { _currentPreviewScreen.value = PreviewScreen.APPLY_WALLPAPER }
+            } else null
+        }
+
+    val onCancelButtonClicked: Flow<() -> Unit> = flowOf {
+        _currentPreviewScreen.value = PreviewScreen.SMALL_PREVIEW
+    }
+
     private val _showSetWallpaperDialog = MutableStateFlow(false)
     val showSetWallpaperDialog = _showSetWallpaperDialog.asStateFlow()
 
@@ -513,6 +482,13 @@ constructor(
     companion object {
         private fun WallpaperModel.isDownloadableWallpaper(): Boolean {
             return this is StaticWallpaperModel && downloadableWallpaperData != null
+        }
+
+        /** The current preview screen or the screen being transition to. */
+        enum class PreviewScreen {
+            SMALL_PREVIEW,
+            FULL_PREVIEW,
+            APPLY_WALLPAPER,
         }
     }
 }

@@ -26,6 +26,7 @@ import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewMo
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * This binder binds the data and view models for the dual preview collection on the small preview
@@ -39,8 +40,8 @@ object DualPreviewSelectorBinder {
         smallPreview: MotionLayout?,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
         applicationContext: Context,
+        mainScope: CoroutineScope,
         viewLifecycleOwner: LifecycleOwner,
-        currentNavDestId: Int,
         transition: Transition?,
         transitionConfig: FullPreviewConfigViewModel?,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
@@ -52,8 +53,8 @@ object DualPreviewSelectorBinder {
             wallpaperPreviewViewModel,
             smallPreview,
             applicationContext,
+            mainScope,
             viewLifecycleOwner,
-            currentNavDestId,
             transition,
             transitionConfig,
             wallpaperConnectionUtils,

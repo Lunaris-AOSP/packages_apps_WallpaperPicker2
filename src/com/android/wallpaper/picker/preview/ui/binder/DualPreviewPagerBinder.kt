@@ -37,6 +37,7 @@ import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewMod
 import com.android.wallpaper.util.RtlUtils
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.launch
 
@@ -48,8 +49,8 @@ object DualPreviewPagerBinder {
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
         smallPreview: MotionLayout?,
         applicationContext: Context,
+        mainScope: CoroutineScope,
         viewLifecycleOwner: LifecycleOwner,
-        currentNavDestId: Int,
         transition: Transition?,
         transitionConfig: FullPreviewConfigViewModel?,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
@@ -128,11 +129,12 @@ object DualPreviewPagerBinder {
                         view = dualDisplayAspectRatioLayout.requireViewById(display.getViewId()),
                         smallPreview = smallPreview,
                         viewModel = wallpaperPreviewViewModel,
+                        mainScope = mainScope,
                         viewLifecycleOwner = viewLifecycleOwner,
                         screen = wallpaperPreviewViewModel.smallPreviewTabs[positionLTR],
                         displaySize = it,
                         deviceDisplayType = display,
-                        currentNavDestId = currentNavDestId,
+                        currentNavDestId = R.id.smallPreviewFragment,
                         transition = transition,
                         transitionConfig = transitionConfig,
                         wallpaperConnectionUtils = wallpaperConnectionUtils,

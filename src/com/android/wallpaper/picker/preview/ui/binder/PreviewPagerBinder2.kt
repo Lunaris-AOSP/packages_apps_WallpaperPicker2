@@ -27,6 +27,7 @@ import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewMo
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 
 /** Binds single preview home screen and lock screen tabs view pager. */
 object PreviewPagerBinder2 {
@@ -35,11 +36,11 @@ object PreviewPagerBinder2 {
 
     fun bind(
         applicationContext: Context,
-        viewLifecycleOwner: LifecycleOwner,
+        mainScope: CoroutineScope,
+        lifecycleOwner: LifecycleOwner,
         smallPreview: MotionLayout,
-        wallpaperPreviewViewModel: WallpaperPreviewViewModel,
+        viewModel: WallpaperPreviewViewModel,
         previewDisplaySize: Point,
-        currentNavDestId: Int,
         transition: Transition?,
         transitionConfig: FullPreviewConfigViewModel?,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
@@ -51,8 +52,8 @@ object PreviewPagerBinder2 {
             val container = previewPager.requireViewById<View>(it)
             PreviewTooltipBinder.bindSmallPreviewTooltip(
                 tooltipStub = container.requireViewById(R.id.small_preview_tooltip_stub),
-                viewModel = wallpaperPreviewViewModel.smallTooltipViewModel,
-                lifecycleOwner = viewLifecycleOwner,
+                viewModel = viewModel.smallTooltipViewModel,
+                lifecycleOwner = lifecycleOwner,
             )
 
             SmallPreviewBinder.bind(
@@ -60,12 +61,13 @@ object PreviewPagerBinder2 {
                 view = container.requireViewById(R.id.preview),
                 smallPreview = smallPreview,
                 previewPager = previewPager,
-                viewModel = wallpaperPreviewViewModel,
-                screen = wallpaperPreviewViewModel.smallPreviewTabs[pagerItems.indexOf(it)],
+                viewModel = viewModel,
+                screen = viewModel.smallPreviewTabs[pagerItems.indexOf(it)],
                 displaySize = previewDisplaySize,
                 deviceDisplayType = DeviceDisplayType.SINGLE,
-                viewLifecycleOwner = viewLifecycleOwner,
-                currentNavDestId = currentNavDestId,
+                mainScope = mainScope,
+                viewLifecycleOwner = lifecycleOwner,
+                currentNavDestId = R.id.smallPreviewFragment,
                 transition = transition,
                 transitionConfig = transitionConfig,
                 isFirstBindingDeferred = isFirstBindingDeferred,

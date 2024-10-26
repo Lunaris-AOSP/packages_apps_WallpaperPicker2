@@ -548,6 +548,26 @@ constructor(
             _isCustomizeChecked.value ||
             _isEffectsChecked.value
 
+    val isActionChecked: Flow<Boolean> =
+        combine(
+            isInformationChecked,
+            isDeleteChecked,
+            isEditChecked,
+            isCustomizeChecked,
+            isEffectsChecked,
+        ) {
+            isInformationChecked,
+            isDeleteChecked,
+            isEditChecked,
+            isCustomizeChecked,
+            isEffectsChecked ->
+            isInformationChecked ||
+                isDeleteChecked ||
+                isEditChecked ||
+                isCustomizeChecked ||
+                isEffectsChecked
+        }
+
     private fun uncheckAllOthersExcept(action: Action) {
         if (action != INFORMATION) {
             _isInformationChecked.value = false

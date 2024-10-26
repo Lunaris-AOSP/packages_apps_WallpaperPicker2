@@ -27,6 +27,7 @@ import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewMo
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 
 /** Binds and synchronizes the tab and preview view pagers. */
 object PreviewSelectorBinder {
@@ -37,8 +38,8 @@ object PreviewSelectorBinder {
         previewDisplaySize: Point,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
         applicationContext: Context,
+        mainScope: CoroutineScope,
         viewLifecycleOwner: LifecycleOwner,
-        currentNavDestId: Int,
         transition: Transition?,
         transitionConfig: FullPreviewConfigViewModel?,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
@@ -47,12 +48,12 @@ object PreviewSelectorBinder {
     ) {
         PreviewPagerBinder.bind(
             applicationContext,
+            mainScope,
             viewLifecycleOwner,
             smallPreview,
             checkNotNull(previewsViewPager),
             wallpaperPreviewViewModel,
             previewDisplaySize,
-            currentNavDestId,
             transition,
             transitionConfig,
             wallpaperConnectionUtils,

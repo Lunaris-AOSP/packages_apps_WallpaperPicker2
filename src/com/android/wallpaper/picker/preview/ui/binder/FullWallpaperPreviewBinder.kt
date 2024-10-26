@@ -52,6 +52,7 @@ import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils.C
 import java.lang.Integer.min
 import kotlin.math.max
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -65,6 +66,7 @@ object FullWallpaperPreviewBinder {
         viewModel: WallpaperPreviewViewModel,
         transition: Transition?,
         displayUtils: DisplayUtils,
+        mainScope: CoroutineScope,
         lifecycleOwner: LifecycleOwner,
         savedInstanceState: Bundle?,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
@@ -167,6 +169,7 @@ object FullWallpaperPreviewBinder {
                         surfaceView = surfaceView,
                         surfaceTouchForwardingLayout = surfaceTouchForwardingLayout,
                         viewModel = viewModel,
+                        mainScope = mainScope,
                         lifecycleOwner = lifecycleOwner,
                         wallpaperConnectionUtils = wallpaperConnectionUtils,
                         isFirstBindingDeferred = isFirstBindingDeferred,
@@ -192,6 +195,7 @@ object FullWallpaperPreviewBinder {
         surfaceView: SurfaceView,
         surfaceTouchForwardingLayout: TouchForwardingLayout,
         viewModel: WallpaperPreviewViewModel,
+        mainScope: CoroutineScope,
         lifecycleOwner: LifecycleOwner,
         wallpaperConnectionUtils: WallpaperConnectionUtils,
         isFirstBindingDeferred: CompletableDeferred<Boolean>,
@@ -206,7 +210,8 @@ object FullWallpaperPreviewBinder {
             @SuppressLint("ClickableViewAccessibility")
             override fun surfaceCreated(holder: SurfaceHolder) {
                 job =
-                    lifecycleOwner.lifecycleScope.launch {
+                    // Ensure the wallpaper connection is connected / disconnected in [mainScope].
+                    mainScope.launch {
                         viewModel.fullWallpaper.collect {
                             (wallpaper, config, displaySize, allowUserCropping, whichPreview) ->
                             if (wallpaper is WallpaperModel.LiveWallpaperModel) {

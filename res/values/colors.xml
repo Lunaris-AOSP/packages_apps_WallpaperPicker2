@@ -64,6 +64,7 @@
     <color name="system_secondary">@android:color/system_secondary_light</color>
     <color name="system_tertiary">@android:color/system_tertiary_light</color>
     <color name="system_on_primary">@android:color/system_on_primary_light</color>
+    <color name="system_on_primary_fixed_variant">@android:color/system_on_primary_fixed_variant</color>
     <color name="system_on_secondary">@android:color/system_on_secondary_light</color>
     <color name="system_on_surface">@android:color/system_on_surface_light</color>
     <color name="system_on_surface_variant">@android:color/system_on_surface_variant_light</color>
