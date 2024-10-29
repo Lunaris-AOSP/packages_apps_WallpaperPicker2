@@ -25,7 +25,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.android.wallpaper.R
 import com.android.wallpaper.picker.option.ui.binder.OptionItemBinder2
 import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,7 +38,7 @@ class OptionItemAdapter2<T>(
     @LayoutRes private val layoutResourceId: Int,
     private val lifecycleOwner: LifecycleOwner,
     private val backgroundDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val bindIcon: (View, T) -> Unit,
+    private val bindPayload: (View, T) -> Unit,
 ) : RecyclerView.Adapter<OptionItemAdapter2.ViewHolder>() {
 
     private val items = mutableListOf<OptionItemViewModel<T>>()
@@ -108,9 +107,7 @@ class OptionItemAdapter2<T>(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.disposableHandle?.dispose()
         val item = items[position]
-        item.payload?.let {
-            bindIcon(holder.itemView.requireViewById(R.id.foreground), item.payload)
-        }
+        item.payload?.let { bindPayload(holder.itemView, item.payload) }
         holder.disposableHandle =
             OptionItemBinder2.bind(
                 view = holder.itemView,
