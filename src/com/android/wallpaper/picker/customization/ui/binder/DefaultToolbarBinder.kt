@@ -40,9 +40,13 @@ class DefaultToolbarBinder @Inject constructor() : ToolbarBinder {
         applyButton: Button,
         viewModel: CustomizationOptionsViewModel,
         lifecycleOwner: LifecycleOwner,
+        onNavBack: () -> Unit,
     ) {
         val appContext = navButton.context.applicationContext
         val navButtonIcon = navButton.requireViewById<View>(R.id.nav_button_icon)
+
+        navButton.setOnClickListener { onNavBack.invoke() }
+
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -51,12 +55,11 @@ class DefaultToolbarBinder @Inject constructor() : ToolbarBinder {
                             navButtonIcon.background =
                                 AppCompatResources.getDrawable(
                                     appContext,
-                                    R.drawable.ic_arrow_back_24dp
+                                    R.drawable.ic_arrow_back_24dp,
                                 )
                         } else {
                             navButtonIcon.background =
                                 AppCompatResources.getDrawable(appContext, R.drawable.ic_close_24dp)
-                            navButtonIcon.setOnClickListener { viewModel.deselectOption() }
                         }
                     }
                 }

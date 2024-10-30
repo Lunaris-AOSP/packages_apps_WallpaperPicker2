@@ -30,5 +30,6 @@ interface ToolbarBinder {
         applyButton: Button,
         viewModel: CustomizationOptionsViewModel,
         lifecycleOwner: LifecycleOwner,
+        onNavBack: () -> Unit,
     )
 }

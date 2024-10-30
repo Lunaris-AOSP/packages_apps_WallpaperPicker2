@@ -15,7 +15,6 @@
  */
 package com.android.wallpaper.picker.preview.ui.fragment
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -98,6 +97,8 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
      */
     private var isViewDestroyed: Boolean? = null
 
+    private var setWallpaperProgressDialog: AlertDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         exitTransition = AnimationUtil.getFastFadeOutTransition()
@@ -168,13 +169,14 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
             }
         }
 
+        val dialogView = inflater.inflate(R.layout.set_wallpaper_progress_dialog_view, null)
+        setWallpaperProgressDialog =
+            AlertDialog.Builder(requireActivity()).setView(dialogView).create()
         SetWallpaperProgressDialogBinder.bind(
             viewModel = wallpaperPreviewViewModel,
             lifecycleOwner = viewLifecycleOwner,
         ) { visible ->
-            activity?.let {
-                createSetWallpaperProgressDialog(it).apply { if (visible) show() else hide() }
-            }
+            setWallpaperProgressDialog?.let { if (visible) it.show() else it.dismiss() }
         }
 
         currentView.doOnPreDraw {
@@ -232,6 +234,7 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        setWallpaperProgressDialog?.dismiss()
         isViewDestroyed = true
     }
 
@@ -280,12 +283,6 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
                 },
             )
         previewPager.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
-    }
-
-    private fun createSetWallpaperProgressDialog(activity: Activity): AlertDialog {
-        val dialogView =
-            activity.layoutInflater.inflate(R.layout.set_wallpaper_progress_dialog_view, null)
-        return AlertDialog.Builder(activity).setView(dialogView).create()
     }
 
     private fun bindScreenPreview(

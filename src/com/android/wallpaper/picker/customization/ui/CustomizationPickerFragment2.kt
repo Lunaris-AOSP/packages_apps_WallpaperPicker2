@@ -31,6 +31,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toolbar
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.MotionLayout.TransitionListener
@@ -218,22 +219,15 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             },
         )
 
-        activity
-            ?.onBackPressedDispatcher
-            ?.addCallback(
-                object : OnBackPressedCallback(true) {
-                        override fun handleOnBackPressed() {
-                            val isOnBackPressedHandled =
-                                customizationPickerViewModel.customizationOptionsViewModel
-                                    .deselectOption()
-                            if (!isOnBackPressedHandled) {
-                                remove()
-                                activity?.onBackPressedDispatcher?.onBackPressed()
-                            }
-                        }
-                    }
-                    .also { onBackPressedCallback = it }
-            )
+        activity?.onBackPressedDispatcher?.let {
+            it.addCallback {
+                    isEnabled =
+                        customizationPickerViewModel.customizationOptionsViewModel
+                            .handleBackPressed()
+                    if (!isEnabled) it.onBackPressed()
+                }
+                .also { callback -> onBackPressedCallback = callback }
+        }
 
         return view
     }
@@ -277,7 +271,9 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             applyButton,
             customizationPickerViewModel.customizationOptionsViewModel,
             this,
-        )
+        ) {
+            activity?.onBackPressedDispatcher?.onBackPressed()
+        }
     }
 
     private fun initPreviewPager(view: View, isFirstBinding: Boolean) {
