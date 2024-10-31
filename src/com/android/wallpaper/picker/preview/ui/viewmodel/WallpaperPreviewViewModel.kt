@@ -21,6 +21,7 @@ import android.stats.style.StyleEnums
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.BasePreviewActivity.EXTRA_VIEW_AS_HOME
@@ -330,10 +331,30 @@ constructor(
     val setWallpaperDialogSelectedScreens: StateFlow<Set<Screen>> =
         _setWallpaperDialogSelectedScreens.asStateFlow()
 
+    val isApplyButtonEnabled: Flow<Boolean> =
+        setWallpaperDialogSelectedScreens.map { it.isNotEmpty() }
+
+    val isHomeCheckBoxChecked: Flow<Boolean> =
+        setWallpaperDialogSelectedScreens.map { it.contains(Screen.HOME_SCREEN) }
+
+    val isLockCheckBoxChecked: Flow<Boolean> =
+        setWallpaperDialogSelectedScreens.map { it.contains(Screen.LOCK_SCREEN) }
+
+    val onHomeCheckBoxChecked: Flow<() -> Unit> = flowOf {
+        onSetWallpaperDialogScreenSelected(Screen.HOME_SCREEN)
+    }
+
+    val onLockCheckBoxChecked: Flow<() -> Unit> = flowOf {
+        onSetWallpaperDialogScreenSelected(Screen.LOCK_SCREEN)
+    }
+
     fun onSetWallpaperDialogScreenSelected(screen: Screen) {
         val previousSelection = _setWallpaperDialogSelectedScreens.value
         _setWallpaperDialogSelectedScreens.value =
-            if (previousSelection.contains(screen) && previousSelection.size > 1) {
+            if (
+                previousSelection.contains(screen) &&
+                    (previousSelection.size > 1 || BaseFlags.get().isNewPickerUi())
+            ) {
                 previousSelection.minus(screen)
             } else {
                 previousSelection.plus(screen)

@@ -15,15 +15,20 @@
  */
 package com.android.wallpaper.picker.preview.ui.fragment
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.transition.Slide
 import android.view.GestureDetector
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
@@ -42,8 +47,10 @@ import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.module.logging.UserEventLogger
 import com.android.wallpaper.picker.AppbarFragment
+import com.android.wallpaper.picker.TrampolinePickerActivity
 import com.android.wallpaper.picker.customization.ui.CustomizationPickerFragment2
 import com.android.wallpaper.picker.di.modules.MainDispatcher
+import com.android.wallpaper.picker.preview.ui.WallpaperPreviewActivity
 import com.android.wallpaper.picker.preview.ui.binder.ApplyWallpaperScreenBinder
 import com.android.wallpaper.picker.preview.ui.binder.DualPreviewSelectorBinder
 import com.android.wallpaper.picker.preview.ui.binder.PreviewActionsBinder
@@ -60,6 +67,9 @@ import com.android.wallpaper.picker.preview.ui.view.PreviewTabs
 import com.android.wallpaper.picker.preview.ui.viewmodel.Action
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.DisplayUtils
+import com.android.wallpaper.util.LaunchSourceUtils.LAUNCH_SOURCE_LAUNCHER
+import com.android.wallpaper.util.LaunchSourceUtils.LAUNCH_SOURCE_SETTINGS_HOMEPAGE
+import com.android.wallpaper.util.LaunchSourceUtils.WALLPAPER_LAUNCH_SOURCE
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -154,11 +164,51 @@ class SmallPreviewFragment : Hilt_SmallPreviewFragment() {
         bindPreviewActions(currentView, smallPreview)
 
         if (isNewPickerUi) {
+            /**
+             * We need to keep the reference shortly, because the activity will be forced to restart
+             * due to the theme color update from the system wallpaper change. The activityReference
+             * is used to kill [WallpaperPreviewActivity].
+             */
+            val activityReference = activity
+            checkNotNull(previewPager)
             ApplyWallpaperScreenBinder.bind(
-                cancelButton = checkNotNull(previewPager).requireViewById(R.id.cancel_button),
+                applyButton = previewPager.requireViewById(R.id.apply_button),
+                cancelButton = previewPager.requireViewById(R.id.cancel_button),
+                homeCheckbox = previewPager.requireViewById(R.id.home_checkbox),
+                lockCheckbox = previewPager.requireViewById(R.id.lock_checkbox),
                 viewModel = wallpaperPreviewViewModel,
                 lifecycleOwner = viewLifecycleOwner,
-            )
+                mainScope = mainScope,
+            ) {
+                Toast.makeText(
+                        context,
+                        R.string.wallpaper_set_successfully_message,
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
+                if (activityReference != null) {
+                    if (wallpaperPreviewViewModel.isNewTask) {
+                        activityReference.window?.exitTransition = Slide(Gravity.END)
+                        val intent = Intent(activityReference, TrampolinePickerActivity::class.java)
+                        intent.setFlags(
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        )
+                        intent.putExtra(
+                            WALLPAPER_LAUNCH_SOURCE,
+                            if (wallpaperPreviewViewModel.isViewAsHome) LAUNCH_SOURCE_LAUNCHER
+                            else LAUNCH_SOURCE_SETTINGS_HOMEPAGE,
+                        )
+                        activityReference.startActivity(
+                            intent,
+                            ActivityOptions.makeSceneTransitionAnimation(activityReference)
+                                .toBundle(),
+                        )
+                    } else {
+                        activityReference.setResult(Activity.RESULT_OK)
+                    }
+                    activityReference.finish()
+                }
+            }
         } else {
             SetWallpaperButtonBinder.bind(
                 button = currentView.requireViewById(R.id.button_set_wallpaper),
