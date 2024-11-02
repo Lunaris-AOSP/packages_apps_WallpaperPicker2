@@ -588,6 +588,7 @@ constructor(
 
     companion object {
         const val EXTRA_KEY_IS_CREATE_NEW = "is_create_new"
+        const val EXTRA_WALLPAPER_DESCRIPTION = "wp_description"
 
         private fun WallpaperModel.shouldShowInformationFloatingSheet(): Boolean {
             if (
@@ -639,6 +640,7 @@ constructor(
                     component = ComponentName(systemWallpaperInfo.packageName, settingsActivity)
                     putExtra(WallpaperSettingsActivity.EXTRA_PREVIEW_MODE, true)
                     putExtra(EXTRA_KEY_IS_CREATE_NEW, isCreateNew)
+                    description.content.let { putExtra(EXTRA_WALLPAPER_DESCRIPTION, it) }
                 }
             return intent
         }

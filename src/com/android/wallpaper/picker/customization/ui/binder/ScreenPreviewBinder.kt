@@ -575,6 +575,7 @@ object ScreenPreviewBinder {
             mirrorSurface,
             screen.toFlag(),
             WallpaperConnection.WhichPreview.PREVIEW_CURRENT,
+            liveWallpaperInfo.wallpaperDescription,
         )
 
     private fun removeAndReadd(view: View) {
