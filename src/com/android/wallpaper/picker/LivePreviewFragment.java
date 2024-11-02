@@ -605,7 +605,8 @@ public class LivePreviewFragment extends PreviewFragment {
                     null,
                     mIsViewAsHome ? FLAG_SYSTEM : FLAG_LOCK,
                     mIsAssetIdPresent ? WallpaperConnection.WhichPreview.EDIT_NON_CURRENT
-                            : WallpaperConnection.WhichPreview.EDIT_CURRENT);
+                            : WallpaperConnection.WhichPreview.EDIT_CURRENT,
+                    /* description= */ null);
             mWallpaperConnection.setVisibility(true);
         } else {
             WallpaperColorsLoader.getWallpaperColors(

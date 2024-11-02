@@ -17,26 +17,63 @@
 package com.android.wallpaper.picker.preview.ui.binder
 
 import android.widget.Button
+import android.widget.CheckBox
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.android.wallpaper.picker.di.modules.MainDispatcher
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /** Binds the set wallpaper button on small preview. */
 object ApplyWallpaperScreenBinder {
 
     fun bind(
+        applyButton: Button,
         cancelButton: Button,
+        homeCheckbox: CheckBox,
+        lockCheckbox: CheckBox,
         viewModel: WallpaperPreviewViewModel,
         lifecycleOwner: LifecycleOwner,
+        @MainDispatcher mainScope: CoroutineScope,
+        onWallpaperSet: () -> Unit,
     ) {
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.onCancelButtonClicked.collect { onClicked ->
                         cancelButton.setOnClickListener { onClicked() }
+                    }
+                }
+
+                launch { viewModel.isApplyButtonEnabled.collect { applyButton.isEnabled = it } }
+
+                launch { viewModel.isHomeCheckBoxChecked.collect { homeCheckbox.isChecked = it } }
+
+                launch { viewModel.isLockCheckBoxChecked.collect { lockCheckbox.isChecked = it } }
+
+                launch {
+                    viewModel.onHomeCheckBoxChecked.collect {
+                        homeCheckbox.setOnClickListener { it() }
+                    }
+                }
+
+                launch {
+                    viewModel.onLockCheckBoxChecked.collect {
+                        lockCheckbox.setOnClickListener { it() }
+                    }
+                }
+
+                launch {
+                    viewModel.setWallpaperDialogOnConfirmButtonClicked.collect { onClicked ->
+                        applyButton.setOnClickListener {
+                            mainScope.launch {
+                                onClicked()
+                                onWallpaperSet()
+                            }
+                        }
                     }
                 }
             }

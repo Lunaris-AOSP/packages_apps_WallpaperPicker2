@@ -64,7 +64,7 @@
             app:layout_constraintStart_toEndOf="@+id/lock_preview" />
 
         <Constraint
-            android:id="@+id/home_preview_button"
+            android:id="@+id/home_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -111,7 +111,7 @@
             app:layout_constraintEnd_toStartOf="@+id/home_preview" />
 
         <Constraint
-            android:id="@+id/lock_preview_button"
+            android:id="@+id/lock_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -129,7 +129,7 @@
             app:layout_constraintEnd_toEndOf="@+id/guideline_center" />
 
         <Constraint
-            android:id="@+id/home_preview_button"
+            android:id="@+id/home_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -177,12 +177,12 @@
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_screen_button_space"
             android:layout_marginEnd="@dimen/handheld_small_preview_space_between_preview"
             android:layout_marginStart="@dimen/handheld_small_preview_pager_margin_start"
-            app:layout_constraintBottom_toTopOf="@+id/lock_preview_button"
+            app:layout_constraintBottom_toTopOf="@+id/lock_checkbox"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/home_preview" />
 
         <Constraint
-            android:id="@+id/lock_preview_button"
+            android:id="@+id/lock_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_preview_button_margin_bottom"
@@ -197,12 +197,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_screen_button_space"
             android:layout_marginEnd="@dimen/handheld_small_preview_pager_margin_end"
-            app:layout_constraintBottom_toTopOf="@+id/home_preview_button"
+            app:layout_constraintBottom_toTopOf="@+id/home_checkbox"
             app:layout_constraintStart_toEndOf="@+id/lock_preview"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Constraint
-            android:id="@+id/home_preview_button"
+            android:id="@+id/home_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_preview_button_margin_bottom"
@@ -257,12 +257,12 @@
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_screen_button_space"
             android:layout_marginEnd="@dimen/handheld_small_preview_space_between_preview"
             android:layout_marginStart="@dimen/handheld_small_preview_pager_margin_start"
-            app:layout_constraintBottom_toTopOf="@+id/lock_preview_button"
+            app:layout_constraintBottom_toTopOf="@+id/lock_checkbox"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/home_preview" />
 
         <Constraint
-            android:id="@+id/lock_preview_button"
+            android:id="@+id/lock_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_preview_button_margin_bottom"
@@ -277,12 +277,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_screen_button_space"
             android:layout_marginEnd="@dimen/handheld_small_preview_pager_margin_end"
-            app:layout_constraintBottom_toTopOf="@+id/home_preview_button"
+            app:layout_constraintBottom_toTopOf="@+id/home_checkbox"
             app:layout_constraintStart_toEndOf="@+id/lock_preview"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Constraint
-            android:id="@+id/home_preview_button"
+            android:id="@+id/home_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/handheld_apply_wallpaper_preview_button_margin_bottom"

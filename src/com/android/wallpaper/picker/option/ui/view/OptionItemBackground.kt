@@ -24,7 +24,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.android.wallpaper.R
 
-class OptionItemBackground
+open class OptionItemBackground
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     View(context, attrs, defStyleAttr) {
@@ -36,7 +36,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
 
     // progress 0 is unselected and 1 is selected
-    private var progress = 0f
+    var progress = 0f
+        private set
 
     fun setProgress(progress: Float) {
         this.progress = progress

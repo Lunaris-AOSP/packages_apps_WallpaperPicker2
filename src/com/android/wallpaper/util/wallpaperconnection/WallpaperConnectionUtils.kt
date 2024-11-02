@@ -2,6 +2,7 @@ package com.android.wallpaper.util.wallpaperconnection
 
 import android.app.WallpaperInfo
 import android.app.WallpaperManager
+import android.app.wallpaper.WallpaperDescription
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -20,6 +21,8 @@ import android.view.SurfaceControl
 import android.view.SurfaceView
 import com.android.app.tracing.TraceUtils.traceAsync
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
+import com.android.wallpaper.picker.customization.shared.model.WallpaperDestination
+import com.android.wallpaper.picker.customization.shared.model.WallpaperDestination.Companion.toSetWallpaperFlags
 import com.android.wallpaper.picker.data.WallpaperModel.LiveWallpaperModel
 import com.android.wallpaper.util.WallpaperConnection.WhichPreview
 import dagger.hilt.android.scopes.ActivityRetainedScoped
@@ -40,6 +43,8 @@ class WallpaperConnectionUtils @Inject constructor() {
 
     // The engineMap and the surfaceControlMap are used for disconnecting wallpaper services.
     private val wallpaperConnectionMap = ConcurrentHashMap<String, Deferred<WallpaperConnection>>()
+    // Stores the latest connection for a service for later use like calling Engine methods.
+    private val latestConnectionMap = ConcurrentHashMap<String, Deferred<WallpaperConnection>>()
     // Note that when one wallpaper engine's render is mirrored to a new surface view, we call
     // engine.mirrorSurfaceControl() and will have a new surface control instance.
     private val surfaceControlMap = mutableMapOf<String, MutableList<SurfaceControl>>()
@@ -62,12 +67,16 @@ class WallpaperConnectionUtils @Inject constructor() {
     ) {
         val wallpaperInfo = wallpaperModel.liveWallpaperData.systemWallpaperInfo
         val engineDisplaySize = engineRenderingConfig.getEngineDisplaySize()
-        val engineKey = wallpaperInfo.getKey(engineDisplaySize)
+        val engineKey =
+            wallpaperInfo.getKey(engineDisplaySize, wallpaperModel.liveWallpaperData.description)
 
         traceAsync(TAG, "connect") {
             // Update the creative wallpaper uri before starting the service.
+            // We call this regardless of liveWallpaperContentHandling() because it's possible that
+            // the flag is true here but false in the code we're calling.
             wallpaperModel.creativeWallpaperData?.configPreviewUri?.let {
-                val uriKey = wallpaperInfo.getKey()
+                val uriKey =
+                    wallpaperInfo.getKey(description = wallpaperModel.liveWallpaperData.description)
                 if (!creativeWallpaperConfigPreviewUriMap.containsKey(uriKey)) {
                     mutex.withLock {
                         if (!creativeWallpaperConfigPreviewUriMap.containsKey(uriKey)) {
@@ -94,12 +103,18 @@ class WallpaperConnectionUtils @Inject constructor() {
                                     whichPreview,
                                     surfaceView,
                                     listener,
+                                    wallpaperModel.liveWallpaperData.description,
                                 )
                             }
                         }
                     }
                 }
             }
+
+            val engineKeyNoSize =
+                wallpaperInfo.getKey(null, wallpaperModel.liveWallpaperData.description)
+            latestConnectionMap[engineKeyNoSize] =
+                wallpaperConnectionMap[engineKey] as Deferred<WallpaperConnection>
 
             wallpaperConnectionMap[engineKey]?.await()?.let { (engineConnection, _, _, _) ->
                 engineConnection.get()?.engine?.let {
@@ -131,7 +146,7 @@ class WallpaperConnectionUtils @Inject constructor() {
     /**
      * Disconnect all live wallpaper services without releasing and clear surface controls. This
      * function is called before binding static wallpapers. We have cases that user switch between
-     * live wan static wallpapers. When switching from live to static wallpapers, we need to
+     * live and static wallpapers. When switching from live to static wallpapers, we need to
      * disconnect the live wallpaper services to have the static wallpapers show up. But we can not
      * clear the surface controls yet, because we will need them to render the live wallpapers again
      * when switching from static to live wallpapers again.
@@ -142,6 +157,7 @@ class WallpaperConnectionUtils @Inject constructor() {
         }
 
         creativeWallpaperConfigPreviewUriMap.clear()
+        latestConnectionMap.clear()
     }
 
     suspend fun dispatchTouchEvent(
@@ -151,7 +167,10 @@ class WallpaperConnectionUtils @Inject constructor() {
     ) {
         val engine =
             wallpaperModel.liveWallpaperData.systemWallpaperInfo
-                .getKey(engineRenderingConfig.getEngineDisplaySize())
+                .getKey(
+                    engineRenderingConfig.getEngineDisplaySize(),
+                    wallpaperModel.liveWallpaperData.description,
+                )
                 .let { engineKey ->
                     wallpaperConnectionMap[engineKey]?.await()?.engineConnection?.get()?.engine
                 }
@@ -185,6 +204,23 @@ class WallpaperConnectionUtils @Inject constructor() {
         }
     }
 
+    // Calls IWallpaperEngine#apply(which). Throws NoSuchMethodException if that method is not
+    // defined, null if the Engine is not available, otherwise the result (which could also be
+    // null).
+    suspend fun applyWallpaper(
+        destination: WallpaperDestination,
+        wallpaperModel: LiveWallpaperModel,
+    ): WallpaperDescription? {
+        val wallpaperInfo = wallpaperModel.liveWallpaperData.systemWallpaperInfo
+        val engineKey = wallpaperInfo.getKey(null, wallpaperModel.liveWallpaperData.description)
+        latestConnectionMap[engineKey]?.await()?.engineConnection?.get()?.engine?.let {
+            return it.javaClass
+                .getMethod("onApplyWallpaper", Int::class.javaPrimitiveType)
+                .invoke(it, destination.toSetWallpaperFlags()) as WallpaperDescription?
+        }
+        return null
+    }
+
     private fun LiveWallpaperModel.getWallpaperServiceIntent(): Intent {
         return liveWallpaperData.systemWallpaperInfo.let {
             Intent(WallpaperService.SERVICE_INTERFACE).setClassName(it.packageName, it.serviceName)
@@ -199,13 +235,14 @@ class WallpaperConnectionUtils @Inject constructor() {
         whichPreview: WhichPreview,
         surfaceView: SurfaceView,
         listener: WallpaperEngineConnection.WallpaperEngineConnectionListener?,
+        description: WallpaperDescription?,
     ): WallpaperConnection {
         // Bind service and get service connection and wallpaper service
         val (serviceConnection, wallpaperService) = bindWallpaperService(context, wallpaperIntent)
         val engineConnection = WallpaperEngineConnection(displayMetrics, whichPreview)
         listener?.let { engineConnection.setListener(it) }
         // Attach wallpaper connection to service and get wallpaper engine
-        engineConnection.getEngine(wallpaperService, destinationFlag, surfaceView)
+        engineConnection.getEngine(wallpaperService, destinationFlag, surfaceView, description)
         return WallpaperConnection(
             WeakReference(engineConnection),
             WeakReference(serviceConnection),
@@ -214,8 +251,13 @@ class WallpaperConnectionUtils @Inject constructor() {
         )
     }
 
-    private fun WallpaperInfo.getKey(displaySize: Point? = null): String {
-        val keyWithoutSizeInformation = this.packageName.plus(":").plus(this.serviceName)
+    // Calculates a unique key for the wallpaper engine instance
+    private fun WallpaperInfo.getKey(
+        displaySize: Point? = null,
+        description: WallpaperDescription,
+    ): String {
+        val keyWithoutSizeInformation =
+            this.packageName.plus(":").plus(this.serviceName).plus(description.let { ":$it.id" })
         return if (displaySize != null) {
             keyWithoutSizeInformation.plus(":").plus("${displaySize.x}x${displaySize.y}")
         } else {

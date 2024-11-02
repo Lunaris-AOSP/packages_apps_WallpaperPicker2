@@ -15,10 +15,13 @@
  */
 package com.android.wallpaper.model;
 
+import static android.app.Flags.liveWallpaperContentHandling;
+
 import static com.android.wallpaper.model.CreativeCategory.KEY_WALLPAPER_SAVE_CREATIVE_CATEGORY_WALLPAPER;
 
 import android.annotation.Nullable;
 import android.app.WallpaperInfo;
+import android.app.wallpaper.WallpaperDescription;
 import android.content.ClipData;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
@@ -38,6 +41,9 @@ import androidx.annotation.NonNull;
 import com.android.wallpaper.asset.Asset;
 import com.android.wallpaper.asset.CreativeWallpaperThumbAsset;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +89,7 @@ public class CreativeWallpaperInfo extends LiveWallpaperInfo {
     public CreativeWallpaperInfo(WallpaperInfo info, String title, @Nullable String author,
             @Nullable String description, String contentDescription, Uri configPreviewUri,
             Uri cleanPreviewUri, Uri deleteUri, Uri thumbnailUri, Uri shareUri, String groupName,
-            boolean isCurrent) {
+            boolean isCurrent, @NonNull WallpaperDescription wallpaperDescription) {
         this(info, /* visibleTitle= */ false, info.getPackageName());
         mTitle = title;
         mAuthor = author;
@@ -96,6 +102,7 @@ public class CreativeWallpaperInfo extends LiveWallpaperInfo {
         mShareUri = shareUri;
         mIsCurrent = isCurrent;
         mGroupName = groupName;
+        mWallpaperDescription = wallpaperDescription;
     }
 
     public CreativeWallpaperInfo(WallpaperInfo info, boolean isCurrent) {
@@ -444,11 +451,35 @@ public class CreativeWallpaperInfo extends LiveWallpaperInfo {
                 cursor.getColumnIndex(WallpaperInfoContract.WALLPAPER_GROUP_NAME));
         int isCurrentApplied = cursor.getInt(
                 cursor.getColumnIndex(WallpaperInfoContract.WALLPAPER_IS_APPLIED));
+        WallpaperDescription descriptionContentHandling =
+                new WallpaperDescription.Builder().setComponent(
+                        wallpaperInfo.getComponent()).build();
+        if (liveWallpaperContentHandling()) {
+            int descriptionContentHandlingIndex = cursor.getColumnIndex(
+                    WallpaperInfoContract.WALLPAPER_DESCRIPTION_CONTENT_HANDLING);
+            if (descriptionContentHandlingIndex >= 0) {
+                String descriptionContentHandlingString = cursor.getString(
+                        descriptionContentHandlingIndex);
+                if (descriptionContentHandlingString != null) {
+                    try (ByteArrayInputStream in = new ByteArrayInputStream(
+                            descriptionContentHandlingString.getBytes(StandardCharsets.UTF_8))) {
+                        descriptionContentHandling = WallpaperDescription.readFromStream(in);
+                        if (descriptionContentHandling.getComponent() == null) {
+                            descriptionContentHandling =
+                                    descriptionContentHandling.toBuilder().setComponent(
+                                            wallpaperInfo.getComponent()).build();
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "Unable to parse WallpaperDescription");
+                    }
+                }
+            }
+        }
 
         return new CreativeWallpaperInfo(wallpaperInfo, wallpaperTitle, wallpaperAuthor,
                 wallpaperDescription, wallpaperContentDescription, configPreviewUri,
                 cleanPreviewUri, deleteUri, thumbnailUri, shareUri, groupName, /* isCurrent= */
-                (isCurrentApplied == 1));
+                (isCurrentApplied == 1), descriptionContentHandling);
     }
 
     /**

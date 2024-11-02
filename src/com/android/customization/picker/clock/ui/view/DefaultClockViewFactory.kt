@@ -19,6 +19,7 @@ package com.android.customization.picker.clock.ui.view
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.android.systemui.plugins.clocks.ClockController
+import com.android.systemui.plugins.clocks.ClockFontAxisSetting
 import javax.inject.Inject
 
 class DefaultClockViewFactory @Inject constructor() : ClockViewFactory {
@@ -44,6 +45,10 @@ class DefaultClockViewFactory @Inject constructor() : ClockViewFactory {
     }
 
     override fun updateColor(clockId: String, seedColor: Int?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateFontAxes(clockId: String, settings: List<ClockFontAxisSetting>) {
         TODO("Not yet implemented")
     }
 
