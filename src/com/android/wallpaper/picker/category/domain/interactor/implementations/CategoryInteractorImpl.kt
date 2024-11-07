@@ -38,17 +38,11 @@ constructor(val defaultWallpaperCategoryRepository: WallpaperCategoryRepository)
             .filter { it }
             .flatMapLatest {
                 combine(
-                    defaultWallpaperCategoryRepository.thirdPartyAppCategory,
                     defaultWallpaperCategoryRepository.onDeviceCategory,
                     defaultWallpaperCategoryRepository.systemCategories,
-                    defaultWallpaperCategoryRepository.thirdPartyLiveWallpaperCategory
-                ) {
-                    thirdPartyAppCategory,
-                    onDeviceCategory,
-                    systemCategories,
-                    thirdPartyLiveWallpaperCategory ->
-                    val combinedList =
-                        (thirdPartyAppCategory + systemCategories + thirdPartyLiveWallpaperCategory)
+                    defaultWallpaperCategoryRepository.thirdPartyLiveWallpaperCategory,
+                ) { onDeviceCategory, systemCategories, thirdPartyLiveWallpaperCategory ->
+                    val combinedList = (systemCategories + thirdPartyLiveWallpaperCategory)
                     val finalList = onDeviceCategory?.let { combinedList + it } ?: combinedList
                     // Sort the categories based on their priority value
                     finalList.sortedBy { it.commonCategoryData.priority }

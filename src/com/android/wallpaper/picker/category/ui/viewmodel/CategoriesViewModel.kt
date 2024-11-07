@@ -98,6 +98,10 @@ constructor(
             }
         }
 
+    /**
+     * This section is only for third party category apps, and not third party live wallpaper
+     * category apps which are handled as part of default category sections.
+     */
     private val thirdPartyCategorySections: Flow<List<SectionViewModel>> =
         thirdPartyCategoryInteractor.categories
             .distinctUntilChanged { old, new -> categoryModelListDifferentiator(old, new) }
@@ -106,7 +110,12 @@ constructor(
                     SectionViewModel(
                         tileViewModels =
                             listOf(
-                                TileViewModel(null, null, category.commonCategoryData.title) {
+                                TileViewModel(
+                                    /* defaultDrawable = */ category.thirdPartyCategoryData
+                                        ?.defaultDrawable,
+                                    /* thumbnailAsset = */ null,
+                                    /* text = */ category.commonCategoryData.title,
+                                ) {
                                     category.thirdPartyCategoryData?.resolveInfo?.let {
                                         navigateToThirdPartyApp(it)
                                     }

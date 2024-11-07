@@ -41,9 +41,6 @@ import androidx.annotation.NonNull;
 import com.android.wallpaper.asset.Asset;
 import com.android.wallpaper.asset.CreativeWallpaperThumbAsset;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -458,20 +455,12 @@ public class CreativeWallpaperInfo extends LiveWallpaperInfo {
             int descriptionContentHandlingIndex = cursor.getColumnIndex(
                     WallpaperInfoContract.WALLPAPER_DESCRIPTION_CONTENT_HANDLING);
             if (descriptionContentHandlingIndex >= 0) {
-                String descriptionContentHandlingString = cursor.getString(
-                        descriptionContentHandlingIndex);
-                if (descriptionContentHandlingString != null) {
-                    try (ByteArrayInputStream in = new ByteArrayInputStream(
-                            descriptionContentHandlingString.getBytes(StandardCharsets.UTF_8))) {
-                        descriptionContentHandling = WallpaperDescription.readFromStream(in);
-                        if (descriptionContentHandling.getComponent() == null) {
-                            descriptionContentHandling =
-                                    descriptionContentHandling.toBuilder().setComponent(
-                                            wallpaperInfo.getComponent()).build();
-                        }
-                    } catch (IOException e) {
-                        Log.e(TAG, "Unable to parse WallpaperDescription");
-                    }
+                descriptionContentHandling = descriptionFromBytes(
+                    cursor.getBlob(descriptionContentHandlingIndex));
+                if (descriptionContentHandling.getComponent() == null) {
+                    descriptionContentHandling =
+                        descriptionContentHandling.toBuilder().setComponent(
+                            wallpaperInfo.getComponent()).build();
                 }
             }
         }
@@ -480,6 +469,15 @@ public class CreativeWallpaperInfo extends LiveWallpaperInfo {
                 wallpaperDescription, wallpaperContentDescription, configPreviewUri,
                 cleanPreviewUri, deleteUri, thumbnailUri, shareUri, groupName, /* isCurrent= */
                 (isCurrentApplied == 1), descriptionContentHandling);
+    }
+
+    private static WallpaperDescription descriptionFromBytes(byte[] bytes) {
+        Parcel parcel = Parcel.obtain();
+        parcel.unmarshall(bytes, 0, bytes.length);
+        parcel.setDataPosition(0);
+        WallpaperDescription desc = WallpaperDescription.CREATOR.createFromParcel(parcel);
+        parcel.recycle();
+        return desc;
     }
 
     /**

@@ -38,9 +38,7 @@ import com.android.wallpaper.picker.category.client.LiveWallpapersClientImpl
 import com.android.wallpaper.picker.category.data.repository.DefaultWallpaperCategoryRepository
 import com.android.wallpaper.picker.category.data.repository.WallpaperCategoryRepository
 import com.android.wallpaper.picker.category.domain.interactor.MyPhotosInteractor
-import com.android.wallpaper.picker.category.domain.interactor.ThirdPartyCategoryInteractor
 import com.android.wallpaper.picker.category.domain.interactor.implementations.MyPhotosInteractorImpl
-import com.android.wallpaper.picker.category.domain.interactor.implementations.ThirdPartyCategoryInteractorImpl
 import com.android.wallpaper.picker.category.ui.view.MyPhotosStarterImpl
 import com.android.wallpaper.picker.customization.data.content.WallpaperClient
 import com.android.wallpaper.picker.customization.data.content.WallpaperClientImpl
@@ -110,12 +108,6 @@ abstract class SharedAppModule {
     ): NetworkStatusNotifier
 
     @Binds @Singleton abstract fun bindRequester(impl: WallpaperRequester): Requester
-
-    @Binds
-    @Singleton
-    abstract fun bindThirdPartyCategoryInteractor(
-        impl: ThirdPartyCategoryInteractorImpl
-    ): ThirdPartyCategoryInteractor
 
     @Binds
     @Singleton
