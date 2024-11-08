@@ -123,7 +123,7 @@ public class WallpaperConnection extends IWallpaperConnection.Stub implements Se
     private boolean mDestroyed;
     private int mDestinationFlag;
     private WhichPreview mWhichPreview;
-    @Nullable private final WallpaperDescription mDescription;
+    @NonNull private final WallpaperDescription mDescription;
     private IBinder mToken;
 
     /**
@@ -136,7 +136,7 @@ public class WallpaperConnection extends IWallpaperConnection.Stub implements Se
             @Nullable WallpaperConnectionListener listener, @NonNull SurfaceView containerView,
             WhichPreview preview) {
         this(intent, context, listener, containerView, null, null,
-                preview, null);
+                preview, new WallpaperDescription.Builder().build());
     }
 
     /**
@@ -157,7 +157,7 @@ public class WallpaperConnection extends IWallpaperConnection.Stub implements Se
             @Nullable WallpaperConnectionListener listener, @NonNull SurfaceView containerView,
             @Nullable SurfaceView secondaryContainerView,
             @Nullable @WallpaperManager.SetWallpaperFlags Integer destinationFlag,
-            WhichPreview preview, @Nullable WallpaperDescription description) {
+            WhichPreview preview, @NonNull WallpaperDescription description) {
         mContext = context.getApplicationContext();
         mIntent = intent;
         mListener = listener;

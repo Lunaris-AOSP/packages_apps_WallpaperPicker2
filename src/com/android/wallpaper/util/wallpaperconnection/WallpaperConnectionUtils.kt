@@ -235,7 +235,7 @@ class WallpaperConnectionUtils @Inject constructor() {
         whichPreview: WhichPreview,
         surfaceView: SurfaceView,
         listener: WallpaperEngineConnection.WallpaperEngineConnectionListener?,
-        description: WallpaperDescription?,
+        description: WallpaperDescription,
     ): WallpaperConnection {
         // Bind service and get service connection and wallpaper service
         val (serviceConnection, wallpaperService) = bindWallpaperService(context, wallpaperIntent)

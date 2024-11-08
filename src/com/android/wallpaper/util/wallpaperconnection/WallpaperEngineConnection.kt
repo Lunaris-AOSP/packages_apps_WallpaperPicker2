@@ -36,7 +36,7 @@ class WallpaperEngineConnection(
         wallpaperService: IWallpaperService,
         destinationFlag: Int,
         surfaceView: SurfaceView,
-        description: WallpaperDescription?,
+        description: WallpaperDescription,
     ): IWallpaperEngine {
         return engine
             ?: suspendCancellableCoroutine { k: CancellableContinuation<IWallpaperEngine> ->
@@ -236,7 +236,7 @@ class WallpaperEngineConnection(
             wallpaperService: IWallpaperService,
             destinationFlag: Int,
             surfaceView: SurfaceView,
-            description: WallpaperDescription??,
+            description: WallpaperDescription,
         ) {
             if (
                 tryPreUAttach(
