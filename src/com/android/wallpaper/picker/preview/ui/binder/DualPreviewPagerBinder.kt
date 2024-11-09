@@ -18,7 +18,6 @@ package com.android.wallpaper.picker.preview.ui.binder
 import android.content.Context
 import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -47,7 +46,6 @@ object DualPreviewPagerBinder {
     fun bind(
         dualPreviewView: DualPreviewViewPager,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
-        smallPreview: MotionLayout?,
         applicationContext: Context,
         mainScope: CoroutineScope,
         viewLifecycleOwner: LifecycleOwner,
@@ -127,7 +125,6 @@ object DualPreviewPagerBinder {
                     SmallPreviewBinder.bind(
                         applicationContext = applicationContext,
                         view = dualDisplayAspectRatioLayout.requireViewById(display.getViewId()),
-                        smallPreview = smallPreview,
                         viewModel = wallpaperPreviewViewModel,
                         mainScope = mainScope,
                         viewLifecycleOwner = viewLifecycleOwner,

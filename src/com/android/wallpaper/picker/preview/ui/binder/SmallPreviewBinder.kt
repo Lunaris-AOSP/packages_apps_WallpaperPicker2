@@ -20,7 +20,6 @@ import android.graphics.Point
 import android.view.SurfaceView
 import android.view.View
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -49,8 +48,6 @@ object SmallPreviewBinder {
     fun bind(
         applicationContext: Context,
         view: View,
-        smallPreview: MotionLayout? = null,
-        previewPager: MotionLayout? = null,
         viewModel: WallpaperPreviewViewModel,
         screen: Screen,
         displaySize: Point,
@@ -186,10 +183,11 @@ object SmallPreviewBinder {
                             Triple(onClick, previewScreen, tab)
                         }
                         .collect { (onClick, previewScreen, tab) ->
-                            if (BaseFlags.get().isNewPickerUi()) {
-                                if (previewScreen == PreviewScreen.FULL_PREVIEW && tab == screen) {
-                                    onClick?.invoke()
-                                }
+                            if (
+                                BaseFlags.get().isNewPickerUi() &&
+                                    previewScreen != PreviewScreen.SMALL_PREVIEW
+                            ) {
+                                view.setOnClickListener(null)
                             } else {
                                 onClick?.let { view.setOnClickListener { it() } }
                                     ?: view.setOnClickListener(null)

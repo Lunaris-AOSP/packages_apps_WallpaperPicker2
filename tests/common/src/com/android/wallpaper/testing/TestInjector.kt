@@ -72,8 +72,19 @@ import kotlinx.coroutines.Dispatchers
 
 /** Test implementation of [Injector] */
 @Singleton
-open class TestInjector @Inject constructor(private val userEventLogger: UserEventLogger) :
-    Injector {
+open class TestInjector
+@Inject
+constructor(
+    private val userEventLogger: UserEventLogger,
+    private val displayUtils: DisplayUtils,
+    private val requester: Requester,
+    private val networkStatusNotifier: NetworkStatusNotifier,
+    private val partnerProvider: PartnerProvider,
+    private val wallpaperClient: FakeWallpaperClient,
+    private val injectedWallpaperInteractor: WallpaperInteractor,
+    private val prefs: WallpaperPreferences,
+    private val fakeWallpaperCategoryWrapper: WallpaperCategoryWrapper,
+) : Injector {
     private var appScope: CoroutineScope? = null
     private var alarmManagerWrapper: AlarmManagerWrapper? = null
     private var bitmapCropper: BitmapCropper? = null
@@ -97,14 +108,6 @@ open class TestInjector @Inject constructor(private val userEventLogger: UserEve
     private var viewOnlyPreviewActivityIntentFactory: InlinePreviewIntentFactory? = null
 
     // Injected objects, sorted by alphabetical order of the type of object
-    @Inject lateinit var displayUtils: DisplayUtils
-    @Inject lateinit var requester: Requester
-    @Inject lateinit var networkStatusNotifier: NetworkStatusNotifier
-    @Inject lateinit var partnerProvider: PartnerProvider
-    @Inject lateinit var wallpaperClient: FakeWallpaperClient
-    @Inject lateinit var injectedWallpaperInteractor: WallpaperInteractor
-    @Inject lateinit var prefs: WallpaperPreferences
-    @Inject lateinit var fakeWallpaperCategoryWrapper: WallpaperCategoryWrapper
 
     override fun getWallpaperCategoryWrapper(): WallpaperCategoryWrapper {
         return fakeWallpaperCategoryWrapper

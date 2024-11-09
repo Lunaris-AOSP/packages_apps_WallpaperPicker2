@@ -19,7 +19,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Point
 import android.view.View
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Lifecycle
@@ -50,7 +49,6 @@ object PreviewPagerBinder {
         applicationContext: Context,
         mainScope: CoroutineScope,
         viewLifecycleOwner: LifecycleOwner,
-        motionLayout: MotionLayout?,
         previewsViewPager: ViewPager2,
         wallpaperPreviewViewModel: WallpaperPreviewViewModel,
         previewDisplaySize: Point,
@@ -72,7 +70,6 @@ object PreviewPagerBinder {
                 SmallPreviewBinder.bind(
                     applicationContext = applicationContext,
                     view = viewHolder.itemView.requireViewById(R.id.preview),
-                    smallPreview = motionLayout,
                     viewModel = wallpaperPreviewViewModel,
                     screen = wallpaperPreviewViewModel.smallPreviewTabs[position],
                     displaySize = previewDisplaySize,
