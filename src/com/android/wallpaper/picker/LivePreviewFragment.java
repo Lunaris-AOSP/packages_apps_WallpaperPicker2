@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.WallpaperColors;
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
+import android.app.wallpaper.WallpaperDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -606,7 +607,7 @@ public class LivePreviewFragment extends PreviewFragment {
                     mIsViewAsHome ? FLAG_SYSTEM : FLAG_LOCK,
                     mIsAssetIdPresent ? WallpaperConnection.WhichPreview.EDIT_NON_CURRENT
                             : WallpaperConnection.WhichPreview.EDIT_CURRENT,
-                    /* description= */ null);
+                    new WallpaperDescription.Builder().setComponent(info.getComponent()).build());
             mWallpaperConnection.setVisibility(true);
         } else {
             WallpaperColorsLoader.getWallpaperColors(

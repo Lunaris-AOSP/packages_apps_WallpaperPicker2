@@ -124,12 +124,6 @@ constructor(
         return false
     }
 
-    fun handlePagerTapped() {
-        if (_currentPreviewScreen.value == PreviewScreen.SMALL_PREVIEW) {
-            _currentPreviewScreen.value = PreviewScreen.FULL_PREVIEW
-        }
-    }
-
     fun getSmallPreviewTabIndex(): Int {
         return smallPreviewTabs.indexOf(smallPreviewSelectedTab.value)
     }

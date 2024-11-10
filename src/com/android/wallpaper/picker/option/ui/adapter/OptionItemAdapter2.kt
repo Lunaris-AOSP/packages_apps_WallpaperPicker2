@@ -38,7 +38,7 @@ class OptionItemAdapter2<T>(
     @LayoutRes private val layoutResourceId: Int,
     private val lifecycleOwner: LifecycleOwner,
     private val backgroundDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val bindPayload: (View, T) -> Unit,
+    private val bindPayload: (View, T) -> DisposableHandle?,
 ) : RecyclerView.Adapter<OptionItemAdapter2.ViewHolder>() {
 
     private val items = mutableListOf<OptionItemViewModel<T>>()
@@ -92,6 +92,7 @@ class OptionItemAdapter2<T>(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var disposableHandle: DisposableHandle? = null
+        var payloadDisposableHandle: DisposableHandle? = null
     }
 
     override fun getItemCount(): Int {
@@ -106,8 +107,10 @@ class OptionItemAdapter2<T>(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.disposableHandle?.dispose()
+        holder.payloadDisposableHandle?.dispose()
         val item = items[position]
-        item.payload?.let { bindPayload(holder.itemView, item.payload) }
+        holder.payloadDisposableHandle =
+            item.payload?.let { bindPayload(holder.itemView, item.payload) }
         holder.disposableHandle =
             OptionItemBinder2.bind(
                 view = holder.itemView,

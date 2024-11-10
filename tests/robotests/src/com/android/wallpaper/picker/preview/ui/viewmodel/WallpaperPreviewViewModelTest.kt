@@ -180,7 +180,6 @@ class WallpaperPreviewViewModelTest {
         testScope.runTest {
             val currentPreviewScreen =
                 collectLastValue(wallpaperPreviewViewModel.currentPreviewScreen)
-            wallpaperPreviewViewModel.handlePagerTapped()
 
             val handled = wallpaperPreviewViewModel.handleBackPressed()
 

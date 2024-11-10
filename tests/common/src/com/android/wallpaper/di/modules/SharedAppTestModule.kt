@@ -28,7 +28,6 @@ import com.android.wallpaper.picker.category.domain.interactor.CategoriesLoading
 import com.android.wallpaper.picker.category.domain.interactor.CategoryInteractor
 import com.android.wallpaper.picker.category.domain.interactor.CreativeCategoryInteractor
 import com.android.wallpaper.picker.category.domain.interactor.MyPhotosInteractor
-import com.android.wallpaper.picker.category.domain.interactor.ThirdPartyCategoryInteractor
 import com.android.wallpaper.picker.category.ui.view.providers.IndividualPickerFactory
 import com.android.wallpaper.picker.category.ui.view.providers.implementation.DefaultIndividualPickerFactory
 import com.android.wallpaper.picker.customization.data.content.WallpaperClient
@@ -49,7 +48,6 @@ import com.android.wallpaper.testing.FakeDefaultWallpaperCategoryRepository
 import com.android.wallpaper.testing.FakeLiveWallpaperClientImpl
 import com.android.wallpaper.testing.FakeMyPhotosInteractor
 import com.android.wallpaper.testing.FakePowerManager
-import com.android.wallpaper.testing.FakeThirdPartyCategoryInteractor
 import com.android.wallpaper.testing.FakeUiModeManager
 import com.android.wallpaper.testing.FakeWallpaperClient
 import com.android.wallpaper.testing.FakeWallpaperParser
@@ -148,12 +146,6 @@ internal abstract class SharedAppTestModule {
     @Binds
     @Singleton
     abstract fun bindNetworkStatusNotifier(impl: TestNetworkStatusNotifier): NetworkStatusNotifier
-
-    @Binds
-    @Singleton
-    abstract fun bindThirdPartyCategoryInteractor(
-        impl: FakeThirdPartyCategoryInteractor
-    ): ThirdPartyCategoryInteractor
 
     @Binds
     @Singleton

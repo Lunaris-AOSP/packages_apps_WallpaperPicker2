@@ -36,10 +36,6 @@ class DefaultClockViewFactory @Inject constructor() : ClockViewFactory {
         TODO("Not yet implemented")
     }
 
-    override fun setReactiveTouchInteractionEnabled(clockId: String, enable: Boolean) {
-        TODO("Not yet implemented")
-    }
-
     override fun updateColorForAllClocks(seedColor: Int?) {
         TODO("Not yet implemented")
     }

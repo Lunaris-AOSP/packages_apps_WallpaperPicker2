@@ -65,7 +65,7 @@ class CategoryInteractorImplTest {
                         CommonCategoryData("ThirdPartyLiveWallpaper-1", "on_device_live_id", 2),
                     thirdPartyCategoryData = null,
                     imageCategoryData = null,
-                    collectionCategoryData = null
+                    collectionCategoryData = null,
                 )
             )
         )
@@ -77,13 +77,13 @@ class CategoryInteractorImplTest {
                     commonCategoryData = CommonCategoryData("ThirdParty-2", "downloads_id", 3),
                     thirdPartyCategoryData = null,
                     imageCategoryData = null,
-                    collectionCategoryData = null
+                    collectionCategoryData = null,
                 )
             )
         )
     }
 
     companion object {
-        private const val NUMBER_OF_FAKE_CATEGORIES_EXCEPT_MY_PHOTOS = 5
+        private const val NUMBER_OF_FAKE_CATEGORIES_EXCEPT_MY_PHOTOS = 2
     }
 }
