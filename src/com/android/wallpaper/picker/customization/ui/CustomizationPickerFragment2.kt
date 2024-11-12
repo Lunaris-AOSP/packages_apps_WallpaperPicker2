@@ -301,6 +301,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                         }
                     if (clockHostView != null) {
                         customizationOptionsBinder.bindClockPreview(
+                            context = context,
                             clockHostView = clockHostView,
                             viewModel = customizationPickerViewModel,
                             lifecycleOwner = this@CustomizationPickerFragment2,
