@@ -110,7 +110,7 @@ class WallpaperPreviewActivity :
                     ?.convertToWallpaperModel()
             }
 
-        wallpaper ?: throw UnsupportedOperationException()
+        wallpaper ?: throw IllegalStateException("No wallpaper for previewing")
 
         val navController =
             (supportFragmentManager.findFragmentById(R.id.wallpaper_preview_nav_host)

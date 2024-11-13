@@ -33,6 +33,7 @@ import com.android.systemui.shared.quickaffordance.shared.model.KeyguardPreviewC
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.common.preview.ui.viewmodel.BasePreviewViewModel
+import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.util.PreviewUtils
 import com.android.wallpaper.util.SurfaceViewUtils
@@ -48,6 +49,7 @@ object WorkspacePreviewBinder {
     fun bind(
         surfaceView: SurfaceView,
         viewModel: CustomizationPickerViewModel2,
+        colorUpdateViewModel: ColorUpdateViewModel,
         workspaceCallbackBinder: WorkspaceCallbackBinder,
         screen: Screen,
         deviceDisplayType: DeviceDisplayType,
@@ -60,6 +62,7 @@ object WorkspacePreviewBinder {
                     bindSurface(
                         surfaceView = surfaceView,
                         viewModel = viewModel,
+                        colorUpdateViewModel = colorUpdateViewModel,
                         workspaceCallbackBinder = workspaceCallbackBinder,
                         screen = screen,
                         previewUtils = getPreviewUtils(screen, viewModel.basePreviewViewModel),
@@ -85,6 +88,7 @@ object WorkspacePreviewBinder {
     private fun bindSurface(
         surfaceView: SurfaceView,
         viewModel: CustomizationPickerViewModel2,
+        colorUpdateViewModel: ColorUpdateViewModel,
         workspaceCallbackBinder: WorkspaceCallbackBinder,
         screen: Screen,
         previewUtils: PreviewUtils,
@@ -110,6 +114,7 @@ object WorkspacePreviewBinder {
                                 workspaceCallbackBinder.bind(
                                     workspaceCallback = workspaceCallback,
                                     viewModel = viewModel.customizationOptionsViewModel,
+                                    colorUpdateViewModel = colorUpdateViewModel,
                                     screen = screen,
                                     lifecycleOwner = lifecycleOwner,
                                 )

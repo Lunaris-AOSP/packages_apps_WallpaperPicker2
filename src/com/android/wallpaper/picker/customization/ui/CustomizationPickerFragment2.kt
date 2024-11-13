@@ -304,6 +304,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                             context = context,
                             clockHostView = clockHostView,
                             viewModel = customizationPickerViewModel,
+                            colorUpdateViewModel = colorUpdateViewModel,
                             lifecycleOwner = this@CustomizationPickerFragment2,
                             clockViewFactory = clockViewFactory,
                         )
@@ -314,6 +315,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                     applicationContext = appContext,
                     view = previewCard,
                     viewModel = customizationPickerViewModel,
+                    colorUpdateViewModel = colorUpdateViewModel,
                     workspaceCallbackBinder = workspaceCallbackBinder,
                     screen = screen,
                     deviceDisplayType = displayUtils.getCurrentDisplayType(activity),
@@ -325,13 +327,8 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                     lifecycleOwner = this@CustomizationPickerFragment2,
                     wallpaperConnectionUtils = wallpaperConnectionUtils,
                     isFirstBindingDeferred = CompletableDeferred(isFirstBinding),
-                    onClick = {
-                        previewViewModel.wallpapers.value?.let {
-                            val wallpaper =
-                                if (screen == HOME_SCREEN) it.homeWallpaper
-                                else it.lockWallpaper ?: it.homeWallpaper
-                            persistentWallpaperModelRepository.setWallpaperModel(wallpaper)
-                        }
+                    onLaunchPreview = { wallpaperModel ->
+                        persistentWallpaperModelRepository.setWallpaperModel(wallpaperModel)
                         val multiPanesChecker = LargeScreenMultiPanesChecker()
                         val isMultiPanel = multiPanesChecker.isMultiPanesEnabled(appContext)
                         startForResult.launch(

@@ -26,11 +26,17 @@ import com.google.ux.material.libmonet.dynamiccolor.MaterialDynamicColors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 
 @ActivityScoped
 class ColorUpdateViewModel @Inject constructor(@ApplicationContext private val context: Context) {
+    private val _systemColorsUpdated: MutableSharedFlow<Unit> =
+        MutableSharedFlow<Unit>(replay = 1).also { it.tryEmit(Unit) }
+    val systemColorsUpdated = _systemColorsUpdated.asSharedFlow()
+
     private val previewingColorScheme: MutableStateFlow<DynamicScheme?> = MutableStateFlow(null)
 
     private val _colorPrimary = MutableStateFlow(context.getColor(R.color.system_primary))
@@ -74,6 +80,7 @@ class ColorUpdateViewModel @Inject constructor(@ApplicationContext private val c
     }
 
     fun updateColors() {
+        _systemColorsUpdated.tryEmit(Unit)
         _colorPrimary.value = context.getColor(R.color.system_primary)
         _colorSecondaryContainer.value = context.getColor(R.color.system_secondary_container)
         _colorSurfaceContainer.value = context.getColor(R.color.system_surface_container)

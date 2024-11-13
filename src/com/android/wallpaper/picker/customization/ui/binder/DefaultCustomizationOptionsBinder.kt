@@ -105,6 +105,7 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         context: Context,
         clockHostView: View,
         viewModel: CustomizationPickerViewModel2,
+        colorUpdateViewModel: ColorUpdateViewModel,
         lifecycleOwner: LifecycleOwner,
         clockViewFactory: ClockViewFactory,
     ) {
