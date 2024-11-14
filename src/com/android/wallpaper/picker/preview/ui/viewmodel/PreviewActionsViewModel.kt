@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.picker.preview.ui.viewmodel
 
+import android.app.Flags.liveWallpaperContentHandling
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ComponentName
@@ -98,15 +99,19 @@ constructor(
                 null
             } else {
                 InformationFloatingSheetViewModel(
-                    wallpaperModel.commonWallpaperData.attributions,
-                    if (wallpaperModel.commonWallpaperData.exploreActionUrl.isNullOrEmpty()) {
-                        null
-                    } else {
-                        wallpaperModel.commonWallpaperData.exploreActionUrl
-                    },
-                    (wallpaperModel as? LiveWallpaperModel)?.let { liveWallpaperModel ->
-                        liveWallpaperModel.liveWallpaperData.contextDescription?.let { it }
-                    },
+                    description =
+                        (wallpaperModel as? LiveWallpaperModel)?.liveWallpaperData?.description,
+                    attributions = wallpaperModel.commonWallpaperData.attributions,
+                    actionUrl =
+                        if (wallpaperModel.commonWallpaperData.exploreActionUrl.isNullOrEmpty()) {
+                            null
+                        } else {
+                            wallpaperModel.commonWallpaperData.exploreActionUrl
+                        },
+                    actionButtonTitle =
+                        (wallpaperModel as? LiveWallpaperModel)
+                            ?.liveWallpaperData
+                            ?.contextDescription,
                 )
             }
         }
@@ -600,11 +605,19 @@ constructor(
                 return false
             }
             val attributions = commonWallpaperData.attributions
+            val description = (this as? LiveWallpaperModel)?.liveWallpaperData?.description
+            val hasDescription =
+                liveWallpaperContentHandling() &&
+                    description != null &&
+                    (description.description.isNotEmpty() ||
+                        !description.title.isNullOrEmpty() ||
+                        description.contextUri != null)
             // Show information floating sheet when any of the following contents exists
-            // 1. Attributions: Any of the list values is not null nor empty
+            // 1. Attributions/Description: Any of the list values is not null nor empty
             // 2. Explore action URL
             return (!attributions.isNullOrEmpty() && attributions.any { !it.isNullOrEmpty() }) ||
-                !commonWallpaperData.exploreActionUrl.isNullOrEmpty()
+                !commonWallpaperData.exploreActionUrl.isNullOrEmpty() ||
+                hasDescription
         }
 
         private fun CreativeWallpaperData.getShareIntent(): Intent {

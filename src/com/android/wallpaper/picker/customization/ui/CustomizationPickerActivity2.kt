@@ -22,6 +22,7 @@ import androidx.core.view.WindowCompat
 import com.android.customization.picker.clock.ui.view.ClockViewFactory
 import com.android.wallpaper.R
 import com.android.wallpaper.module.MultiPanesChecker
+import com.android.wallpaper.picker.AppbarFragment
 import com.android.wallpaper.picker.common.preview.data.repository.PersistentWallpaperModelRepository
 import com.android.wallpaper.picker.common.preview.ui.binder.WorkspaceCallbackBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationOptionsBinder
@@ -39,7 +40,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 
 @AndroidEntryPoint(AppCompatActivity::class)
-class CustomizationPickerActivity2 : Hilt_CustomizationPickerActivity2() {
+class CustomizationPickerActivity2 :
+    Hilt_CustomizationPickerActivity2(), AppbarFragment.AppbarFragmentHost {
 
     @Inject lateinit var multiPanesChecker: MultiPanesChecker
     @Inject lateinit var customizationOptionUtil: CustomizationOptionUtil
@@ -81,5 +83,13 @@ class CustomizationPickerActivity2 : Hilt_CustomizationPickerActivity2() {
 
         val fragment = CustomizationPickerFragment2()
         supportFragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit()
+    }
+
+    override fun onUpArrowPressed() {
+        onBackPressedDispatcher.onBackPressed()
+    }
+
+    override fun isUpArrowSupported(): Boolean {
+        return !ActivityUtils.isSUWMode(baseContext)
     }
 }

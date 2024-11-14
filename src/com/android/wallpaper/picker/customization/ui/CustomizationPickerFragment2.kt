@@ -42,6 +42,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -51,6 +53,7 @@ import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.Screen.HOME_SCREEN
 import com.android.wallpaper.model.Screen.LOCK_SCREEN
 import com.android.wallpaper.module.LargeScreenMultiPanesChecker
+import com.android.wallpaper.picker.category.ui.view.CategoriesFragment
 import com.android.wallpaper.picker.common.preview.data.repository.PersistentWallpaperModelRepository
 import com.android.wallpaper.picker.common.preview.ui.binder.BasePreviewBinder
 import com.android.wallpaper.picker.common.preview.ui.binder.WorkspaceCallbackBinder
@@ -214,8 +217,13 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                     }
                 }
             },
-            navigateToCategoriesScreen = { screen ->
-                // TODO (b/368343524): Fragment transition to CategoriesFragment
+            navigateToCategoriesScreen = { _ ->
+                if (isAdded) {
+                    parentFragmentManager.commit {
+                        replace<CategoriesFragment>(R.id.fragment_container)
+                        addToBackStack(null)
+                    }
+                }
             },
         )
 
