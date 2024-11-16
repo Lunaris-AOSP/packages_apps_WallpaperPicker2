@@ -29,6 +29,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.Transition
 import com.android.wallpaper.R
 import com.android.wallpaper.model.Screen
+import com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel.Companion.PreviewScreen
@@ -53,7 +54,7 @@ object SmallPreviewScreenBinder {
         isFoldable: Boolean,
         navigate: (View) -> Unit,
     ) {
-        val previewPager = fragmentLayout.requireViewById<MotionLayout>(R.id.preview_pager)
+        val previewPager = fragmentLayout.requireViewById<ClickableMotionLayout>(R.id.preview_pager)
         val previewPagerContainer =
             fragmentLayout.requireViewById<MotionLayout>(R.id.small_preview_container)
         val nextButton = fragmentLayout.requireViewById<Button>(R.id.button_next)
@@ -113,6 +114,12 @@ object SmallPreviewScreenBinder {
                                 }
                             }
                         }
+                }
+
+                launch {
+                    viewModel.shouldEnableClickOnPager.collect {
+                        previewPager.shouldInterceptTouch = it
+                    }
                 }
 
                 launch {

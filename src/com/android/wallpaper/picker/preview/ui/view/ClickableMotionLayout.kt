@@ -17,40 +17,98 @@
 package com.android.wallpaper.picker.preview.ui.view
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import android.view.ViewGroup
+import android.view.ViewParent
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.view.ancestors
 import androidx.core.view.children
 
-/** A [MotionLayout] that passes only clicks to one of its children if it is the recipient. */
+/** A [MotionLayout] that performs click on one of its child if it is the recipient. */
 class ClickableMotionLayout(context: Context, attrs: AttributeSet?) : MotionLayout(context, attrs) {
+
+    /** True for this view to intercept all motion events. */
+    var shouldInterceptTouch = true
+
+    private val clickableViewIds = mutableListOf<Int>()
     private val singleTapDetector =
         GestureDetector(
             context,
             object : SimpleOnGestureListener() {
-                override fun onScroll(
-                    e1: MotionEvent?,
-                    e2: MotionEvent,
-                    distanceX: Float,
-                    distanceY: Float,
-                ): Boolean {
-                    return true
-                }
+                override fun onSingleTapUp(event: MotionEvent): Boolean {
+                    // Check if any immediate child view is clicked
+                    children
+                        .find {
+                            isEventPointerInRect(event, Rect(it.left, it.top, it.right, it.bottom))
+                        }
+                        ?.let { child ->
+                            // Find all the clickable ids in the hierarchy of the clicked view and
+                            // perform click on the exact view that should be clicked.
+                            clickableViewIds
+                                .mapNotNull { child.findViewById(it) }
+                                .find { clickableView ->
+                                    val ancestors = clickableView.ancestors
+                                    var ancestorsLeft = 0
+                                    var ancestorsTop = 0
 
-                override fun onSingleTapUp(e: MotionEvent): Boolean {
-                    return children.find { child ->
-                        e.x >= child.left &&
-                            e.x <= child.right &&
-                            e.y >= child.top &&
-                            e.y <= child.bottom
-                    } == null
+                                    // Find ancestors of this clickable view up until this layout
+                                    // and transform coordinates to align with motion event.
+                                    ancestors
+                                        .filter {
+                                            ancestors.indexOf(it) <=
+                                                ancestors.indexOf(child as ViewParent)
+                                        }
+                                        .forEach {
+                                            it as ViewGroup
+                                            ancestorsLeft += it.left
+                                            ancestorsTop += it.top
+                                        }
+                                    isEventPointerInRect(
+                                        event,
+                                        Rect(
+                                            /* left= */ ancestorsLeft + clickableView.left,
+                                            /* top= */ ancestorsTop + clickableView.top,
+                                            /* right= */ ancestorsLeft + clickableView.right,
+                                            /* bottom= */ ancestorsTop + clickableView.bottom,
+                                        ),
+                                    )
+                                }
+                                ?.performClick()
+                        }
+
+                    return true
                 }
             },
         )
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        return singleTapDetector.onTouchEvent(event)
+        // MotionEvent.ACTION_DOWN is the first MotionEvent received and is necessary to detect
+        // various gesture, returns true to intercept all event so they are forwarded into
+        // onTouchEvent.
+        return shouldInterceptTouch
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        super.onTouchEvent(event)
+
+        // Handle single tap
+        singleTapDetector.onTouchEvent(event)
+
+        return true
+    }
+
+    fun setClickableViewIds(ids: List<Int>) {
+        clickableViewIds.apply {
+            clear()
+            addAll(ids)
+        }
+    }
+
+    private fun isEventPointerInRect(e: MotionEvent, rect: Rect): Boolean {
+        return e.x >= rect.left && e.x <= rect.right && e.y >= rect.top && e.y <= rect.bottom
     }
 }

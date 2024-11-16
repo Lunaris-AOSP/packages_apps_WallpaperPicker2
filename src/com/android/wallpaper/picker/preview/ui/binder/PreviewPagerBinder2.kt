@@ -23,6 +23,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.transition.Transition
 import com.android.wallpaper.R
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
+import com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout
 import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout
 import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout.Companion.getViewId
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
@@ -50,9 +51,9 @@ object PreviewPagerBinder2 {
         isFoldable: Boolean,
         navigate: (View) -> Unit,
     ) {
-        val previewPager = smallPreview.requireViewById<MotionLayout>(R.id.preview_pager)
-        pagerItems.forEach {
-            val container = previewPager.requireViewById<View>(it)
+        val previewPager = smallPreview.requireViewById<ClickableMotionLayout>(R.id.preview_pager)
+        pagerItems.forEach { item ->
+            val container = previewPager.requireViewById<View>(item)
             PreviewTooltipBinder.bindSmallPreviewTooltip(
                 tooltipStub = container.requireViewById(R.id.small_preview_tooltip_stub),
                 viewModel = viewModel.smallTooltipViewModel,
@@ -68,6 +69,9 @@ object PreviewPagerBinder2 {
                         DeviceDisplayType.UNFOLDED to viewModel.wallpaperDisplaySize.value,
                     )
                 dualDisplayAspectRatioLayout.setDisplaySizes(displaySizes)
+                previewPager.setClickableViewIds(
+                    DeviceDisplayType.FOLDABLE_DISPLAY_TYPES.map { it.getViewId() }
+                )
                 DeviceDisplayType.FOLDABLE_DISPLAY_TYPES.forEach { display ->
                     dualDisplayAspectRatioLayout.getPreviewDisplaySize(display)?.let { displaySize
                         ->
@@ -76,7 +80,7 @@ object PreviewPagerBinder2 {
                             view =
                                 dualDisplayAspectRatioLayout.requireViewById(display.getViewId()),
                             viewModel = viewModel,
-                            screen = viewModel.smallPreviewTabs[pagerItems.indexOf(it)],
+                            screen = viewModel.smallPreviewTabs[pagerItems.indexOf(item)],
                             displaySize = displaySize,
                             deviceDisplayType = display,
                             mainScope = mainScope,
@@ -91,11 +95,13 @@ object PreviewPagerBinder2 {
                     }
                 }
             } else {
+                val previewViewId = R.id.preview
+                previewPager.setClickableViewIds(listOf(previewViewId))
                 SmallPreviewBinder.bind(
                     applicationContext = applicationContext,
-                    view = container.requireViewById(R.id.preview),
+                    view = container.requireViewById(previewViewId),
                     viewModel = viewModel,
-                    screen = viewModel.smallPreviewTabs[pagerItems.indexOf(it)],
+                    screen = viewModel.smallPreviewTabs[pagerItems.indexOf(item)],
                     displaySize = previewDisplaySize,
                     deviceDisplayType = DeviceDisplayType.SINGLE,
                     mainScope = mainScope,
