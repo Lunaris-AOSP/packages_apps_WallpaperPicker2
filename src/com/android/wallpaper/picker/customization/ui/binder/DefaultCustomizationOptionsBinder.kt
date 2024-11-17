@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.picker.customization.ui.binder
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.view.View
 import android.widget.TextView
@@ -101,8 +102,10 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
     }
 
     override fun bindClockPreview(
+        context: Context,
         clockHostView: View,
         viewModel: CustomizationPickerViewModel2,
+        colorUpdateViewModel: ColorUpdateViewModel,
         lifecycleOwner: LifecycleOwner,
         clockViewFactory: ClockViewFactory,
     ) {

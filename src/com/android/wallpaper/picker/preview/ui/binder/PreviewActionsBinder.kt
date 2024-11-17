@@ -16,6 +16,7 @@
 package com.android.wallpaper.picker.preview.ui.binder
 
 import android.app.AlertDialog
+import android.app.Flags.liveWallpaperContentHandling
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -369,18 +370,48 @@ object PreviewActionsBinder {
                             ) = floatingSheetViewModel
                             when {
                                 informationViewModel != null -> {
-                                    floatingSheet.setInformationContent(
-                                        informationViewModel.attributions,
-                                        informationViewModel.actionUrl?.let { url ->
-                                            {
-                                                logger.logWallpaperExploreButtonClicked()
-                                                floatingSheet.context.startActivity(
-                                                    Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                                )
-                                            }
-                                        },
-                                        informationViewModel.actionButtonTitle,
-                                    )
+                                    if (liveWallpaperContentHandling()) {
+                                        floatingSheet.setInformationContent(
+                                            description = informationViewModel.description,
+                                            attributions = informationViewModel.attributions,
+                                            onExploreButtonClickListener =
+                                                (informationViewModel.description?.contextUri
+                                                        ?: informationViewModel.actionUrl?.let {
+                                                            Uri.parse(it)
+                                                        })
+                                                    ?.let { uri ->
+                                                        {
+                                                            logger
+                                                                .logWallpaperExploreButtonClicked()
+                                                            floatingSheet.context.startActivity(
+                                                                Intent(Intent.ACTION_VIEW, uri)
+                                                            )
+                                                        }
+                                                    },
+                                            actionButtonTitle =
+                                                informationViewModel.description?.contextDescription
+                                                    ?: informationViewModel.actionButtonTitle,
+                                        )
+                                    } else {
+                                        floatingSheet.setInformationContent(
+                                            description = null,
+                                            attributions = informationViewModel.attributions,
+                                            onExploreButtonClickListener =
+                                                informationViewModel.actionUrl?.let { url ->
+                                                    {
+                                                        logger.logWallpaperExploreButtonClicked()
+                                                        floatingSheet.context.startActivity(
+                                                            Intent(
+                                                                Intent.ACTION_VIEW,
+                                                                Uri.parse(url),
+                                                            )
+                                                        )
+                                                    }
+                                                },
+                                            actionButtonTitle =
+                                                informationViewModel.actionButtonTitle,
+                                        )
+                                    }
                                 }
                                 imageEffectViewModel != null ->
                                     floatingSheet.setImageEffectContent(
@@ -423,5 +454,10 @@ object PreviewActionsBinder {
                 }
             }
         }
+    }
+
+    private fun getActionUri(actionUrl: String?, contextUri: Uri?): Uri? {
+        val actionUri = actionUrl?.let { Uri.parse(actionUrl) }
+        return contextUri ?: actionUri
     }
 }

@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.os.Message
 import androidx.lifecycle.LifecycleOwner
 import com.android.wallpaper.model.Screen
+import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationOptionsViewModel
 
 /**
@@ -31,15 +32,13 @@ interface WorkspaceCallbackBinder {
     fun bind(
         workspaceCallback: Message,
         viewModel: CustomizationOptionsViewModel,
+        colorUpdateViewModel: ColorUpdateViewModel,
         screen: Screen,
         lifecycleOwner: LifecycleOwner,
     )
 
     companion object {
-        fun Message.sendMessage(
-            what: Int,
-            data: Bundle,
-        ) {
+        fun Message.sendMessage(what: Int, data: Bundle) {
             this.replyTo.send(
                 Message().apply {
                     this.what = what

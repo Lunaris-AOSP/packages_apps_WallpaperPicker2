@@ -35,6 +35,7 @@ import com.android.wallpaper.picker.common.icon.ui.viewbinder.ContentDescription
 import com.android.wallpaper.picker.common.text.ui.viewbinder.TextViewBinder
 import com.android.wallpaper.picker.option.ui.view.OptionItemBackground
 import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel
+import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel2
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
@@ -66,7 +67,7 @@ object OptionItemBinder2 {
      */
     fun bind(
         view: View,
-        viewModel: OptionItemViewModel<*>,
+        viewModel: OptionItemViewModel2<*>,
         lifecycleOwner: LifecycleOwner,
         animationSpec: AnimationSpec = AnimationSpec(),
     ): DisposableHandle {

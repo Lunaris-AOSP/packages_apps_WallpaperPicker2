@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.picker.customization.ui.binder
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.android.customization.picker.clock.ui.view.ClockViewFactory
@@ -44,8 +45,10 @@ interface CustomizationOptionsBinder {
     )
 
     fun bindClockPreview(
+        context: Context,
         clockHostView: View,
         viewModel: CustomizationPickerViewModel2,
+        colorUpdateViewModel: ColorUpdateViewModel,
         lifecycleOwner: LifecycleOwner,
         clockViewFactory: ClockViewFactory,
     )

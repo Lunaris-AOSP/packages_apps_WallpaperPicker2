@@ -23,6 +23,7 @@ import com.android.wallpaper.model.Screen.LOCK_SCREEN
 import com.android.wallpaper.picker.common.preview.ui.viewmodel.BasePreviewViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
@@ -59,4 +60,6 @@ constructor(
                 Pair(PickerScreen.MAIN, null)
             }
         }
+
+    val isPreviewClickable: Flow<Boolean> = basePreviewViewModel.wallpapers.map { it != null }
 }

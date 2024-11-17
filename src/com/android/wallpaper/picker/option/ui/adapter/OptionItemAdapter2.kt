@@ -26,7 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.wallpaper.picker.option.ui.binder.OptionItemBinder2
-import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel
+import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel2
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.DisposableHandle
@@ -41,9 +41,9 @@ class OptionItemAdapter2<T>(
     private val bindPayload: (View, T) -> DisposableHandle?,
 ) : RecyclerView.Adapter<OptionItemAdapter2.ViewHolder>() {
 
-    private val items = mutableListOf<OptionItemViewModel<T>>()
+    private val items = mutableListOf<OptionItemViewModel2<T>>()
 
-    fun setItems(items: List<OptionItemViewModel<T>>, callback: (() -> Unit)? = null) {
+    fun setItems(items: List<OptionItemViewModel2<T>>, callback: (() -> Unit)? = null) {
         lifecycleOwner.lifecycleScope.launch {
             val oldItems = this@OptionItemAdapter2.items
             val newItems = items
