@@ -46,6 +46,10 @@ class FakeThirdPartyCategoryInteractor @Inject constructor() : ThirdPartyCategor
         emit(categoryModels)
     }
 
+    override fun refreshThirdPartyAppCategories() {
+        TODO("Not yet implemented")
+    }
+
     private fun generateCategoryData(): List<Pair<CommonCategoryData, ThirdPartyCategoryData>> {
         val biktokResolveInfo = ResolveInfo()
         val biktokComponentName =

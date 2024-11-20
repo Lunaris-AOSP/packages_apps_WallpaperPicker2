@@ -25,9 +25,11 @@ import android.os.HandlerThread
 import android.os.Looper
 import android.os.Process
 import com.android.wallpaper.module.DefaultNetworkStatusNotifier
+import com.android.wallpaper.module.DefaultPackageStatusNotifier
 import com.android.wallpaper.module.LargeScreenMultiPanesChecker
 import com.android.wallpaper.module.MultiPanesChecker
 import com.android.wallpaper.module.NetworkStatusNotifier
+import com.android.wallpaper.module.PackageStatusNotifier
 import com.android.wallpaper.network.Requester
 import com.android.wallpaper.network.WallpaperRequester
 import com.android.wallpaper.picker.MyPhotosStarter
@@ -122,6 +124,10 @@ abstract class SharedAppModule {
     abstract fun bindWallpaperCategoryClient(
         impl: DefaultWallpaperCategoryClientImpl
     ): DefaultWallpaperCategoryClient
+
+    @Binds
+    @Singleton
+    abstract fun bindPackageNotifier(impl: DefaultPackageStatusNotifier): PackageStatusNotifier
 
     @Binds
     @Singleton

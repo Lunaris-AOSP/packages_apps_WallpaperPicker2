@@ -60,6 +60,7 @@ import com.android.wallpaper.picker.common.preview.ui.binder.WorkspaceCallbackBi
 import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationOptionsBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2
+import com.android.wallpaper.picker.customization.ui.binder.PagerTouchInterceptorBinder
 import com.android.wallpaper.picker.customization.ui.binder.ToolbarBinder
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil.CustomizationOption
@@ -287,6 +288,13 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
     private fun initPreviewPager(view: View, isFirstBinding: Boolean) {
         val appContext = context?.applicationContext ?: return
         val activity = activity ?: return
+
+        PagerTouchInterceptorBinder.bind(
+            view.requireViewById(R.id.pager_touch_interceptor),
+            customizationPickerViewModel,
+            viewLifecycleOwner,
+        )
+
         val pager = view.requireViewById<ViewPager2>(R.id.preview_pager)
         val previewViewModel = customizationPickerViewModel.basePreviewViewModel
         pager.apply {

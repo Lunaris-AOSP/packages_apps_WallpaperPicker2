@@ -74,6 +74,7 @@ constructor(
     private val prefs: Lazy<WallpaperPreferences>,
     private val wallpaperColorsRepository: Lazy<WallpaperColorsRepository>,
     private val defaultWallpaperCategoryWrapper: Lazy<WallpaperCategoryWrapper>,
+    private val packageNotifier: Lazy<PackageStatusNotifier>,
 ) : Injector {
     private var alarmManagerWrapper: AlarmManagerWrapper? = null
     private var bitmapCropper: BitmapCropper? = null
@@ -83,7 +84,6 @@ constructor(
     private var drawableLayerResolver: DrawableLayerResolver? = null
     private var exploreIntentChecker: ExploreIntentChecker? = null
     private var liveWallpaperInfoFactory: LiveWallpaperInfoFactory? = null
-    private var packageStatusNotifier: PackageStatusNotifier? = null
     private var performanceMonitor: PerformanceMonitor? = null
     private var systemFeatureChecker: SystemFeatureChecker? = null
     private var wallpaperPersister: WallpaperPersister? = null
@@ -188,10 +188,7 @@ constructor(
 
     @Synchronized
     override fun getPackageStatusNotifier(context: Context): PackageStatusNotifier {
-        return packageStatusNotifier
-            ?: DefaultPackageStatusNotifier(context.applicationContext).also {
-                packageStatusNotifier = it
-            }
+        return packageNotifier.get()
     }
 
     @Synchronized
