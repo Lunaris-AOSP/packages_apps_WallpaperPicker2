@@ -197,9 +197,18 @@ class WallpaperPreviewActivity :
         }
     }
 
-    override fun onDestroy() {
+    override fun onPause() {
+        super.onPause()
+
+        // When back to main screen user could launch preview again before it's fully destroyed and
+        // it could clean up the repo set by the new launching call, move it earlier to on pause.
         if (isFinishing) {
             persistentWallpaperModelRepository.cleanup()
+        }
+    }
+
+    override fun onDestroy() {
+        if (isFinishing) {
             // ImageEffectsRepositoryImpl is Activity-Retained Scoped, and its injected
             // EffectsController is Singleton scoped. Therefore, persist state on config change
             // restart, and only destroy when activity is finishing.

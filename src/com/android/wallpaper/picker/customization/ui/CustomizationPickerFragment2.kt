@@ -70,6 +70,7 @@ import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewMo
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.picker.di.modules.MainDispatcher
 import com.android.wallpaper.picker.preview.ui.WallpaperPreviewActivity
+import com.android.wallpaper.util.ActivityUtils
 import com.android.wallpaper.util.DisplayUtils
 import com.android.wallpaper.util.WallpaperConnection
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
@@ -112,6 +113,12 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         savedInstanceState: Bundle?,
     ): View? {
         configuration = Configuration(resources.configuration)
+
+        val isFromLauncher =
+            activity?.intent?.let { ActivityUtils.isLaunchedFromLauncher(it) } ?: false
+        if (isFromLauncher) {
+            customizationPickerViewModel.selectPreviewScreen(HOME_SCREEN)
+        }
 
         val view = inflater.inflate(R.layout.fragment_customization_picker2, container, false)
 
@@ -169,7 +176,11 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         // TODO (b/348462236): adjust flow so this is always false when previewing current wallpaper
         previewViewModel.setIsWallpaperColorPreviewEnabled(false)
 
-        initPreviewPager(view = view, isFirstBinding = savedInstanceState == null)
+        initPreviewPager(
+            view = view,
+            isFirstBinding = savedInstanceState == null,
+            initialScreen = if (isFromLauncher) HOME_SCREEN else LOCK_SCREEN,
+        )
 
         val optionContainer =
             view.requireViewById<MotionLayout>(R.id.customization_option_container)
@@ -285,7 +296,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         }
     }
 
-    private fun initPreviewPager(view: View, isFirstBinding: Boolean) {
+    private fun initPreviewPager(view: View, isFirstBinding: Boolean, initialScreen: Screen) {
         val appContext = context?.applicationContext ?: return
         val activity = activity ?: return
 
@@ -358,6 +369,13 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                     },
                 )
             }
+            setCurrentItem(
+                when (initialScreen) {
+                    LOCK_SCREEN -> 0
+                    HOME_SCREEN -> 1
+                },
+                false,
+            )
             // Disable over scroll
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             // The neighboring view should be inflated when pager is rendered
