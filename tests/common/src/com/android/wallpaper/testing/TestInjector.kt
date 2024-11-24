@@ -84,6 +84,7 @@ constructor(
     private val injectedWallpaperInteractor: WallpaperInteractor,
     private val prefs: WallpaperPreferences,
     private val fakeWallpaperCategoryWrapper: WallpaperCategoryWrapper,
+    private val testStatusNotifier: TestPackageStatusNotifier,
 ) : Injector {
     private var appScope: CoroutineScope? = null
     private var alarmManagerWrapper: AlarmManagerWrapper? = null
@@ -93,7 +94,6 @@ constructor(
     private var customizationSections: CustomizationSections? = null
     private var drawableLayerResolver: DrawableLayerResolver? = null
     private var exploreIntentChecker: ExploreIntentChecker? = null
-    private var packageStatusNotifier: PackageStatusNotifier? = null
     private var performanceMonitor: PerformanceMonitor? = null
     private var systemFeatureChecker: SystemFeatureChecker? = null
     private var wallpaperPersister: WallpaperPersister? = null
@@ -182,8 +182,7 @@ constructor(
     }
 
     override fun getPackageStatusNotifier(context: Context): PackageStatusNotifier {
-        return packageStatusNotifier
-            ?: TestPackageStatusNotifier().also { packageStatusNotifier = it }
+        return testStatusNotifier
     }
 
     override fun getPartnerProvider(context: Context): PartnerProvider {

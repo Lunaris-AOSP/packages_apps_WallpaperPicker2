@@ -81,20 +81,20 @@ object FullWallpaperPreviewBinder {
         var transitionDisposableHandle: DisposableHandle? = null
         val mediumAnimTimeMs =
             view.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+        val setFinalPreviewCardRadiusAndEndLoading = { isWallpaperFullScreen: Boolean ->
+            if (isWallpaperFullScreen) {
+                previewCard.radius = 0f
+            }
+            surfaceView.cornerRadius = previewCard.radius
+            scrimView.isVisible = isWallpaperFullScreen
+            onWallpaperLoaded?.invoke(isWallpaperFullScreen)
+        }
+
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.fullWallpaper.collect { (_, _, displaySize, _) ->
                     val currentSize = displayUtils.getRealSize(checkNotNull(view.context.display))
                     wallpaperPreviewCrop.setCurrentAndTargetDisplaySize(currentSize, displaySize)
-
-                    val setFinalPreviewCardRadiusAndEndLoading = { isWallpaperFullScreen: Boolean ->
-                        if (isWallpaperFullScreen) {
-                            previewCard.radius = 0f
-                        }
-                        surfaceView.cornerRadius = previewCard.radius
-                        scrimView.isVisible = isWallpaperFullScreen
-                        onWallpaperLoaded?.invoke(isWallpaperFullScreen)
-                    }
                     val isPreviewingFullScreen = displaySize == currentSize
                     if (transition == null || savedInstanceState != null) {
                         setFinalPreviewCardRadiusAndEndLoading(isPreviewingFullScreen)
@@ -118,6 +118,8 @@ object FullWallpaperPreviewBinder {
                                 override fun onTransitionEnd(transition: Transition) {
                                     super.onTransitionEnd(transition)
                                     setFinalPreviewCardRadiusAndEndLoading(isPreviewingFullScreen)
+                                    transitionDisposableHandle?.dispose()
+                                    transitionDisposableHandle = null
                                 }
                             }
                         transition.addListener(listener)
@@ -127,7 +129,9 @@ object FullWallpaperPreviewBinder {
                     }
                 }
             }
+            setFinalPreviewCardRadiusAndEndLoading(false)
             transitionDisposableHandle?.dispose()
+            transitionDisposableHandle = null
         }
         val surfaceTouchForwardingLayout: TouchForwardingLayout =
             view.requireViewById(R.id.touch_forwarding_layout)

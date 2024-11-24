@@ -62,4 +62,7 @@ constructor(
         }
 
     val isPreviewClickable: Flow<Boolean> = basePreviewViewModel.wallpapers.map { it != null }
+
+    val isPagerInteractable: Flow<Boolean> =
+        customizationOptionsViewModel.selectedOption.map { it == null }
 }

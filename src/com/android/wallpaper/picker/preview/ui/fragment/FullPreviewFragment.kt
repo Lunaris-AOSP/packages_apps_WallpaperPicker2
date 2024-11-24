@@ -61,7 +61,7 @@ class FullPreviewFragment : Hilt_FullPreviewFragment() {
     private val wallpaperPreviewViewModel by activityViewModels<WallpaperPreviewViewModel>()
     private val isFirstBindingDeferred = CompletableDeferred<Boolean>()
 
-    private var useLightToolbar = false
+    private var useLightToolbarOverride = false
     private var navigateUpListener: NavController.OnDestinationChangedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,7 +118,7 @@ class FullPreviewFragment : Hilt_FullPreviewFragment() {
             wallpaperConnectionUtils = wallpaperConnectionUtils,
             isFirstBindingDeferred = isFirstBindingDeferred,
         ) { isFullScreen ->
-            useLightToolbar = isFullScreen
+            useLightToolbarOverride = isFullScreen
             setUpToolbar(view)
         }
 
@@ -162,7 +162,7 @@ class FullPreviewFragment : Hilt_FullPreviewFragment() {
     }
 
     override fun getToolbarTextColor(): Int {
-        return if (useLightToolbar) {
+        return if (useLightToolbarOverride) {
             ContextCompat.getColor(requireContext(), android.R.color.system_on_primary_light)
         } else {
             ContextCompat.getColor(requireContext(), R.color.system_on_surface)
@@ -171,6 +171,6 @@ class FullPreviewFragment : Hilt_FullPreviewFragment() {
 
     override fun isStatusBarLightText(): Boolean {
         return requireContext().resources.getBoolean(R.bool.isFragmentStatusBarLightText) or
-            useLightToolbar
+            useLightToolbarOverride
     }
 }
