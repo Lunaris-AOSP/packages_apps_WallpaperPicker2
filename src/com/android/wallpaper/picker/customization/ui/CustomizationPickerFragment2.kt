@@ -367,6 +367,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                             )
                         )
                     },
+                    clockViewFactory = clockViewFactory,
                 )
             }
             setCurrentItem(
