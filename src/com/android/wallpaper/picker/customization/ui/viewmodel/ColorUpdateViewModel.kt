@@ -108,7 +108,7 @@ class ColorUpdateViewModel @Inject constructor(@ApplicationContext private val c
             } else systemColor
         }
 
-    fun previewColors(colorSeed: Int, style: Style) {
+    fun previewColors(colorSeed: Int, @Style.Type style: Int) {
         val isDarkMode =
             (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                 Configuration.UI_MODE_NIGHT_YES
