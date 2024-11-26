@@ -56,8 +56,6 @@ class SetWallpaperDialogFragment : Hilt_SetWallpaperDialogFragment() {
 
     private val wallpaperPreviewViewModel by activityViewModels<WallpaperPreviewViewModel>()
 
-    private var isViewDestroyed: Boolean = false
-
     override fun onStart() {
         super.onStart()
         // Set dialog size
@@ -133,16 +131,10 @@ class SetWallpaperDialogFragment : Hilt_SetWallpaperDialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        if (!isViewDestroyed) {
-            // Only when the user dismisses the dialog, we update the view model state, which causes
-            // the binder to pop back stack. When the view is destroyed from configuration change,
-            // and onDestroyView is called before onDismiss, we do not want to pop back stack.
-            wallpaperPreviewViewModel.dismissSetWallpaperDialog()
-        }
+        wallpaperPreviewViewModel.dismissSetWallpaperDialog()
     }
 
     override fun onDestroyView() {
-        isViewDestroyed = true
         super.onDestroyView()
     }
 }
