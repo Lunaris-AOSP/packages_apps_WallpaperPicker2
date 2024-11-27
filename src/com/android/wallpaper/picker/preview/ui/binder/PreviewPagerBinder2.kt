@@ -24,8 +24,8 @@ import androidx.transition.Transition
 import com.android.wallpaper.R
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout
-import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout
 import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout.Companion.getViewId
+import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout2
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
@@ -36,6 +36,8 @@ import kotlinx.coroutines.CoroutineScope
 object PreviewPagerBinder2 {
 
     private val pagerItems = linkedSetOf(R.id.lock_preview, R.id.home_preview)
+    private val commonClickableViewIds =
+        listOf(R.id.apply_button, R.id.cancel_button, R.id.home_checkbox, R.id.lock_checkbox)
 
     fun bind(
         applicationContext: Context,
@@ -61,7 +63,7 @@ object PreviewPagerBinder2 {
             )
 
             if (isFoldable) {
-                val dualDisplayAspectRatioLayout: DualDisplayAspectRatioLayout =
+                val dualDisplayAspectRatioLayout: DualDisplayAspectRatioLayout2 =
                     container.requireViewById(R.id.dual_preview)
                 val displaySizes =
                     mapOf(
@@ -70,7 +72,8 @@ object PreviewPagerBinder2 {
                     )
                 dualDisplayAspectRatioLayout.setDisplaySizes(displaySizes)
                 previewPager.setClickableViewIds(
-                    DeviceDisplayType.FOLDABLE_DISPLAY_TYPES.map { it.getViewId() }
+                    commonClickableViewIds.toList() +
+                        DeviceDisplayType.FOLDABLE_DISPLAY_TYPES.map { it.getViewId() }
                 )
                 DeviceDisplayType.FOLDABLE_DISPLAY_TYPES.forEach { display ->
                     dualDisplayAspectRatioLayout.getPreviewDisplaySize(display)?.let { displaySize
@@ -96,7 +99,7 @@ object PreviewPagerBinder2 {
                 }
             } else {
                 val previewViewId = R.id.preview
-                previewPager.setClickableViewIds(listOf(previewViewId))
+                previewPager.setClickableViewIds(commonClickableViewIds.toList() + previewViewId)
                 SmallPreviewBinder.bind(
                     applicationContext = applicationContext,
                     view = container.requireViewById(previewViewId),

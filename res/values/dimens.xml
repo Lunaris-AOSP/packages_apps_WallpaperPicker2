@@ -436,5 +436,13 @@
     <dimen name="handheld_apply_wallpaper_screen_margin_bottom">34dp</dimen>
     <dimen name="handheld_apply_wallpaper_screen_button_space">8dp</dimen>
     <dimen name="handheld_apply_wallpaper_screen_header_margin_vertical">16dp</dimen>
+    <dimen name="handheld_apply_wallpaper_preview_title_margin_bottom">16dp</dimen>
     <dimen name="handheld_apply_wallpaper_preview_button_margin_bottom">28dp</dimen>
+    <dimen name="handheld_apply_wallpaper_preview_button_min_height">56dp</dimen>
+
+    <!-- Dimensions for multi-crop foldable small preview -->
+    <dimen name="foldable_small_preview_space_between_preview">8dp</dimen>
+    <dimen name="foldable_apply_wallpaper_preview_title_margin_bottom">@dimen/handheld_apply_wallpaper_preview_title_margin_bottom</dimen>
+    <dimen name="foldable_apply_wallpaper_preview_button_min_height">@dimen/handheld_apply_wallpaper_preview_button_min_height</dimen>
+    <dimen name="foldable_apply_wallpaper_preview_button_min_width">178dp</dimen>
 </resources>

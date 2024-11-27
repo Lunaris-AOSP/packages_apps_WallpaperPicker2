@@ -76,6 +76,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -209,6 +210,30 @@ class WallpaperPreviewViewModelTest {
             assertThat(handled).isTrue()
             assertThat(currentPreviewScreen()).isEqualTo(PreviewScreen.SMALL_PREVIEW)
         }
+
+    @Test
+    fun onApplyWallpaperScreen_shouldEnableClickOnPager() =
+        testScope.runTest {
+            val shouldEnableClickOnPager =
+                collectLastValue(wallpaperPreviewViewModel.shouldEnableClickOnPager)
+            val onNextButtonClicked =
+                collectLastValue(wallpaperPreviewViewModel.onNextButtonClicked)
+            val model =
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId",
+                    collectionId = "testCollection",
+                )
+            wallpaperPreviewRepository.setWallpaperModel(model)
+            executePendingWork(this)
+            // Navigates to apply wallpaper screen
+            onNextButtonClicked()?.invoke()
+
+            assertThat(shouldEnableClickOnPager()).isTrue()
+        }
+
+    @Ignore("b/367372434: test shouldEnableClickOnPager when implementing full preview")
+    @Test
+    fun onFullPreviewScreen_shouldNotEnableClickOnPager() = testScope.runTest {}
 
     @Test
     fun clickNextButton_setsApplyWallpaperScreen() =
