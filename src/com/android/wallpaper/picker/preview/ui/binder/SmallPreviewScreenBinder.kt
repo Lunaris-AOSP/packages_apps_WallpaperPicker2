@@ -109,7 +109,8 @@ object SmallPreviewScreenBinder {
                                         R.id.show_apply_wallpaper
                                     )
                                     previewPager.transitionToState(
-                                        R.id.apply_wallpaper_preview_only
+                                        if (isFoldable) R.id.apply_wallpaper_lock_preview_selected
+                                        else R.id.apply_wallpaper_preview_only
                                     )
                                 }
                             }

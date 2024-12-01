@@ -290,6 +290,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             toolbar,
             applyButton,
             customizationPickerViewModel.customizationOptionsViewModel,
+            colorUpdateViewModel,
             this,
         ) {
             activity?.onBackPressedDispatcher?.onBackPressed()
@@ -367,6 +368,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                             )
                         )
                     },
+                    clockViewFactory = clockViewFactory,
                 )
             }
             setCurrentItem(

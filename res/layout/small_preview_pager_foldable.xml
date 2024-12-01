@@ -34,7 +34,7 @@
             android:id="@+id/apply_wallpaper_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/foldable_apply_wallpaper_preview_title_margin_bottom"
             android:text="@string/apply_wallpaper_title_text"
             android:textAppearance="@style/SettingsLibTextAppearance.Primary.Headline.Large"  />
 
@@ -54,6 +54,9 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:button="@drawable/checkbox_circle_shape"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:scrollHorizontally="true"
         android:text="@string/set_wallpaper_lock_screen_destination"
         android:visibility="gone"/>
 
@@ -66,16 +69,20 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:button="@drawable/checkbox_circle_shape"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:scrollHorizontally="true"
         android:text="@string/set_wallpaper_home_screen_destination"
         android:visibility="gone"/>
 
     <Button
         android:id="@+id/apply_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/apply_button_background_variant"
         android:gravity="center"
-        android:minHeight="56dp"
+        android:minWidth="@dimen/foldable_apply_wallpaper_preview_button_min_width"
+        android:minHeight="@dimen/foldable_apply_wallpaper_preview_button_min_height"
         android:text="@string/apply_btn"
         android:textColor="@color/system_on_primary"
         android:textAppearance="@style/WallpaperPicker.Preview.TextAppearance.NoAllCaps"
@@ -83,11 +90,12 @@
 
     <Button
         android:id="@+id/cancel_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/cancel_button_background_variant"
         android:gravity="center"
-        android:minHeight="56dp"
+        android:minWidth="@dimen/foldable_apply_wallpaper_preview_button_min_width"
+        android:minHeight="@dimen/foldable_apply_wallpaper_preview_button_min_height"
         android:text="@string/cancel"
         android:textColor="@color/system_primary"
         android:textAppearance="@style/WallpaperPicker.Preview.TextAppearance.NoAllCaps"

@@ -51,31 +51,35 @@ class ClickableMotionLayout(context: Context, attrs: AttributeSet?) : MotionLayo
                             clickableViewIds
                                 .mapNotNull { child.findViewById(it) }
                                 .find { clickableView ->
-                                    val ancestors = clickableView.ancestors
-                                    var ancestorsLeft = 0
-                                    var ancestorsTop = 0
-
-                                    // Find ancestors of this clickable view up until this layout
-                                    // and transform coordinates to align with motion event.
-                                    ancestors
-                                        .filter {
-                                            ancestors.indexOf(it) <=
-                                                ancestors.indexOf(child as ViewParent)
-                                        }
-                                        .forEach {
-                                            it as ViewGroup
-                                            ancestorsLeft += it.left
-                                            ancestorsTop += it.top
-                                        }
-                                    isEventPointerInRect(
-                                        event,
-                                        Rect(
-                                            /* left= */ ancestorsLeft + clickableView.left,
-                                            /* top= */ ancestorsTop + clickableView.top,
-                                            /* right= */ ancestorsLeft + clickableView.right,
-                                            /* bottom= */ ancestorsTop + clickableView.bottom,
-                                        ),
-                                    )
+                                    if (clickableView == child) {
+                                        true
+                                    } else {
+                                        // Find ancestors of this clickable view up until this
+                                        // layout and transform coordinates to align with motion
+                                        // event.
+                                        val ancestors = clickableView.ancestors
+                                        var ancestorsLeft = 0
+                                        var ancestorsTop = 0
+                                        ancestors
+                                            .filter {
+                                                ancestors.indexOf(it) <=
+                                                    ancestors.indexOf(child as ViewParent)
+                                            }
+                                            .forEach {
+                                                it as ViewGroup
+                                                ancestorsLeft += it.left
+                                                ancestorsTop += it.top
+                                            }
+                                        isEventPointerInRect(
+                                            event,
+                                            Rect(
+                                                /* left= */ ancestorsLeft + clickableView.left,
+                                                /* top= */ ancestorsTop + clickableView.top,
+                                                /* right= */ ancestorsLeft + clickableView.right,
+                                                /* bottom= */ ancestorsTop + clickableView.bottom,
+                                            ),
+                                        )
+                                    }
                                 }
                                 ?.performClick()
                         }

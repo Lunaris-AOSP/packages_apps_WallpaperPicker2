@@ -26,6 +26,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.android.customization.picker.clock.ui.view.ClockViewFactory
 import com.android.systemui.shared.clocks.shared.model.ClockPreviewConstants
 import com.android.systemui.shared.keyguard.shared.model.KeyguardQuickAffordanceSlots.SLOT_ID_BOTTOM_START
 import com.android.systemui.shared.quickaffordance.shared.model.KeyguardPreviewConstants.KEY_HIGHLIGHT_QUICK_AFFORDANCES
@@ -54,6 +55,7 @@ object WorkspacePreviewBinder {
         screen: Screen,
         deviceDisplayType: DeviceDisplayType,
         lifecycleOwner: LifecycleOwner,
+        clockViewFactory: ClockViewFactory,
     ) {
         var surfaceCallback: SurfaceViewUtils.SurfaceCallback? = null
         lifecycleOwner.lifecycleScope.launch {
@@ -68,6 +70,7 @@ object WorkspacePreviewBinder {
                         previewUtils = getPreviewUtils(screen, viewModel.basePreviewViewModel),
                         deviceDisplayType = deviceDisplayType,
                         lifecycleOwner = lifecycleOwner,
+                        clockViewFactory = clockViewFactory,
                     )
                 surfaceView.setZOrderMediaOverlay(true)
                 surfaceView.holder.addCallback(surfaceCallback)
@@ -94,6 +97,7 @@ object WorkspacePreviewBinder {
         previewUtils: PreviewUtils,
         deviceDisplayType: DeviceDisplayType,
         lifecycleOwner: LifecycleOwner,
+        clockViewFactory: ClockViewFactory,
     ): SurfaceViewUtils.SurfaceCallback {
         return object : SurfaceViewUtils.SurfaceCallback {
 
@@ -117,6 +121,7 @@ object WorkspacePreviewBinder {
                                     colorUpdateViewModel = colorUpdateViewModel,
                                     screen = screen,
                                     lifecycleOwner = lifecycleOwner,
+                                    clockViewFactory = clockViewFactory,
                                 )
                             }
                     }

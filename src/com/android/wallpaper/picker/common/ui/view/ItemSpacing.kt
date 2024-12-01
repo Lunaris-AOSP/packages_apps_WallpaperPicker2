@@ -21,9 +21,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 
 /** Item spacing used by the RecyclerView. */
-class ItemSpacing(
-    private val itemSpacingDp: Int,
-) : RecyclerView.ItemDecoration() {
+class ItemSpacing(private val itemSpacingDp: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,

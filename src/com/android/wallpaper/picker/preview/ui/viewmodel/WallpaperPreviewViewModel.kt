@@ -103,7 +103,7 @@ constructor(
     val currentPreviewScreen = _currentPreviewScreen.asStateFlow()
 
     val shouldEnableClickOnPager: Flow<Boolean> =
-        _currentPreviewScreen.map { it == PreviewScreen.SMALL_PREVIEW }
+        _currentPreviewScreen.map { it != PreviewScreen.FULL_PREVIEW }
 
     val smallPreviewTabs = Screen.entries.toList()
 
