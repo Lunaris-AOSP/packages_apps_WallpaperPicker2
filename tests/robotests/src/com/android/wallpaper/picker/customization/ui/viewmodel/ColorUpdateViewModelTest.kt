@@ -24,6 +24,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.systemui.monet.Style
 import com.android.wallpaper.testing.collectLastValue
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.internal.lifecycle.RetainedLifecycleImpl
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -50,7 +51,7 @@ class ColorUpdateViewModelTest {
         hiltRule.inject()
 
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        underTest = ColorUpdateViewModel(context)
+        underTest = ColorUpdateViewModel(context, RetainedLifecycleImpl())
     }
 
     private fun overlayColors(context: Context, colorMapping: SparseIntArray) {
