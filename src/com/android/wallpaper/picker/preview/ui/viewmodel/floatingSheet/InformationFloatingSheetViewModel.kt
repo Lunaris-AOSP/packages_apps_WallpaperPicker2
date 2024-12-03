@@ -21,7 +21,7 @@ import android.app.wallpaper.WallpaperDescription
 /** This data class represents the view data for the info floating sheet */
 data class InformationFloatingSheetViewModel(
     val description: WallpaperDescription?,
-    val attributions: List<String?>?,
+    val attributions: List<String>?,
     val actionUrl: String?,
     val actionButtonTitle: CharSequence? = null,
 )

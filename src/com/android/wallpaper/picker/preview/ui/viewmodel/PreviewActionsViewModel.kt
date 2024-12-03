@@ -615,7 +615,7 @@ constructor(
             // Show information floating sheet when any of the following contents exists
             // 1. Attributions/Description: Any of the list values is not null nor empty
             // 2. Explore action URL
-            return (!attributions.isNullOrEmpty() && attributions.any { !it.isNullOrEmpty() }) ||
+            return (!attributions.isNullOrEmpty() && attributions.any { it.isNotEmpty() }) ||
                 !commonWallpaperData.exploreActionUrl.isNullOrEmpty() ||
                 hasDescription
         }
