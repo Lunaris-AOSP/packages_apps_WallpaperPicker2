@@ -16,21 +16,31 @@
 
 package com.android.wallpaper.picker.preview.ui.binder
 
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.android.wallpaper.R
+import com.android.wallpaper.model.wallpaper.DeviceDisplayType.Companion.FOLDABLE_DISPLAY_TYPES
+import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2.ALPHA_NON_SELECTED_PREVIEW
+import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2.ALPHA_SELECTED_PREVIEW
 import com.android.wallpaper.picker.di.modules.MainDispatcher
+import com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout
+import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout.Companion.getViewId
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
+import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel.Companion.PreviewScreen
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /** Binds the set wallpaper button on small preview. */
 object ApplyWallpaperScreenBinder {
 
     fun bind(
+        previewPager: ClickableMotionLayout,
         applyButton: Button,
         cancelButton: Button,
         homeCheckbox: CheckBox,
@@ -38,6 +48,7 @@ object ApplyWallpaperScreenBinder {
         viewModel: WallpaperPreviewViewModel,
         lifecycleOwner: LifecycleOwner,
         @MainDispatcher mainScope: CoroutineScope,
+        isFoldable: Boolean,
         onWallpaperSet: () -> Unit,
     ) {
         lifecycleOwner.lifecycleScope.launch {
@@ -48,11 +59,49 @@ object ApplyWallpaperScreenBinder {
                     }
                 }
 
-                launch { viewModel.isApplyButtonEnabled.collect { applyButton.isEnabled = it } }
+                launch {
+                    viewModel.isApplyButtonEnabled.collect {
+                        applyButton.isEnabled = it
+                        if (it) previewPager.addClickableViewId(applyButton.id)
+                        else previewPager.removeClickableViewId(applyButton.id)
+                    }
+                }
 
-                launch { viewModel.isHomeCheckBoxChecked.collect { homeCheckbox.isChecked = it } }
+                launch {
+                    combine(viewModel.currentPreviewScreen, viewModel.isHomeCheckBoxChecked) {
+                            screen,
+                            checked ->
+                            screen to checked
+                        }
+                        .collect { (screen, checked) ->
+                            if (screen == PreviewScreen.APPLY_WALLPAPER) {
+                                homeCheckbox.isChecked = checked
+                                animateScreenAlpha(
+                                    screenPreview = previewPager.requireViewById(R.id.home_preview),
+                                    checked = checked,
+                                    isFoldable = isFoldable,
+                                )
+                            }
+                        }
+                }
 
-                launch { viewModel.isLockCheckBoxChecked.collect { lockCheckbox.isChecked = it } }
+                launch {
+                    combine(viewModel.currentPreviewScreen, viewModel.isLockCheckBoxChecked) {
+                            screen,
+                            checked ->
+                            screen to checked
+                        }
+                        .collect { (screen, checked) ->
+                            if (screen == PreviewScreen.APPLY_WALLPAPER) {
+                                lockCheckbox.isChecked = checked
+                                animateScreenAlpha(
+                                    screenPreview = previewPager.requireViewById(R.id.lock_preview),
+                                    checked = checked,
+                                    isFoldable = isFoldable,
+                                )
+                            }
+                        }
+                }
 
                 launch {
                     viewModel.onHomeCheckBoxChecked.collect {
@@ -77,6 +126,28 @@ object ApplyWallpaperScreenBinder {
                     }
                 }
             }
+        }
+    }
+
+    private fun animateScreenAlpha(screenPreview: View, checked: Boolean, isFoldable: Boolean) {
+        if (isFoldable) {
+            FOLDABLE_DISPLAY_TYPES.map { screenPreview.requireViewById<View>(it.getViewId()) }
+                .forEach { animatePreviewAlpha(parent = it, checked = checked) }
+        } else {
+            animatePreviewAlpha(parent = screenPreview, checked = checked)
+        }
+    }
+
+    private fun animatePreviewAlpha(parent: View, checked: Boolean) {
+        setOf(R.id.wallpaper_surface, R.id.workspace_surface).forEach {
+            parent
+                .requireViewById<View>(it)
+                .animate()
+                .alpha(if (checked) ALPHA_SELECTED_PREVIEW else ALPHA_NON_SELECTED_PREVIEW)
+                .setDuration(
+                    parent.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                )
+                .start()
         }
     }
 }
