@@ -16,6 +16,9 @@
 
 package com.android.wallpaper.picker.customization.ui
 
+import android.annotation.TargetApi
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -57,6 +60,8 @@ class CustomizationPickerActivity2 :
     @Inject lateinit var colorUpdateViewModel: ColorUpdateViewModel
     @Inject lateinit var clockViewFactory: ClockViewFactory
 
+    private var configuration: Configuration? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (
@@ -78,6 +83,9 @@ class CustomizationPickerActivity2 :
             return
         }
 
+        configuration = Configuration(resources.configuration)
+        colorUpdateViewModel.updateColors()
+
         setContentView(R.layout.activity_cusomization_picker2)
         WindowCompat.setDecorFitsSystemWindows(window, ActivityUtils.isSUWMode(this))
 
@@ -91,5 +99,18 @@ class CustomizationPickerActivity2 :
 
     override fun isUpArrowSupported(): Boolean {
         return !ActivityUtils.isSUWMode(baseContext)
+    }
+
+    @TargetApi(36)
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        configuration?.let {
+            val diff = newConfig.diff(it)
+            val isAssetsPathsChange = diff and ActivityInfo.CONFIG_ASSETS_PATHS != 0
+            if (isAssetsPathsChange) {
+                colorUpdateViewModel.updateColors()
+            }
+        }
+        configuration?.setTo(newConfig)
     }
 }
