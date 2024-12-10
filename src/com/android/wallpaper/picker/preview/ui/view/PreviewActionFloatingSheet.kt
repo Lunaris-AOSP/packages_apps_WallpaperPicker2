@@ -120,7 +120,7 @@ class PreviewActionFloatingSheet(context: Context, attrs: AttributeSet?) :
 
     fun setInformationContent(
         description: WallpaperDescription?,
-        attributions: List<String?>?,
+        attributions: List<String>?,
         onExploreButtonClickListener: OnClickListener?,
         actionButtonTitle: CharSequence?,
     ) {
@@ -147,19 +147,19 @@ class PreviewActionFloatingSheet(context: Context, attrs: AttributeSet?) :
         combinedAttributions.forEachIndexed { index, text ->
             when (index) {
                 0 -> {
-                    if (!text.isNullOrEmpty()) {
+                    if (text.isNotEmpty()) {
                         title.text = text
                         title.isVisible = true
                     }
                 }
                 1 -> {
-                    if (!text.isNullOrEmpty()) {
+                    if (text.isNotEmpty()) {
                         subtitle1.text = text
                         subtitle1.isVisible = true
                     }
                 }
                 2 -> {
-                    if (!text.isNullOrEmpty()) {
+                    if (text.isNotEmpty()) {
                         subtitle2.text = text
                         subtitle2.isVisible = true
                     }

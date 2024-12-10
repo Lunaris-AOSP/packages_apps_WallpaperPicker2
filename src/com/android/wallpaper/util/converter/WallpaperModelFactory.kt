@@ -94,7 +94,7 @@ interface WallpaperModelFactory {
             return CommonWallpaperData(
                 id = wallpaperId,
                 title = getTitle(context),
-                attributions = getAttributions(context),
+                attributions = getAttributions(context).map { it ?: "" },
                 exploreActionUrl = getActionUrl(context),
                 thumbAsset = getThumbAsset(context),
                 placeholderColorInfo = colorInfoOfWallpaper,
