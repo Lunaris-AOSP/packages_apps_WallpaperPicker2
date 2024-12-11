@@ -351,6 +351,9 @@ public class LiveWallpaperInfo extends WallpaperInfo {
         return wallpaperInfos;
     }
 
+    public boolean isSystemAppWallpaper() {
+        return isSystemApp(mInfo.getServiceInfo().applicationInfo);
+    }
     /**
      * @return whether the given app is a system app
      */

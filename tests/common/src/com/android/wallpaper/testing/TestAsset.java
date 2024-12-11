@@ -22,17 +22,23 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
 import com.android.wallpaper.asset.Asset;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 
 /**
  * Test implementation of Asset which blocks on Bitmap decoding operations.
  */
 public final class TestAsset extends Asset {
+    private static final String TAG = "TestAsset";
 
     private Bitmap mBitmap;
     private final boolean mIsCorrupt;
@@ -42,14 +48,28 @@ public final class TestAsset extends Asset {
      * color.
      *
      * @param pixelColor Color of the asset's single pixel.
-     * @param isCorrupt  Whether or not the asset is corrupt and fails to validly decode bitmaps and
-     *                   dimensions.
+     * @param isCorrupt Whether or not the asset is corrupt and fails to validly decode bitmaps and
+     * dimensions.
      */
     public TestAsset(int pixelColor, boolean isCorrupt) {
+        this(pixelColor, isCorrupt, 1, 1);
+    }
+
+    /**
+     * Constructs an asset underpinned by a width x height bitmap uniquely identifiable by the given
+     * pixel color.
+     *
+     * @param pixelColor Color of the asset's single pixel.
+     * @param isCorrupt Whether or not the asset is corrupt and fails to validly decode bitmaps and
+     * dimensions.
+     * @param width Width of asset image
+     * @param height Height of asset image
+     */
+    public TestAsset(int pixelColor, boolean isCorrupt, int width, int height) {
         mIsCorrupt = isCorrupt;
 
         if (!mIsCorrupt) {
-            mBitmap = Bitmap.createBitmap(1, 1, Config.ARGB_8888);
+            mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
             mBitmap.setPixel(0, 0, pixelColor);
         } else {
             mBitmap = null;
@@ -79,7 +99,8 @@ public final class TestAsset extends Asset {
     @Override
     public void decodeRawDimensions(Activity unused, DimensionsReceiver receiver) {
         Handler.getMain().post(() ->
-                receiver.onDimensionsDecoded(mIsCorrupt ? null : new Point(1, 1)));
+                receiver.onDimensionsDecoded(
+                        mIsCorrupt ? null : new Point(mBitmap.getWidth(), mBitmap.getHeight())));
     }
 
     @Override
@@ -99,7 +120,9 @@ public final class TestAsset extends Asset {
         }
     }
 
-    /** Returns the bitmap synchronously. Convenience method for tests. */
+    /**
+     * Returns the bitmap synchronously. Convenience method for tests.
+     */
     public Bitmap getBitmap() {
         return mBitmap;
     }
@@ -111,5 +134,15 @@ public final class TestAsset extends Asset {
 
     public void setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
+    }
+
+    @Override
+    public void copy(File dest) {
+        try (FileOutputStream ofs = new FileOutputStream(dest)) {
+            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, ofs);
+        } catch (IOException e) {
+            Log.e(TAG, "Error writing test asset", e);
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -27,6 +27,8 @@ import com.android.wallpaper.model.LiveWallpaperInfo;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
 /**
  * Test model object for a wallpaper coming from a live wallpaper component. This is essentially a
  * copy of {@link TestStaticWallpaperInfo} with the minimum changes required to show a preview.
@@ -201,6 +203,11 @@ public class TestLiveWallpaperInfo extends LiveWallpaperInfo {
         mWallpaperComponent = wallpaperComponent;
     }
 
+    @Override
+    public boolean isSystemAppWallpaper() {
+        return true;
+    }
+
     /**
      * Simulates that the {@link Asset} instances returned by calls to #getAsset and #getThumbAsset
      * on this object are "corrupt" and will fail to perform decode operations such as
@@ -231,11 +238,10 @@ public class TestLiveWallpaperInfo extends LiveWallpaperInfo {
 
     @Override
     public boolean equals(Object object) {
-        if (object == this) {
-            return true;
-        }
-        if (object instanceof TestLiveWallpaperInfo) {
-            return mPixelColor == ((TestLiveWallpaperInfo) object).mPixelColor;
+        if (object instanceof TestLiveWallpaperInfo other) {
+            if (this == other) return true;
+            if (!Objects.equals(getWallpaperId(), other.getWallpaperId())) return false;
+            return mPixelColor == other.mPixelColor;
         }
         return false;
     }
