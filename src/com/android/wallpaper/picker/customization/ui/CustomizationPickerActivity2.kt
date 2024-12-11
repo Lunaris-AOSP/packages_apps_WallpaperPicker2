@@ -85,6 +85,7 @@ class CustomizationPickerActivity2 :
 
         configuration = Configuration(resources.configuration)
         colorUpdateViewModel.updateColors()
+        colorUpdateViewModel.setPreviewEnabled(!displayUtils.isLargeScreenOrUnfoldedDisplay(this))
 
         setContentView(R.layout.activity_cusomization_picker2)
         WindowCompat.setDecorFitsSystemWindows(window, ActivityUtils.isSUWMode(this))
