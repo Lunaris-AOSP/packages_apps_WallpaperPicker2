@@ -159,7 +159,13 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                         currentId == R.id.expanded_header_primary ||
                             currentId == R.id.collapsed_header_primary
                     ) {
+                        // This is when we complete the transition back to the primary screen
                         pickerMotionContainer.setTransition(R.id.transition_primary)
+                        // Reset the preview only after the transition is completed, because the
+                        // reset will trigger the animation of the UI components in the floating
+                        // sheet content, which can possibly be interrupted by the floating sheet
+                        // translating down.
+                        customizationPickerViewModel.customizationOptionsViewModel.resetPreview()
                     }
                 }
             }
