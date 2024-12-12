@@ -50,6 +50,8 @@ constructor(
 ) {
     private val coroutineScope = RetainedLifecycleCoroutineScope(activityRetainedLifecycle)
 
+    private val isPreviewEnabled = MutableStateFlow(false)
+
     /**
      * Flow that emits an event whenever the system colors are updated. This flow has a replay of 1,
      * so it will emit the last event to new subscribers.
@@ -72,8 +74,11 @@ constructor(
     private inner class Color(private val colorResId: Int, dynamicColor: DynamicColor) {
         private val color = MutableStateFlow(context.getColor(colorResId))
         val colorFlow =
-            combine(color, previewingColorScheme) { systemColor, previewScheme ->
-                if (previewScheme != null) {
+            combine(color, previewingColorScheme, isPreviewEnabled) {
+                systemColor,
+                previewScheme,
+                isEnabled ->
+                if (previewScheme != null && isEnabled) {
                     previewScheme.getArgb(dynamicColor)
                 } else systemColor
             }
@@ -124,6 +129,10 @@ constructor(
 
     fun resetPreview() {
         previewingColorScheme.value = null
+    }
+
+    fun setPreviewEnabled(isEnabled: Boolean) {
+        isPreviewEnabled.value = isEnabled
     }
 
     fun updateColors() {

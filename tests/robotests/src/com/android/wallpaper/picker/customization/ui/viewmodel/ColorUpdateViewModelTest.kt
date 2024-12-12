@@ -78,7 +78,7 @@ class ColorUpdateViewModelTest {
     }
 
     @Test
-    fun previewColors() {
+    fun previewColors_withPreviewEnabled() {
         testScope.runTest {
             val colorPrimary = collectLastValue(underTest.colorPrimary)
             overlayColors(
@@ -89,11 +89,31 @@ class ColorUpdateViewModelTest {
                 },
             )
             underTest.updateColors()
-            assertThat(colorPrimary()).isEqualTo(12345)
 
+            underTest.setPreviewEnabled(true)
             underTest.previewColors(54321, Style.VIBRANT)
 
             assertThat(colorPrimary()).isNotEqualTo(12345)
+        }
+    }
+
+    @Test
+    fun previewColors_withPreviewDisabled() {
+        testScope.runTest {
+            val colorPrimary = collectLastValue(underTest.colorPrimary)
+            overlayColors(
+                context,
+                SparseIntArray().apply {
+                    put(android.R.color.system_primary_light, 12345)
+                    put(android.R.color.system_primary_dark, 12345)
+                },
+            )
+            underTest.updateColors()
+
+            underTest.setPreviewEnabled(false)
+            underTest.previewColors(54321, Style.VIBRANT)
+
+            assertThat(colorPrimary()).isEqualTo(12345)
         }
     }
 
