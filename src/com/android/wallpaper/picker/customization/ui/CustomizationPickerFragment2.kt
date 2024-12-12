@@ -206,7 +206,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             viewModel = customizationPickerViewModel,
             colorUpdateViewModel = colorUpdateViewModel,
             customizationOptionsBinder = customizationOptionsBinder,
-            lifecycleOwner = this,
+            lifecycleOwner = viewLifecycleOwner,
             navigateToPrimary = {
                 if (pickerMotionContainer.currentState == R.id.secondary) {
                     pickerMotionContainer.transitionToState(
