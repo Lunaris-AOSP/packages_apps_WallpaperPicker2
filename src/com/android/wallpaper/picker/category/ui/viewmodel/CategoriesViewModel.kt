@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.service.wallpaper.WallpaperService
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.wallpaper.R
@@ -62,6 +63,11 @@ constructor(
 
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents = _navigationEvents.asSharedFlow()
+
+    // Helps to make sure that categories are fetched when picker main page is opened
+    fun initialize() {
+        Log.i(TAG, "Initializing Categories!")
+    }
 
     init {
         registerLiveWallpaperReceiver()
@@ -325,5 +331,9 @@ constructor(
         data class NavigateToPhotosPicker(val wallpaperModel: WallpaperModel?) : NavigationEvent()
 
         data class NavigateToThirdParty(val resolveInfo: ResolveInfo) : NavigationEvent()
+    }
+
+    companion object {
+        private const val TAG = "CategoriesViewModel"
     }
 }
