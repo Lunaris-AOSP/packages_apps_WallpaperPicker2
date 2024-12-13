@@ -31,6 +31,9 @@ interface CustomizationOptionsViewModel {
      * @return True if back pressed is handled by [CustomizationOptionsViewModel]
      */
     fun handleBackPressed(): Boolean
+
+    /** Reset all the customization options that are being previewed. */
+    fun resetPreview()
 }
 
 interface CustomizationOptionsViewModelFactory {
