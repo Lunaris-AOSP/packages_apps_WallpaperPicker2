@@ -20,23 +20,39 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.android.wallpaper.R
+import com.android.wallpaper.picker.category.ui.viewmodel.CategoriesViewModel
+import com.android.wallpaper.picker.category.ui.viewmodel.SectionViewModel
 
 /**
  * This class adds the appropriate padding to a category based on the number of columns it occupies
  */
-class CategoriesGridPaddingDecoration(val padding: Int, val columnCalculator: (Int) -> Int) :
-    RecyclerView.ItemDecoration() {
+class CategoriesGridPaddingDecoration(
+    val sectionViewModelList: List<SectionViewModel>,
+    val padding: Int,
+    val columnCalculator: (Int) -> Int,
+) : RecyclerView.ItemDecoration() {
+
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: RecyclerView.State
+        state: RecyclerView.State,
     ) {
 
         outRect.left = padding
         outRect.right = padding
-
         val position = parent.getChildAdapterPosition(view)
+
+        // This needs to be done since the carousel view we are using for CuratedPhotos does not
+        // support adding margins at the individual image level. If we do not do this, every photo
+        // will have a margin which we do not want.
+        if (
+            sectionViewModelList[position].displayType == CategoriesViewModel.DisplayType.Carousel
+        ) {
+            outRect.left -= NEGATIVE_HORIZONTAL_PADDING
+            outRect.right -= NEGATIVE_HORIZONTAL_PADDING
+        }
+
         val columnCount = columnCalculator(position)
         if (columnCount > 1) {
             outRect.bottom =
@@ -49,5 +65,9 @@ class CategoriesGridPaddingDecoration(val padding: Int, val columnCalculator: (I
                     R.dimen.grid_item_category_padding_bottom
                 )
         }
+    }
+
+    companion object {
+        const val NEGATIVE_HORIZONTAL_PADDING = 4
     }
 }

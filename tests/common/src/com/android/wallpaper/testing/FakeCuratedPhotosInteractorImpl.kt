@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package com.android.wallpaper.picker.category.ui.viewmodel
+package com.android.wallpaper.testing
 
-import com.android.wallpaper.picker.category.ui.viewmodel.CategoriesViewModel.*
+import com.android.wallpaper.picker.category.domain.interactor.CuratedPhotosInteractor
+import com.android.wallpaper.picker.data.category.CategoryModel
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
-/**
- * This class represents the view model for a single section that can contain a number of individual
- * tiles.
- */
-class SectionViewModel(
-    val tileViewModels: List<TileViewModel>,
-    val columnCount: Int,
-    val sectionTitle: String? = null,
-    val displayType: DisplayType = DisplayType.Default,
-    val onSectionClicked: (() -> Unit)? = null,
-)
+@Singleton
+class FakeCuratedPhotosInteractorImpl @Inject constructor() : CuratedPhotosInteractor {
+    override val category: Flow<CategoryModel>
+        get() = TODO("Not yet implemented")
+}
