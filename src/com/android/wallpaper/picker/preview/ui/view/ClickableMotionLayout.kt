@@ -24,6 +24,7 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.ViewParent
+import androidx.annotation.IdRes
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.ancestors
 import androidx.core.view.children
@@ -34,7 +35,7 @@ class ClickableMotionLayout(context: Context, attrs: AttributeSet?) : MotionLayo
     /** True for this view to intercept all motion events. */
     var shouldInterceptTouch = true
 
-    private val clickableViewIds = mutableListOf<Int>()
+    private val clickableViewIds = mutableSetOf<Int>()
     private val singleTapDetector =
         GestureDetector(
             context,
@@ -110,6 +111,14 @@ class ClickableMotionLayout(context: Context, attrs: AttributeSet?) : MotionLayo
             clear()
             addAll(ids)
         }
+    }
+
+    fun addClickableViewId(@IdRes id: Int) {
+        clickableViewIds.add(id)
+    }
+
+    fun removeClickableViewId(@IdRes id: Int) {
+        clickableViewIds.remove(id)
     }
 
     private fun isEventPointerInRect(e: MotionEvent, rect: Rect): Boolean {
