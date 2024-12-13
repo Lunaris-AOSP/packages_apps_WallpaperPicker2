@@ -206,6 +206,7 @@ class PreviewActionsViewModelTest {
                         contentDescription = null,
                         isCurrent = false,
                         creativeWallpaperEffectsData = null,
+                        isNewCreativeWallpaper = false,
                     ),
             )
         wallpaperPreviewRepository.setWallpaperModel(liveWallpaperModel)

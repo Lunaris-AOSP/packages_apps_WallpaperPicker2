@@ -24,6 +24,7 @@ import com.android.systemui.shared.customization.data.content.CustomizationProvi
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClientImpl
 import com.android.systemui.shared.customization.data.content.CustomizationProviderContract as Contract
 import com.android.wallpaper.Flags.magicPortraitFlag
+import com.android.wallpaper.Flags.newCreativeWallpaperCategory
 import com.android.wallpaper.Flags.refactorWallpaperCategoryFlag
 import com.android.wallpaper.Flags.wallpaperRestorerFlag
 import com.android.wallpaper.module.InjectorProvider
@@ -45,6 +46,8 @@ abstract class BaseFlags {
     open fun isWallpaperRestorerEnabled() = wallpaperRestorerFlag()
 
     open fun isWallpaperCategoryRefactoringEnabled() = refactorWallpaperCategoryFlag()
+
+    open fun isNewCreativeWallpaperCategoryEnabled() = newCreativeWallpaperCategory()
 
     open fun isColorContrastControlEnabled() = enableColorContrastControl()
 

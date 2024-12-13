@@ -66,7 +66,7 @@ public class TestLiveWallpaperInfo extends LiveWallpaperInfo {
         super(info);
         mPixelColor = pixelColor;
         mAttributions = Arrays.asList("Test wallpaper");
-        mWallpaperComponent = null;
+        mWallpaperComponent = info;
         mIsAssetCorrupt = false;
         mBackupPermission = BACKUP_ALLOWED;
         mWallpaperId = id;
