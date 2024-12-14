@@ -63,7 +63,7 @@ object SmallPreviewScreenBinder {
             applicationContext,
             mainScope,
             lifecycleOwner,
-            previewPagerContainer,
+            previewPager,
             viewModel,
             previewDisplaySize,
             transition,

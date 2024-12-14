@@ -18,19 +18,28 @@ package com.android.wallpaper.picker.preview.ui.binder
 import android.content.Context
 import android.graphics.Point
 import android.view.View
-import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.Transition
 import com.android.wallpaper.R
+import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
+import com.android.wallpaper.model.wallpaper.DeviceDisplayType.Companion.FOLDABLE_DISPLAY_TYPES
+import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2.ALPHA_NON_SELECTED_PREVIEW
+import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2.ALPHA_SELECTED_PREVIEW
 import com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout
 import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout.Companion.getViewId
 import com.android.wallpaper.picker.preview.ui.view.DualDisplayAspectRatioLayout2
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
+import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel.Companion.PreviewScreen
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 /** Binds single preview home screen and lock screen tabs view pager. */
 object PreviewPagerBinder2 {
@@ -43,7 +52,7 @@ object PreviewPagerBinder2 {
         applicationContext: Context,
         mainScope: CoroutineScope,
         lifecycleOwner: LifecycleOwner,
-        smallPreview: MotionLayout,
+        previewPager: ClickableMotionLayout,
         viewModel: WallpaperPreviewViewModel,
         previewDisplaySize: Point,
         transition: Transition?,
@@ -53,7 +62,6 @@ object PreviewPagerBinder2 {
         isFoldable: Boolean,
         navigate: (View) -> Unit,
     ) {
-        val previewPager = smallPreview.requireViewById<ClickableMotionLayout>(R.id.preview_pager)
         pagerItems.forEach { item ->
             val container = previewPager.requireViewById<View>(item)
             PreviewTooltipBinder.bindSmallPreviewTooltip(
@@ -117,6 +125,55 @@ object PreviewPagerBinder2 {
                     navigate = navigate,
                 )
             }
+        }
+
+        lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                combine(viewModel.currentPreviewScreen, viewModel.smallPreviewSelectedTab) {
+                        previewScreen,
+                        selectedTab ->
+                        previewScreen to selectedTab
+                    }
+                    .collect { (previewScreen, selectedTab) ->
+                        if (previewScreen == PreviewScreen.SMALL_PREVIEW) {
+                            Screen.entries.forEach { screen ->
+                                val screenView =
+                                    previewPager.requireViewById<View>(
+                                        pagerItems.elementAt(screen.ordinal)
+                                    )
+                                if (isFoldable) {
+                                    FOLDABLE_DISPLAY_TYPES.map {
+                                            screenView.requireViewById<View>(it.getViewId())
+                                        }
+                                        .forEach {
+                                            animatePreviewAlpha(
+                                                parent = it,
+                                                selected = selectedTab == screen,
+                                            )
+                                        }
+                                } else {
+                                    animatePreviewAlpha(
+                                        parent = screenView,
+                                        selected = selectedTab == screen,
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun animatePreviewAlpha(parent: View, selected: Boolean) {
+        setOf(R.id.wallpaper_surface, R.id.workspace_surface).forEach {
+            parent
+                .requireViewById<View>(it)
+                .animate()
+                .alpha(if (selected) ALPHA_SELECTED_PREVIEW else ALPHA_NON_SELECTED_PREVIEW)
+                .setDuration(
+                    parent.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                )
+                .start()
         }
     }
 }

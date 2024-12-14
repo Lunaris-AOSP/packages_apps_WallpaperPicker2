@@ -26,6 +26,7 @@ import com.android.wallpaper.modules.WallpaperPicker2AppModule
 import com.android.wallpaper.network.Requester
 import com.android.wallpaper.picker.category.client.DefaultWallpaperCategoryClient
 import com.android.wallpaper.picker.category.domain.interactor.CategoryInteractor
+import com.android.wallpaper.picker.category.domain.interactor.CuratedPhotosInteractor
 import com.android.wallpaper.picker.category.domain.interactor.ThirdPartyCategoryInteractor
 import com.android.wallpaper.picker.category.ui.view.providers.IndividualPickerFactory
 import com.android.wallpaper.picker.category.ui.view.providers.implementation.DefaultIndividualPickerFactory
@@ -39,6 +40,7 @@ import com.android.wallpaper.picker.customization.ui.binder.ToolbarBinder
 import com.android.wallpaper.picker.preview.ui.util.DefaultImageEffectDialogUtil
 import com.android.wallpaper.picker.preview.ui.util.ImageEffectDialogUtil
 import com.android.wallpaper.testing.FakeCategoryInteractor
+import com.android.wallpaper.testing.FakeCuratedPhotosInteractorImpl
 import com.android.wallpaper.testing.FakeDefaultRequester
 import com.android.wallpaper.testing.FakeDefaultWallpaperCategoryClient
 import com.android.wallpaper.testing.FakeDefaultWallpaperModelFactory
@@ -75,12 +77,6 @@ abstract class WallpaperPicker2TestModule {
 
     @Binds
     @Singleton
-    abstract fun bindThirdPartyCategoryInteractor(
-        impl: FakeThirdPartyCategoryInteractor
-    ): ThirdPartyCategoryInteractor
-
-    @Binds
-    @Singleton
     abstract fun bindEffectsController(impl: FakeEffectsController): EffectsController
 
     @Binds
@@ -95,6 +91,12 @@ abstract class WallpaperPicker2TestModule {
 
     @Binds
     @Singleton
+    abstract fun bindCuratedPhotosInteractor(
+        impl: FakeCuratedPhotosInteractorImpl
+    ): CuratedPhotosInteractor
+
+    @Binds
+    @Singleton
     abstract fun bindImageEffectDialogUtil(
         impl: DefaultImageEffectDialogUtil
     ): ImageEffectDialogUtil
@@ -104,6 +106,12 @@ abstract class WallpaperPicker2TestModule {
     @Binds @Singleton abstract fun bindPartnerProvider(impl: TestPartnerProvider): PartnerProvider
 
     @Binds @Singleton abstract fun bindRequester(impl: FakeDefaultRequester): Requester
+
+    @Binds
+    @Singleton
+    abstract fun bindThirdPartyCategoryInteractor(
+        impl: FakeThirdPartyCategoryInteractor
+    ): ThirdPartyCategoryInteractor
 
     @Binds @Singleton abstract fun bindToolbarBinder(impl: DefaultToolbarBinder): ToolbarBinder
 

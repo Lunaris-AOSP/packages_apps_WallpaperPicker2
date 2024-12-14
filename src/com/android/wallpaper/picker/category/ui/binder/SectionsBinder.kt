@@ -30,18 +30,18 @@ object SectionsBinder {
 
     fun bind(
         sectionsListView: RecyclerView,
-        sectionsViewModel:
+        sectionsViewModelList:
             List<SectionViewModel>, // TODO: this should not be a list rather a simple view model
         windowWidth: Int,
         lifecycleOwner: LifecycleOwner,
     ) {
-        sectionsListView.adapter = CategorySectionsAdapter(sectionsViewModel, windowWidth)
+        sectionsListView.adapter = CategorySectionsAdapter(sectionsViewModelList, windowWidth)
         val gridLayoutManager =
             GridLayoutManager(sectionsListView.context, DEFAULT_SPAN).apply {
                 spanSizeLookup =
                     object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
-                            return sectionsViewModel[position].columnCount
+                            return sectionsViewModelList[position].columnCount
                         }
                     }
             }
@@ -49,11 +49,12 @@ object SectionsBinder {
         sectionsListView.removeItemDecorations()
         sectionsListView.addItemDecoration(
             CategoriesGridPaddingDecoration(
+                sectionsViewModelList,
                 sectionsListView.context.resources.getDimensionPixelSize(
                     R.dimen.grid_item_category_padding_horizontal
-                )
+                ),
             ) { position ->
-                return@CategoriesGridPaddingDecoration sectionsViewModel[position].columnCount
+                return@CategoriesGridPaddingDecoration sectionsViewModelList[position].columnCount
             }
         )
     }

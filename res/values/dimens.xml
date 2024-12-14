@@ -445,4 +445,12 @@
     <dimen name="foldable_apply_wallpaper_preview_title_margin_bottom">@dimen/handheld_apply_wallpaper_preview_title_margin_bottom</dimen>
     <dimen name="foldable_apply_wallpaper_preview_button_min_height">@dimen/handheld_apply_wallpaper_preview_button_min_height</dimen>
     <dimen name="foldable_apply_wallpaper_preview_button_min_width">178dp</dimen>
+
+    <!-- Height for curated photo tile. -->
+    <dimen name="curated_photo_height">205dp</dimen>
+    <dimen name="curated_photo_horizontal_margin">4dp</dimen>
+    <dimen name="curated_photo_tile_width">172dp</dimen>
+
+    <!-- Dimensions for more photos button -->
+    <dimen name="more_photos_button_length">154dp</dimen>
 </resources>

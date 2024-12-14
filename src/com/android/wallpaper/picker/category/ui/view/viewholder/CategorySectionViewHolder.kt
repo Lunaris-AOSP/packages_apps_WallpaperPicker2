@@ -18,16 +18,21 @@ package com.android.wallpaper.picker.category.ui.view.viewholder
 
 import android.graphics.Rect
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.wallpaper.R
 import com.android.wallpaper.picker.category.ui.view.adapter.CategoryAdapter
+import com.android.wallpaper.picker.category.ui.view.adapter.CuratedPhotosAdapter
+import com.android.wallpaper.picker.category.ui.viewmodel.CategoriesViewModel
 import com.android.wallpaper.picker.category.ui.viewmodel.SectionViewModel
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.CarouselSnapHelper
 
 /** This view holder caches reference to pertinent views in a [CategorySectionView] */
 class CategorySectionViewHolder(itemView: View, val windowWidth: Int) :
@@ -39,39 +44,62 @@ class CategorySectionViewHolder(itemView: View, val windowWidth: Int) :
     // title for the section
     private var sectionTitle: TextView
 
+    private var morePhotosButton: Button
+
     init {
         sectionTiles = itemView.requireViewById(R.id.category_wallpaper_tiles)
         sectionTitle = itemView.requireViewById(R.id.section_title)
+        morePhotosButton = itemView.requireViewById(R.id.more_photos_button)
     }
 
     fun bind(item: SectionViewModel) {
         // TODO: this probably is not necessary but if in the case the sections get updated we
         //  should just update the adapter instead of instantiating a new instance
-        sectionTiles.adapter = CategoryAdapter(item.tileViewModels, item.columnCount, windowWidth)
+        when (item.displayType) {
+            CategoriesViewModel.DisplayType.Carousel -> {
+                sectionTiles.adapter =
+                    CuratedPhotosAdapter(item.tileViewModels, item.columnCount, windowWidth)
 
-        val layoutManager = FlexboxLayoutManager(itemView.context)
+                val layoutManagerCuratedPhotos = CarouselLayoutManager()
 
-        // Horizontal orientation
-        layoutManager.flexDirection = FlexDirection.ROW
+                sectionTiles.layoutManager = layoutManagerCuratedPhotos
 
-        // disable wrapping to make sure everything fits on a single row
-        layoutManager.flexWrap = FlexWrap.NOWRAP
+                val snapHelper = CarouselSnapHelper()
 
-        // Stretch items to fill the horizontal axis
-        layoutManager.alignItems = AlignItems.STRETCH
+                snapHelper.attachToRecyclerView(sectionTiles)
+                morePhotosButton.setOnClickListener { _ -> item.onSectionClicked?.invoke() }
+            }
+            else -> {
+                morePhotosButton.visibility = View.GONE
 
-        // Distribute items evenly on the horizontal axis
-        layoutManager.justifyContent = JustifyContent.SPACE_AROUND
+                sectionTiles.adapter =
+                    CategoryAdapter(item.tileViewModels, item.columnCount, windowWidth)
 
-        sectionTiles.layoutManager = layoutManager as RecyclerView.LayoutManager?
+                val layoutManager = FlexboxLayoutManager(itemView.context)
 
-        val itemDecoration =
-            HorizontalSpaceItemDecoration(
-                itemView.context.resources
-                    .getDimension(R.dimen.creative_category_grid_padding_horizontal)
-                    .toInt()
-            )
-        sectionTiles.addItemDecoration(itemDecoration)
+                // Horizontal orientation
+                layoutManager.flexDirection = FlexDirection.ROW
+
+                // disable wrapping to make sure everything fits on a single row
+                layoutManager.flexWrap = FlexWrap.NOWRAP
+
+                // Stretch items to fill the horizontal axis
+                layoutManager.alignItems = AlignItems.STRETCH
+
+                // Distribute items evenly on the horizontal axis
+                layoutManager.justifyContent = JustifyContent.SPACE_AROUND
+
+                sectionTiles.layoutManager = layoutManager
+
+                val itemDecoration =
+                    HorizontalSpaceItemDecoration(
+                        itemView.context.resources
+                            .getDimension(R.dimen.creative_category_grid_padding_horizontal)
+                            .toInt()
+                    )
+                sectionTiles.addItemDecoration(itemDecoration)
+            }
+        }
 
         if (item.sectionTitle != null) {
             sectionTitle.text = item.sectionTitle
@@ -88,7 +116,7 @@ class CategorySectionViewHolder(itemView: View, val windowWidth: Int) :
             outRect: Rect,
             view: View,
             parent: RecyclerView,
-            state: RecyclerView.State
+            state: RecyclerView.State,
         ) {
             if (parent.getChildAdapterPosition(view) != 0) {
                 outRect.left = horizontalSpace

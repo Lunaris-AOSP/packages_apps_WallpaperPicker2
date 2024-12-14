@@ -52,30 +52,31 @@ class TabItemAnimator : DefaultItemAnimator() {
         preLayoutInfo: ItemHolderInfo,
         postLayoutInfo: ItemHolderInfo,
     ): Boolean {
-        if (preLayoutInfo is TabItemHolderInfo) {
-            val viewHolder = newHolder as TabViewHolder
-            val iconSize =
-                viewHolder.itemView.resources.getDimensionPixelSize(
-                    R.dimen.floating_tab_toolbar_tab_icon_size
-                )
-            ValueAnimator.ofFloat(
-                    if (preLayoutInfo.selectItem) 0f else 1f,
-                    if (preLayoutInfo.selectItem) 1f else 0f,
-                )
-                .apply {
-                    addUpdateListener {
-                        val value = it.animatedValue as Float
-                        viewHolder.icon.layoutParams =
-                            viewHolder.icon.layoutParams.apply {
-                                width = (value * iconSize).toInt()
-                            }
-                        viewHolder.container.background.alpha =
-                            (value * BACKGROUND_ALPHA_MAX).toInt()
+        if (preLayoutInfo is TabItemHolderInfo && newHolder is TabViewHolder) {
+            newHolder.itemView.post {
+                val iconSize =
+                    newHolder.itemView.resources.getDimensionPixelSize(
+                        R.dimen.floating_tab_toolbar_tab_icon_size
+                    )
+                ValueAnimator.ofFloat(
+                        if (preLayoutInfo.selectItem) 0f else 1f,
+                        if (preLayoutInfo.selectItem) 1f else 0f,
+                    )
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            newHolder.icon.layoutParams =
+                                newHolder.icon.layoutParams.apply {
+                                    width = (value * iconSize).toInt()
+                                }
+                            newHolder.container.background.alpha =
+                                (value * BACKGROUND_ALPHA_MAX).toInt()
+                        }
+                        addListener { doOnEnd { dispatchAnimationFinished(newHolder) } }
+                        duration = ANIMATION_DURATION_MILLIS
                     }
-                    addListener { doOnEnd { dispatchAnimationFinished(viewHolder) } }
-                    duration = ANIMATION_DURATION_MILLIS
-                }
-                .start()
+                    .start()
+            }
             return true
         }
 

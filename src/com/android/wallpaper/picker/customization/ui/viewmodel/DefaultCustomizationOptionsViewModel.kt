@@ -42,6 +42,8 @@ constructor(@Assisted viewModelScope: CoroutineScope) : CustomizationOptionsView
         }
     }
 
+    override fun resetPreview() {}
+
     fun selectOption(option: CustomizationOptionUtil.CustomizationOption) {
         _selectedOptionState.value = option
     }
