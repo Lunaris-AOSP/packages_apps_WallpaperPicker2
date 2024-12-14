@@ -45,11 +45,12 @@ import com.android.wallpaper.network.Requester;
 import com.android.wallpaper.picker.category.wrapper.WallpaperCategoryWrapper;
 import com.android.wallpaper.picker.customization.data.repository.WallpaperRepository;
 import com.android.wallpaper.picker.customization.domain.interactor.WallpaperInteractor;
+import com.android.wallpaper.testing.FakeCurrentWallpaperInfoFactory;
 import com.android.wallpaper.testing.FakeDisplaysProvider;
 import com.android.wallpaper.testing.FakeWallpaperClient;
+import com.android.wallpaper.testing.FakeWallpaperRefresher;
 import com.android.wallpaper.testing.TestAsset;
 import com.android.wallpaper.testing.TestBitmapCropper;
-import com.android.wallpaper.testing.TestCurrentWallpaperInfoFactory;
 import com.android.wallpaper.testing.TestInjector;
 import com.android.wallpaper.testing.TestPackageStatusNotifier;
 import com.android.wallpaper.testing.TestStaticWallpaperInfo;
@@ -112,6 +113,9 @@ public class DefaultWallpaperPersisterTest {
                                 testDispatcher
                         )
                 );
+        FakeWallpaperRefresher refresher = new FakeWallpaperRefresher(mPrefs);
+        FakeCurrentWallpaperInfoFactory wallpaperInfoFactory =
+                new FakeCurrentWallpaperInfoFactory(refresher);
 
         InjectorProvider.setInjector(new TestInjector(
                 new TestUserEventLogger(),
@@ -121,13 +125,13 @@ public class DefaultWallpaperPersisterTest {
                 mock(PartnerProvider.class),
                 new FakeWallpaperClient(),
                 wallpaperInteractor,
-                mock(WallpaperPreferences.class),
+                mPrefs,
                 mock(WallpaperCategoryWrapper.class),
-                mTestPackageStatusNotifier
+                mTestPackageStatusNotifier,
+                wallpaperInfoFactory,
+                refresher
         ));
 
-        TestCurrentWallpaperInfoFactory wallpaperInfoFactory =
-                new TestCurrentWallpaperInfoFactory(mContext);
 
         mPersister = new DefaultWallpaperPersister(mContext, mManager, mPrefs, changedNotifier,
                 displayUtils, cropper, statusChecker, wallpaperInfoFactory, false);

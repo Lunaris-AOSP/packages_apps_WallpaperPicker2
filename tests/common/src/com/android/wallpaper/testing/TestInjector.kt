@@ -85,19 +85,19 @@ constructor(
     private val prefs: WallpaperPreferences,
     private val fakeWallpaperCategoryWrapper: WallpaperCategoryWrapper,
     private val testStatusNotifier: TestPackageStatusNotifier,
+    private val currentWallpaperInfoFactory: FakeCurrentWallpaperInfoFactory,
+    private val wallpaperRefresher: FakeWallpaperRefresher,
 ) : Injector {
     private var appScope: CoroutineScope? = null
     private var alarmManagerWrapper: AlarmManagerWrapper? = null
     private var bitmapCropper: BitmapCropper? = null
     private var categoryProvider: CategoryProvider? = null
-    private var currentWallpaperInfoFactory: CurrentWallpaperInfoFactory? = null
     private var customizationSections: CustomizationSections? = null
     private var drawableLayerResolver: DrawableLayerResolver? = null
     private var exploreIntentChecker: ExploreIntentChecker? = null
     private var performanceMonitor: PerformanceMonitor? = null
     private var systemFeatureChecker: SystemFeatureChecker? = null
     private var wallpaperPersister: WallpaperPersister? = null
-    private var wallpaperRefresher: WallpaperRefresher? = null
     private var wallpaperStatusChecker: WallpaperStatusChecker? = null
     private var flags: BaseFlags? = null
     private var undoInteractor: UndoInteractor? = null
@@ -131,9 +131,6 @@ constructor(
 
     override fun getCurrentWallpaperInfoFactory(context: Context): CurrentWallpaperInfoFactory {
         return currentWallpaperInfoFactory
-            ?: TestCurrentWallpaperInfoFactory(context.applicationContext).also {
-                currentWallpaperInfoFactory = it
-            }
     }
 
     override fun getCustomizationSections(activity: ComponentActivity): CustomizationSections {
@@ -233,7 +230,6 @@ constructor(
 
     override fun getWallpaperRefresher(context: Context): WallpaperRefresher {
         return wallpaperRefresher
-            ?: TestWallpaperRefresher(context.applicationContext).also { wallpaperRefresher = it }
     }
 
     override fun getWallpaperStatusChecker(context: Context): WallpaperStatusChecker {
