@@ -17,6 +17,7 @@
 package com.android.wallpaper.picker.di.modules
 
 import android.app.WallpaperManager
+import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -203,6 +204,12 @@ abstract class SharedAppModule {
         @Singleton
         fun providePackageManager(@ApplicationContext appContext: Context): PackageManager {
             return appContext.packageManager
+        }
+
+        @Provides
+        @Singleton
+        fun provideContentResolver(@ApplicationContext appContext: Context): ContentResolver {
+            return appContext.contentResolver
         }
 
         @Provides
