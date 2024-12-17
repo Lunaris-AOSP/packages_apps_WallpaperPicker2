@@ -30,6 +30,8 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"Fons de pantalla diari"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"Pantalla d\'inici i de bloqueig"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"Tria un fons de pantalla"</string>
+    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
+    <skip />
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"Crea un fons de pantalla"</string>
     <string name="home_screen_message" msgid="106444102822522813">"Pantalla d\'inici"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"Pantalla de bloqueig"</string>
@@ -43,6 +45,8 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"Per mostrar el fons de pantalla actual, l\'aplicació Fons de pantalla necessita accedir a l\'emmagatzematge del dispositiu.\n\nPots canviar aquesta opció de configuració a l\'apartat Permisos de la informació de l\'aplicació."</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"Permet l\'accés"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"Servei de fons de pantalla animats per a fons de pantalla rotatius"</string>
+    <!-- no translation found for more_photos (2183343115041498453) -->
+    <skip />
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"Fons de pantalla diari"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"Toca per activar"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"El fons de pantalla canviarà automàticament cada dia. Per completar la configuració, toca &lt;strong&gt;Estableix el fons de pantalla&lt;/strong&gt; a la pantalla següent."</string>
