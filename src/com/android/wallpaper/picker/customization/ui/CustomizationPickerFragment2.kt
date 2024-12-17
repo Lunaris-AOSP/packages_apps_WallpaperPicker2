@@ -16,9 +16,11 @@
 
 package com.android.wallpaper.picker.customization.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -236,6 +238,9 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                         addToBackStack(null)
                     }
                 }
+            },
+            navigateToMoreLockScreenSettingsActivity = {
+                activity?.startActivity(Intent(Settings.ACTION_LOCKSCREEN_SETTINGS))
             },
         )
 

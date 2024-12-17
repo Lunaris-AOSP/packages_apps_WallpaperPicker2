@@ -44,6 +44,7 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         colorUpdateViewModel: ColorUpdateViewModel,
         lifecycleOwner: LifecycleOwner,
         navigateToWallpaperCategoriesScreen: (screen: Screen) -> Unit,
+        navigateToMoreLockScreenSettingsActivity: () -> Unit,
     ) {
         val moreWallpapersLock =
             lockScreenCustomizationOptionEntries
