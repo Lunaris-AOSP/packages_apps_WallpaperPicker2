@@ -120,7 +120,6 @@ object WorkspacePreviewBinder {
                                     viewModel = viewModel.customizationOptionsViewModel,
                                     colorUpdateViewModel = colorUpdateViewModel,
                                     screen = screen,
-                                    lifecycleOwner = lifecycleOwner,
                                     clockViewFactory = clockViewFactory,
                                 )
                             }
