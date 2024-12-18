@@ -28,6 +28,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toolbar
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
@@ -317,12 +318,20 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         val previewViewModel = customizationPickerViewModel.basePreviewViewModel
         pager.apply {
             adapter = PreviewPagerAdapter { viewHolder, position ->
-                val previewCard = viewHolder.itemView.requireViewById<View>(R.id.preview_card)
+                val previewLabel: TextView = viewHolder.itemView.requireViewById(R.id.preview_label)
+                val previewCard: View = viewHolder.itemView.requireViewById(R.id.preview_card)
+
                 val screen =
                     if (position == 0) {
                         LOCK_SCREEN
                     } else {
                         HOME_SCREEN
+                    }
+
+                previewLabel.text =
+                    when (screen) {
+                        LOCK_SCREEN -> view.resources.getString(R.string.lock_screen_tab)
+                        HOME_SCREEN -> view.resources.getString(R.string.home_screen_tab)
                     }
 
                 if (screen == LOCK_SCREEN) {
