@@ -263,6 +263,14 @@
     <dimen name="home_screen_overlay_top_clipping">90dp</dimen>
     <dimen name="home_screen_overlay_bottom_clipping">40dp</dimen>
 
+    <!-- Wallpaper control button for new picker UI -->
+    <dimen name="control_label_button_corner_radius">100dp</dimen>
+    <dimen name="control_label_button_drawable_padding">8dp</dimen>
+    <dimen name="control_label_button_padding_vertical">16dp</dimen>
+    <dimen name="control_label_button_padding_horizontal">24dp</dimen>
+    <dimen name="wallpaper_control_button_size2">56dp</dimen>
+    <dimen name="wallpaper_control_button_group_divider_space2">8dp</dimen>
+
     <!-- Apply button -->
     <dimen name="apply_button_corner_radius">100dp</dimen>
     <dimen name="apply_button_width">70dp</dimen>
