@@ -30,6 +30,8 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"နေ့စဉ် နောက်ခံ"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"ပင်မစာမျက်နှာနှင့် လော့ခ်ချထားချိန် မျက်နှာပြင်"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"နောက်ခံရွေးရန်"</string>
+    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
+    <skip />
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"နောက်ခံလုပ်ရန်"</string>
     <string name="home_screen_message" msgid="106444102822522813">"ပင်မစာမျက်နှာ"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"လော့ခ်မျက်နှာပြင်"</string>
@@ -43,6 +45,8 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"ဤနေရာတွင် လက်ရှိနောက်ခံကို ပြသရန်အတွက် Wallpapers သည် သင့်စက်၏ သိုလှောင်ခန်းကို အသုံးပြုခွင့်လိုအပ်သည်။\n\nဤဆက်တင်ကို ပြောင်းရန် Wallpapers ၏ အက်ပ်အချက်အလက်များထဲရှိ \'ခွင့်ပြုချက်များ\' ဧရိယာသို့ သွားပါ။"</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"အသုံးပြုခွင့်ပေးရန်"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"နောက်ခံများ လှည့်ရန်အတွက် သက်ဝင်နောက်ခံ ဝန်ဆောင်မှု"</string>
+    <!-- no translation found for more_photos (2183343115041498453) -->
+    <skip />
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"နေ့စဉ် နောက်ခံ"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"ဖွင့်ရန်တို့ပါ"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"နောက်ခံသည် နေ့စဉ်အလိုအလျောက် ပြောင်းပါမည်။ စနစ်ထည့်သွင်းမှုကို အဆုံးသတ်ရန် နောက်လာမည့် မျက်နှာပြင်တွင် &lt;strong&gt;နောက်ခံ သတ်မှတ်ရန်&lt;/strong&gt; ကို တို့ပါ။"</string>
