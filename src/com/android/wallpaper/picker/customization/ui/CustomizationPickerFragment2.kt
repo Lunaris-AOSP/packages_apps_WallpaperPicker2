@@ -28,6 +28,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toolbar
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
@@ -100,8 +101,6 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
     private var onBackPressedCallback: OnBackPressedCallback? = null
 
-    private var customizationOptionFloatingSheetViewMap: Map<CustomizationOption, View>? = null
-
     private val startForResult =
         this.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
@@ -146,7 +145,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             WindowInsetsCompat.CONSUMED
         }
 
-        customizationOptionFloatingSheetViewMap =
+        val customizationOptionFloatingSheetViewMap =
             customizationOptionUtil.initFloatingSheet(
                 pickerMotionContainer.requireViewById(
                     R.id.customization_option_floating_sheet_container
@@ -225,9 +224,20 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             },
             navigateToSecondary = { screen ->
                 if (pickerMotionContainer.currentState != R.id.secondary) {
-                    setCustomizationOptionFloatingSheet(view, pickerMotionContainer, screen) {
-                        fullyCollapsed = pickerMotionContainer.progress == 1.0f
-                        pickerMotionContainer.transitionToState(R.id.secondary)
+                    customizationOptionFloatingSheetViewMap[screen]?.let { floatingSheetView ->
+                        setCustomizationOptionFloatingSheet(
+                            floatingSheetViewContent = floatingSheetView,
+                            floatingSheetContainer =
+                                view.requireViewById(
+                                    R.id.customization_option_floating_sheet_container
+                                ),
+                            motionContainer = pickerMotionContainer,
+                            onComplete = {
+                                // Transition to secondary screen after content is set
+                                fullyCollapsed = pickerMotionContainer.progress == 1.0f
+                                pickerMotionContainer.transitionToState(R.id.secondary)
+                            },
+                        )
                     }
                 }
             },
@@ -241,6 +251,11 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             },
             navigateToMoreLockScreenSettingsActivity = {
                 activity?.startActivity(Intent(Settings.ACTION_LOCKSCREEN_SETTINGS))
+            },
+            navigateToColorContrastSettingsActivity = {
+                activity?.startActivity(
+                    Intent(Settings.ACTION_ACCESSIBILITY_COLOR_CONTRAST_SETTINGS)
+                )
             },
         )
 
@@ -303,12 +318,20 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         val previewViewModel = customizationPickerViewModel.basePreviewViewModel
         pager.apply {
             adapter = PreviewPagerAdapter { viewHolder, position ->
-                val previewCard = viewHolder.itemView.requireViewById<View>(R.id.preview_card)
+                val previewLabel: TextView = viewHolder.itemView.requireViewById(R.id.preview_label)
+                val previewCard: View = viewHolder.itemView.requireViewById(R.id.preview_card)
+
                 val screen =
                     if (position == 0) {
                         LOCK_SCREEN
                     } else {
                         HOME_SCREEN
+                    }
+
+                previewLabel.text =
+                    when (screen) {
+                        LOCK_SCREEN -> view.resources.getString(R.string.lock_screen_tab)
+                        HOME_SCREEN -> view.resources.getString(R.string.home_screen_tab)
                     }
 
                 if (screen == LOCK_SCREEN) {
@@ -420,20 +443,15 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
     }
 
     /**
-     * Set customization option floating sheet to the floating sheet container and get the new
-     * container's height for repositioning the preview's guideline.
+     * Set customization option floating sheet content to the floating sheet container and get the
+     * new container's height for repositioning the preview's guideline.
      */
     private fun setCustomizationOptionFloatingSheet(
-        view: View,
+        floatingSheetViewContent: View,
+        floatingSheetContainer: FrameLayout,
         motionContainer: MotionLayout,
-        option: CustomizationOption,
         onComplete: () -> Unit,
     ) {
-        val floatingSheetViewContent =
-            customizationOptionFloatingSheetViewMap?.get(option) ?: return
-
-        val floatingSheetContainer =
-            view.requireViewById<FrameLayout>(R.id.customization_option_floating_sheet_container)
         floatingSheetContainer.removeAllViews()
         floatingSheetContainer.addView(floatingSheetViewContent)
 

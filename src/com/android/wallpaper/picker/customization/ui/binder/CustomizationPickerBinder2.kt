@@ -62,6 +62,7 @@ object CustomizationPickerBinder2 {
         navigateToSecondary: (screen: CustomizationOption) -> Unit,
         navigateToCategoriesScreen: (screen: Screen) -> Unit,
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
+        navigateToColorContrastSettingsActivity: () -> Unit,
     ) {
         val optionContainer =
             view.requireViewById<MotionLayout>(R.id.customization_option_container)
@@ -174,6 +175,7 @@ object CustomizationPickerBinder2 {
             lifecycleOwner,
             navigateToCategoriesScreen,
             navigateToMoreLockScreenSettingsActivity,
+            navigateToColorContrastSettingsActivity,
         )
     }
 }
