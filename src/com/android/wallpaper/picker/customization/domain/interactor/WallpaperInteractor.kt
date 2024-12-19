@@ -51,9 +51,7 @@ class WallpaperInteractor @Inject constructor(private val repository: WallpaperR
     }
 
     /** Returns the ID of the currently-selected wallpaper. */
-    fun selectedWallpaperId(
-        destination: WallpaperDestination,
-    ): StateFlow<String> {
+    fun selectedWallpaperId(destination: WallpaperDestination): StateFlow<String> {
         return repository.selectedWallpaperId(destination = destination)
     }
 
@@ -61,16 +59,12 @@ class WallpaperInteractor @Inject constructor(private val repository: WallpaperR
      * Returns the ID of the wallpaper that is in the process of becoming the selected wallpaper or
      * `null` if no such transaction is currently taking place.
      */
-    fun selectingWallpaperId(
-        destination: WallpaperDestination,
-    ): Flow<String?> {
+    fun selectingWallpaperId(destination: WallpaperDestination): Flow<String?> {
         return repository.selectingWallpaperId.map { it[destination] }
     }
 
     /** This is true when a wallpaper is selected but not yet set to the System. */
-    fun isSelectingWallpaper(
-        destination: WallpaperDestination,
-    ): Flow<Boolean> {
+    fun isSelectingWallpaper(destination: WallpaperDestination): Flow<Boolean> {
         return selectingWallpaperId(destination).distinctUntilChanged().map { it != null }
     }
 
@@ -79,22 +73,15 @@ class WallpaperInteractor @Inject constructor(private val repository: WallpaperR
      *
      * The first one is the most recent (current) wallpaper.
      */
-    fun previews(
-        destination: WallpaperDestination,
-        maxResults: Int,
-    ): Flow<List<WallpaperModel>> {
-        return repository
-            .recentWallpapers(
-                destination = destination,
-                limit = maxResults,
-            )
-            .map { previews ->
-                if (previews.size > maxResults) {
-                    previews.subList(0, maxResults)
-                } else {
-                    previews
-                }
+    fun previews(destination: WallpaperDestination, maxResults: Int): Flow<List<WallpaperModel>> {
+        return repository.recentWallpapers(destination = destination, limit = maxResults).map {
+            previews ->
+            if (previews.size > maxResults) {
+                previews.subList(0, maxResults)
+            } else {
+                previews
             }
+        }
     }
 
     /** Sets the wallpaper to the one with the given ID. */
@@ -114,12 +101,12 @@ class WallpaperInteractor @Inject constructor(private val repository: WallpaperR
     suspend fun loadThumbnail(
         wallpaperId: String,
         lastUpdatedTimestamp: Long,
-        destination: WallpaperDestination
+        destination: WallpaperDestination,
     ): Bitmap? {
         return repository.loadThumbnail(
             wallpaperId = wallpaperId,
             lastUpdatedTimestamp = lastUpdatedTimestamp,
-            destination = destination
+            destination = destination,
         )
     }
 }
