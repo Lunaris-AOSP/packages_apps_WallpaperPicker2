@@ -75,7 +75,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -120,8 +120,22 @@ constructor(
 
     override fun recentWallpapers(destination: WallpaperDestination, limit: Int) =
         when (destination) {
-            HOME -> recentHomeWallpapers.asStateFlow().filterNotNull().take(limit)
-            LOCK -> recentLockWallpapers.asStateFlow().filterNotNull().take(limit)
+            HOME ->
+                recentHomeWallpapers.asStateFlow().filterNotNull().map { wallpapers ->
+                    if (wallpapers.size > limit) {
+                        wallpapers.subList(0, limit)
+                    } else {
+                        wallpapers
+                    }
+                }
+            LOCK ->
+                recentLockWallpapers.asStateFlow().filterNotNull().map { wallpapers ->
+                    if (wallpapers.size > limit) {
+                        wallpapers.subList(0, limit)
+                    } else {
+                        wallpapers
+                    }
+                }
             BOTH ->
                 throw IllegalStateException(
                     "Destination $destination should not be used for getting recent wallpapers."
