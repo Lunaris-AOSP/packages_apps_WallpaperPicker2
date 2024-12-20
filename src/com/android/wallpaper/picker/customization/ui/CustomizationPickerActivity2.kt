@@ -93,8 +93,13 @@ class CustomizationPickerActivity2 :
         setContentView(R.layout.activity_cusomization_picker2)
         WindowCompat.setDecorFitsSystemWindows(window, ActivityUtils.isSUWMode(this))
 
-        val fragment = CustomizationPickerFragment2()
-        supportFragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit()
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.fragment_container, CustomizationPickerFragment2())
+                .commit()
+        }
     }
 
     override fun onUpArrowPressed() {
