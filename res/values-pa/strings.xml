@@ -30,8 +30,7 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"ਰੋਜ਼ਾਨਾ ਵਾਲਪੇਪਰ"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"ਹੋਮ ਅਤੇ ਲਾਕ ਸਕ੍ਰੀਨ"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"ਕੋਈ ਵਾਲਪੇਪਰ ਚੁਣੋ"</string>
-    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
-    <skip />
+    <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"ਸੁਝਾਈਆਂ ਗਈਆਂ ਫ਼ੋਟੋਆਂ"</string>
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"ਵਾਲਪੇਪਰ ਬਣਾਓ"</string>
     <string name="home_screen_message" msgid="106444102822522813">"ਹੋਮ ਸਕ੍ਰੀਨ"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"ਲਾਕ ਸਕ੍ਰੀਨ"</string>
@@ -45,8 +44,7 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"ਇੱਥੇ ਵਰਤਮਾਨ ਵਾਲਪੇਪਰ ਨੂੰ ਦਿਖਾਉਣ ਲਈ, \'ਵਾਲਪੇਪਰ\' ਐਪ ਨੂੰ ਤੁਹਾਡੇ ਡੀਵਾਈਸ ਦੀ ਸਟੋਰੇਜ ਤੱਕ ਪਹੁੰਚ ਕਰਨੀ ਪਵੇਗੀ।\n\nਇਸ ਸੈਟਿੰਗ ਨੂੰ ਬਦਲਣ ਲਈ, \'ਵਾਲਪੇਪਰ\' ਐਪ ਦੀ ਜਾਣਕਾਰੀ ਦੇ ਇਜਾਜ਼ਤਾਂ ਖੇਤਰ ਵਿੱਚ ਜਾਓ।"</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"ਪਹੁੰਚ ਕਰਨ ਦਿਓ"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"ਬਦਲਣ ਵਾਲੇ ਚਿੱਤਰ ਵਾਲਪੇਪਰਾਂ ਲਈ ਲਾਈਵ ਵਾਲਪੇਪਰ ਸੇਵਾ"</string>
-    <!-- no translation found for more_photos (2183343115041498453) -->
-    <skip />
+    <string name="more_photos" msgid="2183343115041498453">"ਹੋਰ ਫ਼ੋਟੋਆਂ"</string>
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"ਰੋਜ਼ਾਨਾ ਵਾਲਪੇਪਰ"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"ਚਾਲੂ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"ਵਾਲਪੇਪਰ ਸਵੈਚਲਿਤ ਤੌਰ \'ਤੇ ਹਰ ਦਿਨ ਬਦਲੇਗਾ। ਸੈੱਟਅੱਪ ਪੂਰਾ ਕਰਨ ਲਈ, ਅਗਲੀ ਸਕ੍ਰੀਨ \'ਤੇ &lt;strong&gt;ਵਾਲਪੇਪਰ ਸੈੱਟ ਕਰੋ&lt;/strong&gt; \'ਤੇ ਟੈਪ ਕਰੋ।"</string>

@@ -30,8 +30,7 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"每日壁纸"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"主屏幕和锁定屏幕"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"选择一张壁纸"</string>
-    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
-    <skip />
+    <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"建议的照片"</string>
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"制作壁纸"</string>
     <string name="home_screen_message" msgid="106444102822522813">"主屏幕"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"锁定屏幕"</string>
@@ -45,8 +44,7 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"要在这里显示当前壁纸，壁纸应用需要访问您设备的存储空间。\n\n要更改此设置，请转到壁纸应用的应用信息的“权限”部分。"</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"允许访问"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"可轮换展示壁纸的动态壁纸服务"</string>
-    <!-- no translation found for more_photos (2183343115041498453) -->
-    <skip />
+    <string name="more_photos" msgid="2183343115041498453">"更多照片"</string>
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"每日壁纸"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"点按即可启用"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"壁纸将每天自动更换。要完成设置，请在下一个屏幕上点按&lt;strong&gt;设置壁纸&lt;/strong&gt;。"</string>

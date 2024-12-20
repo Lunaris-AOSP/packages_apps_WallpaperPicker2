@@ -30,8 +30,7 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"Fond d\'écran quotidien"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"Écran d\'accueil et écran de verrouillage"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"Choisir un fond d\'écran"</string>
-    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
-    <skip />
+    <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"Photos suggérées"</string>
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"Créer un fond d\'écran"</string>
     <string name="home_screen_message" msgid="106444102822522813">"Écran d\'accueil"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"Écran de verrouillage"</string>
@@ -45,8 +44,7 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"Pour afficher le fond d\'écran actuel, l\'application Wallpapers doit pouvoir accéder à l\'espace de stockage de votre appareil.\n\nPour modifier ce paramètre, accédez à la section \"Autorisations\" des informations sur l\'application Wallpapers."</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"Autoriser l\'accès"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"Service de fonds d\'écran animés pour la rotation de fonds d\'écran"</string>
-    <!-- no translation found for more_photos (2183343115041498453) -->
-    <skip />
+    <string name="more_photos" msgid="2183343115041498453">"Plus de photos"</string>
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"Fond d\'écran quotidien"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"Appuyer pour activer"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"Le fond d\'écran change automatiquement chaque jour. Pour terminer la configuration, appuyez sur &lt;strong&gt;Définir comme fond d\'écran&lt;/strong&gt; sur l\'écran suivant."</string>
