@@ -35,12 +35,10 @@ import androidx.navigation.fragment.findNavController
 import com.android.wallpaper.R
 import com.android.wallpaper.model.WallpaperInfoContract
 import com.android.wallpaper.picker.AppbarFragment
-import com.android.wallpaper.picker.data.LiveWallpaperData
-import com.android.wallpaper.picker.data.WallpaperModel.LiveWallpaperModel
 import com.android.wallpaper.picker.di.modules.MainDispatcher
-import com.android.wallpaper.picker.preview.data.repository.WallpaperPreviewRepository
 import com.android.wallpaper.picker.preview.ui.binder.FullWallpaperPreviewBinder
 import com.android.wallpaper.picker.preview.ui.fragment.SmallPreviewFragment.Companion.ARG_EDIT_INTENT
+import com.android.wallpaper.picker.preview.ui.util.ContentHandlingUtil
 import com.android.wallpaper.picker.preview.ui.viewmodel.PreviewActionsViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
 import com.android.wallpaper.util.DisplayUtils
@@ -50,7 +48,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
 
 /** Shows full preview with an edit activity overlay. */
 @AndroidEntryPoint(AppbarFragment::class)
@@ -59,7 +56,6 @@ class CreativeEditPreviewFragment : Hilt_CreativeEditPreviewFragment() {
     @Inject @ApplicationContext lateinit var appContext: Context
     @Inject @MainDispatcher lateinit var mainScope: CoroutineScope
     @Inject lateinit var displayUtils: DisplayUtils
-    @Inject lateinit var previewRepository: WallpaperPreviewRepository
     @Inject lateinit var wallpaperConnectionUtils: WallpaperConnectionUtils
 
     private lateinit var currentView: View
@@ -150,50 +146,21 @@ class CreativeEditPreviewFragment : Hilt_CreativeEditPreviewFragment() {
     private fun updatePreview(resultCode: Int, intent: Intent?) {
         if (!liveWallpaperContentHandling()) return
         if (resultCode == RESULT_OK) {
-            val component =
-                (previewRepository.wallpaperModel.value as LiveWallpaperModel)
-                    .liveWallpaperData
-                    .systemWallpaperInfo
-                    .component
-            intent
-                ?.extras
-                ?.getParcelable(
-                    WallpaperInfoContract.WALLPAPER_DESCRIPTION_CONTENT_HANDLING,
-                    WallpaperDescription::class.java,
-                )
-                ?.let {
-                    if (it.component != null) {
-                        it
-                    } else {
-                        // Live wallpaper services can't provide their component name, so
-                        // set it here
-                        it.toBuilder().setComponent(component).build()
-                    }
+            wallpaperPreviewViewModel.wallpaper.value?.let {
+                ContentHandlingUtil.updatePreview(
+                    context = appContext,
+                    wallpaperModel = it,
+                    wallpaperDescription =
+                        intent
+                            ?.extras
+                            ?.getParcelable(
+                                WallpaperInfoContract.WALLPAPER_DESCRIPTION_CONTENT_HANDLING,
+                                WallpaperDescription::class.java,
+                            ),
+                ) { wallpaperModel ->
+                    wallpaperPreviewViewModel.setPreviewWallpaperModel(wallpaperModel)
                 }
-                ?.let { description ->
-                    (previewRepository.wallpaperModel.value as LiveWallpaperModel).let {
-                        val sourceLiveData = it.liveWallpaperData
-                        val updatedLiveData =
-                            LiveWallpaperData(
-                                sourceLiveData.groupName,
-                                sourceLiveData.systemWallpaperInfo,
-                                sourceLiveData.isTitleVisible,
-                                sourceLiveData.isApplied,
-                                sourceLiveData.isEffectWallpaper,
-                                sourceLiveData.effectNames,
-                                sourceLiveData.contextDescription,
-                                description,
-                            )
-                        val updatedWallpaper =
-                            LiveWallpaperModel(
-                                it.commonWallpaperData,
-                                updatedLiveData,
-                                it.creativeWallpaperData,
-                                it.internalLiveWallpaperData,
-                            )
-                        runBlocking { previewRepository.setWallpaperModel(updatedWallpaper) }
-                    }
-                }
+            }
         }
     }
 
