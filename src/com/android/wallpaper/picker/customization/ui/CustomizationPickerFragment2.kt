@@ -348,7 +348,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                             clockHostView = clockHostView,
                             viewModel = customizationPickerViewModel,
                             colorUpdateViewModel = colorUpdateViewModel,
-                            lifecycleOwner = this@CustomizationPickerFragment2,
+                            lifecycleOwner = viewLifecycleOwner,
                             clockViewFactory = clockViewFactory,
                         )
                     }
@@ -367,7 +367,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                             previewViewModel.wallpaperDisplaySize.value
                         else previewViewModel.smallerDisplaySize,
                     mainScope = mainScope,
-                    lifecycleOwner = this@CustomizationPickerFragment2,
+                    lifecycleOwner = viewLifecycleOwner,
                     wallpaperConnectionUtils = wallpaperConnectionUtils,
                     isFirstBindingDeferred = CompletableDeferred(isFirstBinding),
                     onLaunchPreview = { wallpaperModel ->

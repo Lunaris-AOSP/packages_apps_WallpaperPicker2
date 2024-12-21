@@ -18,7 +18,6 @@ package com.android.wallpaper.picker.common.preview.ui.binder
 
 import android.os.Bundle
 import android.os.Message
-import androidx.lifecycle.LifecycleOwner
 import com.android.customization.picker.clock.ui.view.ClockViewFactory
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
@@ -30,12 +29,11 @@ import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationOpti
  */
 interface WorkspaceCallbackBinder {
 
-    fun bind(
+    suspend fun bind(
         workspaceCallback: Message,
         viewModel: CustomizationOptionsViewModel,
         colorUpdateViewModel: ColorUpdateViewModel,
         screen: Screen,
-        lifecycleOwner: LifecycleOwner,
         clockViewFactory: ClockViewFactory,
     )
 

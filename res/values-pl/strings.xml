@@ -30,6 +30,8 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"Codzienna tapeta"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"Ekran główny i ekran blokady"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"Wybierz tapetę"</string>
+    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
+    <skip />
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"Utwórz tapetę"</string>
     <string name="home_screen_message" msgid="106444102822522813">"Ekran główny"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"Ekran blokady"</string>
@@ -43,6 +45,8 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"Aby wyświetlać tutaj aktualną tapetę, Tapety muszą mieć dostęp do pamięci urządzenia.\n\nTo ustawienie możesz zmienić w sekcji Uprawnienia w informacjach o aplikacji Tapety."</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"Zezwól na dostęp"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"Animowane tapety dla tapet obracanych"</string>
+    <!-- no translation found for more_photos (2183343115041498453) -->
+    <skip />
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"Codzienna tapeta"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"Kliknij, by włączyć"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"Tapeta będzie się automatycznie zmieniać każdego dnia. Aby zakończyć konfigurację, kliknij&lt;strong&gt;Ustaw tapetę&lt;/strong&gt; na kolejnym ekranie."</string>
