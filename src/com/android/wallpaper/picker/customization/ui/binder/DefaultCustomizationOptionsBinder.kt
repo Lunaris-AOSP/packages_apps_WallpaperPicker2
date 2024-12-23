@@ -16,6 +16,8 @@
 
 package com.android.wallpaper.picker.customization.ui.binder
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.View
@@ -33,6 +35,7 @@ import com.android.wallpaper.picker.category.ui.view.adapter.CuratedPhotosAdapte
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil.CustomizationOption
 import com.android.wallpaper.picker.customization.ui.util.DefaultCustomizationOptionUtil
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
+import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationOptionsViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.picker.customization.ui.viewmodel.WallpaperCarouselViewModel
 import com.google.android.material.carousel.CarouselLayoutManager
@@ -162,5 +165,44 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         clockViewFactory: ClockViewFactory,
     ) {
         // Do nothing intended
+    }
+
+    override fun bindDiscardChangesDialog(
+        customizationOptionsViewModel: CustomizationOptionsViewModel,
+        lifecycleOwner: LifecycleOwner,
+        activity: Activity,
+    ) {
+        var discardChangesDialog: AlertDialog? = null
+
+        lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                customizationOptionsViewModel.discardChangesDialogViewModel.collect { viewModel ->
+                    if (viewModel != null) {
+                        val (onDismiss, onKeepEditing, onDiscard) = viewModel
+                        val dialog =
+                            discardChangesDialog
+                                ?: AlertDialog.Builder(activity)
+                                    .setMessage(R.string.discard_changes_dialog_message)
+                                    .setOnDismissListener { onDismiss.invoke() }
+                                    .setPositiveButton(
+                                        R.string.discard_changes_dialog_button_keep_editing
+                                    ) { _, _ ->
+                                        onKeepEditing.invoke()
+                                    }
+                                    .setNegativeButton(
+                                        R.string.discard_changes_dialog_button_discard
+                                    ) { _, _ ->
+                                        onDiscard.invoke()
+                                    }
+                                    .create()
+                                    .also { discardChangesDialog = it }
+                        dialog.show()
+                    } else {
+                        discardChangesDialog?.dismiss()
+                        discardChangesDialog = null
+                    }
+                }
+            }
+        }
     }
 }
