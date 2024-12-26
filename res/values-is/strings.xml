@@ -30,8 +30,7 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"Daglegt veggfóður"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"Heima- og lásskjár"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"Veldu veggfóður"</string>
-    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
-    <skip />
+    <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"Tillögur að myndum"</string>
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"Búa til veggfóður"</string>
     <string name="home_screen_message" msgid="106444102822522813">"Heimaskjár"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"Lásskjár"</string>
@@ -45,8 +44,7 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"Veggfóður þarf að fá aðgang að geymslu tækisins þíns til að birta þetta veggfóður hér.\n\nTil að breyta þessari stillingu skaltu opna heimildir í forritsupplýsingum Veggfóðurs."</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"Leyfa aðgang"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"Þjónusta fyrir kvikt, breytilegt veggfóður"</string>
-    <!-- no translation found for more_photos (2183343115041498453) -->
-    <skip />
+    <string name="more_photos" msgid="2183343115041498453">"Fleiri myndir"</string>
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"Daglegt veggfóður"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"Ýttu til að kveikja"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"Veggfóðrið breytist sjálfkrafa á hverjum degi. Ýttu á &lt;strong&gt;Velja veggfóður&lt;/strong&gt;á næsta skjá til að ljúka uppsetningu."</string>
