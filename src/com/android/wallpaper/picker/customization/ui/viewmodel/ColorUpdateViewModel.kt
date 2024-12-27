@@ -17,7 +17,6 @@
 package com.android.wallpaper.picker.customization.ui.viewmodel
 
 import android.content.Context
-import android.content.res.Configuration
 import com.android.systemui.monet.ColorScheme
 import com.android.systemui.monet.Style
 import com.android.wallpaper.R
@@ -102,6 +101,11 @@ constructor(
             R.color.system_secondary_container,
             MaterialDynamicColors().secondaryContainer(),
         )
+    val colorOnSecondaryContainer =
+        createColorFlow(
+            R.color.system_on_secondary_container,
+            MaterialDynamicColors().onSecondaryContainer(),
+        )
     val colorSurfaceContainer =
         createColorFlow(
             R.color.system_surface_container,
@@ -119,11 +123,22 @@ constructor(
             R.color.system_surface_container_highest,
             MaterialDynamicColors().surfaceContainerHighest(),
         )
+    val colorSurfaceBright =
+        createColorFlow(R.color.system_surface_bright, MaterialDynamicColors().surfaceBright())
+
+    // Custom day/night color pairing
+    val floatingToolbarBackground =
+        createColorFlow(
+            R.color.floating_toolbar_background,
+            if (!context.resources.configuration.isNightModeActive) {
+                MaterialDynamicColors().surfaceBright()
+            } else {
+                MaterialDynamicColors().surfaceContainerHigh()
+            },
+        )
 
     fun previewColors(colorSeed: Int, @Style.Type style: Int) {
-        val isDarkMode =
-            (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
-                Configuration.UI_MODE_NIGHT_YES
+        val isDarkMode = context.resources.configuration.isNightModeActive
         previewingColorScheme.value = ColorScheme(colorSeed, isDarkMode, style).materialScheme
     }
 

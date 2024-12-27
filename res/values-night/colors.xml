@@ -45,6 +45,7 @@
     <color name="connected_sections_background">@color/system_surface_container_high</color>
     <color name="picker_section_icon_background">@color/system_surface_container_high</color>
     <color name="picker_fragment_background">@color/system_surface_container_high</color>
+    <color name="floating_toolbar_background">@color/system_surface_container_high</color>
 
     <color name="ripple_material">#33ffffff</color>
 </resources>
