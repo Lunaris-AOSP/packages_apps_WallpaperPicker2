@@ -30,8 +30,7 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"दैनिक वालपेपर"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"होम तथा लक स्क्रिन"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"वालपेपर छान्नुहोस्"</string>
-    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
-    <skip />
+    <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"सिफारिस गरिएका फोटोहरू"</string>
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"वालपेपर बनाउनुहोस्"</string>
     <string name="home_screen_message" msgid="106444102822522813">"होम स्क्रिन"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"लक स्क्रिन"</string>
@@ -45,8 +44,7 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"यहाँ हालैको वालपेपर देखाउन वालपेपरहरूलाई तपाईंको डिभाइसको भण्डारणमाथिको पहुँच अनिवार्य हुन्छ।\n\nयो सेटिङ बदल्न वालपेपरहरूको एपसम्बन्धी जानकारीमा रहेको अनुमति क्षेत्रमा जानुहोस्।"</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"पहुँच राख्न दिनुहोस्"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"परिवर्तन हुने वालपेपरसम्बन्धी सेवाका लागि लाइभ वालपेपरहरू"</string>
-    <!-- no translation found for more_photos (2183343115041498453) -->
-    <skip />
+    <string name="more_photos" msgid="2183343115041498453">"थप फोटोहरू"</string>
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"दैनिक वालपेपर"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"सक्रिय गर्न ट्याप गर्नुहोस्"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"वालपेपर हरेक दिन स्वतः परिवर्तन हुने छ। सेटअप सम्पन्न गर्न अर्को स्क्रिनमा &lt;strong&gt;वालपेपर सेट गर्नुहोस्‌&lt;/strong&gt;लाई ट्याप गर्नुहोस्।"</string>

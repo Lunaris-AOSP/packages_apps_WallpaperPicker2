@@ -46,6 +46,7 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         navigateToWallpaperCategoriesScreen: (screen: Screen) -> Unit,
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
         navigateToColorContrastSettingsActivity: () -> Unit,
+        navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
     ) {
         val moreWallpapersLock =
             lockScreenCustomizationOptionEntries

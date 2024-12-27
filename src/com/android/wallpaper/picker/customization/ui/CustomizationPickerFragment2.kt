@@ -257,6 +257,9 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                     Intent(Settings.ACTION_ACCESSIBILITY_COLOR_CONTRAST_SETTINGS)
                 )
             },
+            navigateToLockScreenNotificationsSettingsActivity = {
+                activity?.startActivity(Intent(Settings.ACTION_LOCKSCREEN_NOTIFICATIONS_SETTINGS))
+            },
         )
 
         activity?.onBackPressedDispatcher?.let {

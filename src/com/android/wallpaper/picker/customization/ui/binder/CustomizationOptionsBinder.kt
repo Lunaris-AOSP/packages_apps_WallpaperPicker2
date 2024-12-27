@@ -44,6 +44,7 @@ interface CustomizationOptionsBinder {
         navigateToWallpaperCategoriesScreen: (screen: Screen) -> Unit,
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
         navigateToColorContrastSettingsActivity: () -> Unit,
+        navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
     )
 
     fun bindClockPreview(

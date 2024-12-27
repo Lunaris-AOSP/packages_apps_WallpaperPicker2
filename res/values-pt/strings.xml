@@ -30,8 +30,7 @@
     <string name="rotating_wallpaper_presentation_mode_message" msgid="3361676041605733288">"Plano de fundo diário"</string>
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"Tela inicial e de bloqueio"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"Escolha um plano de fundo"</string>
-    <!-- no translation found for choose_a_curated_photo_section_title (7360675459203465887) -->
-    <skip />
+    <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"Fotos sugeridas"</string>
     <string name="creative_wallpaper_title" msgid="3581650238648981372">"Criar plano de fundo"</string>
     <string name="home_screen_message" msgid="106444102822522813">"Tela inicial"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"Tela de bloqueio"</string>
@@ -45,8 +44,7 @@
     <string name="permission_needed_explanation_go_to_settings" msgid="3923551582092599609">"Para exibir o plano de fundo atual aqui, o Planos de fundo precisa acessar o armazenamento do dispositivo.\n\nPara alterar essa configuração, acesse a área \"Permissões\" das informações do app Planos de fundo."</string>
     <string name="permission_needed_allow_access_button_label" msgid="1943133660612924306">"Permitir acesso"</string>
     <string name="no_backup_image_wallpaper_description" msgid="8303268619408738057">"Serviço de plano de fundo interativo para rotação de planos de fundo"</string>
-    <!-- no translation found for more_photos (2183343115041498453) -->
-    <skip />
+    <string name="more_photos" msgid="2183343115041498453">"Mais fotos"</string>
     <string name="daily_refresh_tile_title" msgid="3270456074558525091">"Plano de fundo diário"</string>
     <string name="daily_refresh_tile_subtitle" msgid="3976682014885446443">"Toque para ativar"</string>
     <string name="start_rotation_dialog_body_live_wallpaper_needed" msgid="5132580257563846082">"O plano de fundo será alterado automaticamente todos os dias. Para concluir a configuração, toque em &lt;strong&gt;Definir plano de fundo&lt;/strong&gt; na próxima tela."</string>
