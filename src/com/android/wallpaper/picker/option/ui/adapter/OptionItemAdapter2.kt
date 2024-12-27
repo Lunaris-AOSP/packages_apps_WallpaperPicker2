@@ -25,8 +25,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.option.ui.binder.OptionItemBinder2
 import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel2
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.DisposableHandle
@@ -39,6 +41,8 @@ class OptionItemAdapter2<T>(
     private val lifecycleOwner: LifecycleOwner,
     private val backgroundDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val bindPayload: (View, T) -> DisposableHandle?,
+    private val colorUpdateViewModel: WeakReference<ColorUpdateViewModel>,
+    private val shouldAnimateColor: () -> Boolean,
 ) : RecyclerView.Adapter<OptionItemAdapter2.ViewHolder>() {
 
     private val items = mutableListOf<OptionItemViewModel2<T>>()
@@ -116,6 +120,8 @@ class OptionItemAdapter2<T>(
                 view = holder.itemView,
                 viewModel = item,
                 lifecycleOwner = lifecycleOwner,
+                colorUpdateViewModel = colorUpdateViewModel,
+                shouldAnimateColor = shouldAnimateColor,
             )
     }
 }
