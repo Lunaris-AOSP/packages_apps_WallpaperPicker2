@@ -40,13 +40,10 @@ object ColorUpdateBinder {
                 var currentColor: Int? = null
                 var animator: Animator? = null
                 color.collect { newColor ->
+                    animator?.end()
                     val previousColor = currentColor
                     if (shouldAnimate() && previousColor != null) {
-                        animator?.end()
-                        ValueAnimator.ofArgb(
-                                previousColor,
-                                newColor,
-                            )
+                        ValueAnimator.ofArgb(previousColor, newColor)
                             .apply {
                                 addUpdateListener { setColor(it.animatedValue as Int) }
                                 duration = COLOR_ANIMATION_DURATION_MILLIS

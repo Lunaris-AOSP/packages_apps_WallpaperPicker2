@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.picker.customization.ui.view.adapter
 
+import android.content.res.ColorStateList
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.view.LayoutInflater
@@ -90,6 +91,15 @@ class FloatingToolbarTabAdapter(
                         BlendModeColorFilter(color, BlendMode.SRC_ATOP)
                 },
                 color = it.colorSecondaryContainer,
+                shouldAnimate = shouldAnimateColor,
+                lifecycleOwner = holder,
+            )
+            ColorUpdateBinder.bind(
+                setColor = { color ->
+                    holder.icon.imageTintList = ColorStateList.valueOf(color)
+                    holder.label.setTextColor(color)
+                },
+                color = it.colorOnSecondaryContainer,
                 shouldAnimate = shouldAnimateColor,
                 lifecycleOwner = holder,
             )
