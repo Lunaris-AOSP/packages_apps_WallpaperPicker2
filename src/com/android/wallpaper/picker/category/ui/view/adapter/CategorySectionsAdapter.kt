@@ -24,10 +24,8 @@ import com.android.wallpaper.R
 import com.android.wallpaper.picker.category.ui.view.viewholder.CategorySectionViewHolder
 import com.android.wallpaper.picker.category.ui.viewmodel.SectionViewModel
 
-class CategorySectionsAdapter(
-    var items: List<SectionViewModel>,
-    val windowWidth: Int,
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CategorySectionsAdapter(var items: List<SectionViewModel>, private val windowWidth: Int) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return createIndividualHolder(parent)

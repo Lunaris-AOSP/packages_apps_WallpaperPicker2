@@ -25,7 +25,7 @@ import com.android.wallpaper.picker.category.ui.view.viewholder.CuratedPhotoHold
 import com.android.wallpaper.picker.category.ui.viewmodel.TileViewModel
 
 /** Custom adaptor for curated photos carousel in the categories page. */
-class CuratedPhotosAdapter(var items: List<TileViewModel>, val columns: Int, val windowWidth: Int) :
+class CuratedPhotosAdapter(val items: List<TileViewModel>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

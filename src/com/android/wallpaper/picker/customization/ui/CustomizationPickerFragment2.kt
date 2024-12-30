@@ -241,7 +241,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                     }
                 }
             },
-            navigateToCategoriesScreen = { _ ->
+            navigateToWallpaperCategoriesScreen = { _ ->
                 if (isAdded) {
                     parentFragmentManager.commit {
                         replace<CategoriesFragment>(R.id.fragment_container)
