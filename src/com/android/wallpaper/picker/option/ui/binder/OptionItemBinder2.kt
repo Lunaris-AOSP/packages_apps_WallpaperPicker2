@@ -33,11 +33,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.android.wallpaper.R
 import com.android.wallpaper.picker.common.icon.ui.viewbinder.ContentDescriptionViewBinder
 import com.android.wallpaper.picker.common.text.ui.viewbinder.TextViewBinder
+import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
+import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.option.ui.view.OptionItemBackground
 import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel
 import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel2
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
@@ -70,6 +74,8 @@ object OptionItemBinder2 {
         viewModel: OptionItemViewModel2<*>,
         lifecycleOwner: LifecycleOwner,
         animationSpec: AnimationSpec = AnimationSpec(),
+        colorUpdateViewModel: WeakReference<ColorUpdateViewModel>,
+        shouldAnimateColor: () -> Boolean,
     ): DisposableHandle {
         val backgroundView: OptionItemBackground = view.requireViewById(R.id.background)
         val foregroundView: ImageView? = view.findViewById(R.id.foreground)
@@ -119,6 +125,45 @@ object OptionItemBinder2 {
             }
         view.isLongClickable = viewModel.onLongClicked != null
 
+        colorUpdateViewModel.get()?.let {
+            ColorUpdateBinder.bind(
+                setColor = { color -> textView?.setTextColor(color) },
+                color = it.colorOnSurfaceVariant,
+                shouldAnimate = shouldAnimateColor,
+                lifecycleOwner = lifecycleOwner,
+            )
+            ColorUpdateBinder.bind(
+                setColor = { color -> foregroundView?.setColorFilter(color) },
+                color =
+                    combine(
+                        viewModel.isSelected,
+                        it.colorOnSurfaceVariant,
+                        it.colorOnPrimaryFixed,
+                    ) { isSelected, onSurfaceVariant, onPrimaryFixed ->
+                        if (isSelected) {
+                            onPrimaryFixed
+                        } else {
+                            onSurfaceVariant
+                        }
+                    },
+                shouldAnimate = { false },
+                lifecycleOwner = lifecycleOwner,
+            )
+            ColorUpdateBinder.bind(
+                setColor = { color -> backgroundView.setUnselectedColor(color) },
+                color = it.colorSurfaceContainerHigh,
+                shouldAnimate = shouldAnimateColor,
+                lifecycleOwner = lifecycleOwner,
+            )
+
+            ColorUpdateBinder.bind(
+                setColor = { color -> backgroundView.setSelectedColor(color) },
+                color = it.colorPrimaryFixedDim,
+                shouldAnimate = shouldAnimateColor,
+                lifecycleOwner = lifecycleOwner,
+            )
+        }
+
         val job =
             lifecycleOwner.lifecycleScope.launch {
                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -150,11 +195,6 @@ object OptionItemBinder2 {
                                 } else {
                                     backgroundView.setProgress(if (isSelected) 1f else 0f)
                                 }
-
-                                foregroundView?.setColorFilter(
-                                    if (isSelected) view.context.getColor(R.color.system_on_primary)
-                                    else view.context.getColor(R.color.system_on_surface)
-                                )
 
                                 view.isSelected = isSelected
                                 lastSelected = isSelected

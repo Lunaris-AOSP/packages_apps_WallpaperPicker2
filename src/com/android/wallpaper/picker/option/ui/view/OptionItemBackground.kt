@@ -29,15 +29,23 @@ open class OptionItemBackground
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     View(context, attrs, defStyleAttr) {
 
-    private val colorUnselected =
+    private var colorUnselected =
         context.resources.getColor(R.color.system_surface_container_high, null)
-    private val colorSelected = context.resources.getColor(R.color.system_primary, null)
+    private var colorSelected = context.resources.getColor(R.color.system_primary_fixed_dim, null)
     private val argbEvaluator = ArgbEvaluator()
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
 
     // progress 0 is unselected and 1 is selected
     var progress = 0f
         private set
+
+    fun setUnselectedColor(unselectedColor: Int) {
+        this.colorUnselected = unselectedColor
+    }
+
+    fun setSelectedColor(selectedColor: Int) {
+        this.colorSelected = selectedColor
+    }
 
     fun setProgress(progress: Float) {
         this.progress = progress
