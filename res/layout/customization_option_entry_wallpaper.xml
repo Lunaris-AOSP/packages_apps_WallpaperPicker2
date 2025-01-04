@@ -16,14 +16,41 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/customization_option_entry_horizontal_padding"
-    android:clickable="true">
+    android:paddingHorizontal="@dimen/customization_option_entry_horizontal_padding">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/wallpaper_carousel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:orientation="horizontal"
+        android:nestedScrollingEnabled="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/wallpaper_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/accessibility_min_height"
+        android:gravity="start|center_vertical"
+        android:text="@string/choose_a_curated_photo_section_title"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+        android:textSize="@dimen/wallpaper_header_text_size"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintTop_toBottomOf="@+id/wallpaper_carousel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/more_wallpapers" />
+
     <TextView
         android:id="@+id/more_wallpapers"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/accessibility_min_height"
         android:gravity="center"
@@ -32,9 +59,10 @@
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
         android:textColor="@color/system_primary"
         android:textSize="@dimen/wallpaper_header_text_size"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wallpaper_carousel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:drawableStartCompat="@drawable/ic_nav_wallpaper"
-        app:drawableTint="@color/system_primary" />
+        app:drawableTint="@color/system_primary"
+        android:clickable="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>

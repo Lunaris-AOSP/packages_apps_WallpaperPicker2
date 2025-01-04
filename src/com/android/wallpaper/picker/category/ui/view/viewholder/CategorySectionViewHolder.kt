@@ -34,31 +34,22 @@ import com.google.android.flexbox.JustifyContent
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
 
-/** This view holder caches reference to pertinent views in a [CategorySectionView] */
-class CategorySectionViewHolder(itemView: View, val windowWidth: Int) :
+/** This view holder caches reference to pertinent views in a list of section view */
+class CategorySectionViewHolder(itemView: View, private val windowWidth: Int) :
     RecyclerView.ViewHolder(itemView) {
 
     // recycler view for the tiles
-    private var sectionTiles: RecyclerView
-
+    private val sectionTiles: RecyclerView = itemView.requireViewById(R.id.category_wallpaper_tiles)
     // title for the section
-    private var sectionTitle: TextView
-
-    private var morePhotosButton: Button
-
-    init {
-        sectionTiles = itemView.requireViewById(R.id.category_wallpaper_tiles)
-        sectionTitle = itemView.requireViewById(R.id.section_title)
-        morePhotosButton = itemView.requireViewById(R.id.more_photos_button)
-    }
+    private val sectionTitle: TextView = itemView.requireViewById(R.id.section_title)
+    private val morePhotosButton: Button = itemView.requireViewById(R.id.more_photos_button)
 
     fun bind(item: SectionViewModel) {
         // TODO: this probably is not necessary but if in the case the sections get updated we
         //  should just update the adapter instead of instantiating a new instance
         when (item.displayType) {
             CategoriesViewModel.DisplayType.Carousel -> {
-                sectionTiles.adapter =
-                    CuratedPhotosAdapter(item.tileViewModels, item.columnCount, windowWidth)
+                sectionTiles.adapter = CuratedPhotosAdapter(item.tileViewModels)
 
                 val layoutManagerCuratedPhotos = CarouselLayoutManager()
 

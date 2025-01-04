@@ -27,7 +27,13 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class DefaultCustomizationOptionsViewModel
 @AssistedInject
-constructor(@Assisted viewModelScope: CoroutineScope) : CustomizationOptionsViewModel {
+constructor(
+    wallpaperCarouselViewModelFactory: WallpaperCarouselViewModel.Factory,
+    @Assisted viewModelScope: CoroutineScope,
+) : CustomizationOptionsViewModel {
+
+    override val wallpaperCarouselViewModel =
+        wallpaperCarouselViewModelFactory.create(viewModelScope)
 
     private val _selectedOptionState =
         MutableStateFlow<CustomizationOptionUtil.CustomizationOption?>(null)
