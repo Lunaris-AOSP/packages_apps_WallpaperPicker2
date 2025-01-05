@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.picker.customization.ui.binder
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
@@ -23,6 +24,7 @@ import com.android.customization.picker.clock.ui.view.ClockViewFactory
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil.CustomizationOption
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
+import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationOptionsViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 
 interface CustomizationOptionsBinder {
@@ -54,5 +56,12 @@ interface CustomizationOptionsBinder {
         colorUpdateViewModel: ColorUpdateViewModel,
         lifecycleOwner: LifecycleOwner,
         clockViewFactory: ClockViewFactory,
+    )
+
+    /** @param activity The activity is used for building the dialog. */
+    fun bindDiscardChangesDialog(
+        customizationOptionsViewModel: CustomizationOptionsViewModel,
+        lifecycleOwner: LifecycleOwner,
+        activity: Activity,
     )
 }

@@ -18,6 +18,7 @@ package com.android.wallpaper.picker.customization.ui.viewmodel
 
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface CustomizationOptionsViewModel {
@@ -25,6 +26,13 @@ interface CustomizationOptionsViewModel {
     val wallpaperCarouselViewModel: WallpaperCarouselViewModel
 
     val selectedOption: StateFlow<CustomizationOptionUtil.CustomizationOption?>
+
+    /**
+     * View model for the discard changes dialog. The dialog shows when users leave with uncommitted
+     * customization changes. When null, the dialog should hide or dismiss; otherwise, the dialog
+     * should show on the screen.
+     */
+    val discardChangesDialogViewModel: Flow<DiscardChangesDialogViewModel?>
 
     /**
      * Handle back pressed. [CustomizationOptionsViewModel] should deselect the selected option and

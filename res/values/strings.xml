@@ -562,5 +562,24 @@
     -->
     <string name="full_preview_tooltip">Adjust the position, scale, and angle of your photos</string>
 
+    <!--
+     The message in the dialog that asks users if they want to discard all changes when they leave
+     a customization screen, e.g. clock, color, shortcut customization screen, without applying any
+     changes.
+    -->
+    <string name="discard_changes_dialog_message">Discard changes?</string>
+
+    <!--
+     The positive button content in the dialog that asks users if they want to discard all changes,
+     when users want to keep editing.
+    -->
+    <string name="discard_changes_dialog_button_keep_editing">Keep editing</string>
+
+    <!--
+     The negative button content in the dialog that asks users if they want to discard all changes,
+     when users want to discard changes and leave the screen.
+    -->
+    <string name="discard_changes_dialog_button_discard">Discard</string>
+
     <string name="tab_placeholder_text" translatable="false">Tab</string>
 </resources>
