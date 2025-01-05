@@ -262,6 +262,13 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             },
         )
 
+        customizationOptionsBinder.bindDiscardChangesDialog(
+            customizationOptionsViewModel =
+                customizationPickerViewModel.customizationOptionsViewModel,
+            lifecycleOwner = viewLifecycleOwner,
+            activity = requireActivity(),
+        )
+
         activity?.onBackPressedDispatcher?.let {
             it.addCallback {
                     isEnabled =
