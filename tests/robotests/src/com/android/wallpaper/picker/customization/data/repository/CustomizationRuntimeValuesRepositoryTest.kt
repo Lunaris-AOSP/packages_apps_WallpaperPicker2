@@ -17,9 +17,9 @@
 package com.android.wallpaper.picker.customization.data.repository
 
 import android.os.Bundle
+import com.android.systemui.shared.customization.data.SensorLocation
 import com.android.systemui.shared.customization.data.content.CustomizationProviderContract
 import com.android.systemui.shared.customization.data.content.FakeCustomizationProviderClient
-import com.android.wallpaper.testing.collectLastValue
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -45,20 +45,12 @@ class CustomizationRuntimeValuesRepositoryTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        underTest =
-            CustomizationRuntimeValuesRepository(
-                testScope.backgroundScope,
-                customizationProviderClient,
-            )
+        underTest = CustomizationRuntimeValuesRepository(customizationProviderClient)
     }
 
     @Test
-    fun isShadeLayoutWideUpdatesUpdatesWhenClientUpdates() =
+    fun getIsShadeLayoutWide() =
         testScope.runTest {
-            val isShadeLayoutWide = collectLastValue(underTest.isShadeLayoutWide)
-
-            assertThat(isShadeLayoutWide()).isFalse()
-
             customizationProviderClient.setRuntimeValues(
                 Bundle().apply {
                     putBoolean(
@@ -68,6 +60,22 @@ class CustomizationRuntimeValuesRepositoryTest {
                 }
             )
 
-            assertThat(isShadeLayoutWide()).isTrue()
+            assertThat(underTest.getIsShadeLayoutWide()).isTrue()
+        }
+
+    @Test
+    fun udfpsLocationUpdatesWhenClientUpdates() =
+        testScope.runTest {
+            val udfpsLocation = SensorLocation(640, 2068, 117, 0.75f)
+            customizationProviderClient.setRuntimeValues(
+                Bundle().apply {
+                    putString(
+                        CustomizationProviderContract.RuntimeValuesTable.KEY_UDFPS_LOCATION,
+                        udfpsLocation.encode(),
+                    )
+                }
+            )
+
+            assertThat(underTest.getUdfpsLocation()).isEqualTo(udfpsLocation)
         }
 }
