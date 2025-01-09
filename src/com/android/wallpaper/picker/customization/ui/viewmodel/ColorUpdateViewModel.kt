@@ -100,6 +100,11 @@ constructor(
         createColorFlow(R.color.system_on_primary, MaterialDynamicColors().onPrimary())
     val colorOnPrimaryFixed =
         createColorFlow(R.color.system_on_primary_fixed, MaterialDynamicColors().onPrimaryFixed())
+    val colorOnPrimaryFixedVariant =
+        createColorFlow(
+            R.color.system_on_primary_fixed_variant,
+            MaterialDynamicColors().onPrimaryFixedVariant(),
+        )
     val colorSecondaryContainer =
         createColorFlow(
             R.color.system_secondary_container,
