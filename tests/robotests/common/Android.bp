@@ -30,7 +30,7 @@ android_library {
     ],
     static_libs: [
         "WallpaperPicker2Lib",
-        "Robolectric_all-target_upstream",
+        "Robolectric_all-target",
         "androidx.annotation_annotation",
         "hilt_android",
         "hilt_android_testing",
