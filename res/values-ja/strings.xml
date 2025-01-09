@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"壁紙"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"写真を編集するにはタップします"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"写真の位置、スケール、角度を調整できます"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"変更内容を破棄しますか？"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"編集を続ける"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"破棄"</string>
 </resources>

@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"વૉલપેપર"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"તમારા ફોટામાં ફેરફાર કરવા માટે ટૅપ કરો"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"તમારા ફોટાની જગ્યા, સ્કેલ અને ખૂણાની ગોઠવણી કરો"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"શું ફેરફારો કાઢી નાખીએ?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"ફેરફાર કરવાનું ચાલુ રાખો"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"કાઢી નાખો"</string>
 </resources>

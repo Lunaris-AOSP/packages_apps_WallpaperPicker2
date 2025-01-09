@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Háttérkép"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Koppintson a fotó szerkesztéséhez"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"Korrigálhatja fotói pozícióját, méretét és szögét"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Elveti a módosításokat?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Szerkesztés folytatása"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"Elvetés"</string>
 </resources>

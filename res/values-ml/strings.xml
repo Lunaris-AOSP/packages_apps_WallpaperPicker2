@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"വാൾപേപ്പർ"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"നിങ്ങളുടെ ഫോട്ടോ എഡിറ്റ് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"നിങ്ങളുടെ ഫോട്ടോകളുടെ സ്ഥാനം, സ്‌കെയിൽ, ആംഗിൾ എന്നിവ ക്രമീകരിക്കുക"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"മാറ്റങ്ങൾ ഉപേക്ഷിക്കണോ?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"എഡിറ്റ് ചെയ്യുന്നത് തുടരുക"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"ഉപേക്ഷിക്കുക"</string>
 </resources>

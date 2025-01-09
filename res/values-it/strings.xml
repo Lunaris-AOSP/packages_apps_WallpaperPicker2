@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Sfondo"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Tocca per modificare la foto"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"Regola posizione, scala e angolazione delle tue foto"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Ignorare le modifiche?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Continua la modifica"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"Ignora"</string>
 </resources>

@@ -144,4 +144,10 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"वालपेपर"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"आफ्नो फोटो सम्पादन गर्न ट्याप गर्नुहोस्"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"आफ्ना फोटोहरूको स्थिति, स्केल र कोण मिलाउनुहोस्"</string>
+    <!-- no translation found for discard_changes_dialog_message (8462485277292103457) -->
+    <skip />
+    <!-- no translation found for discard_changes_dialog_button_keep_editing (9118931326834547216) -->
+    <skip />
+    <!-- no translation found for discard_changes_dialog_button_discard (6585071548322908206) -->
+    <skip />
 </resources>
