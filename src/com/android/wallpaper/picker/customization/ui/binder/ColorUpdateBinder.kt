@@ -29,32 +29,43 @@ object ColorUpdateBinder {
 
     private const val COLOR_ANIMATION_DURATION_MILLIS = 1500L
 
+    interface Binding {
+        /** Destroys the binding in spite of lifecycle state. */
+        fun destroy()
+    }
+
     fun bind(
         setColor: (color: Int) -> Unit,
         color: Flow<Int>,
         shouldAnimate: () -> Boolean = { true },
         lifecycleOwner: LifecycleOwner,
-    ) {
-        lifecycleOwner.lifecycleScope.launch {
-            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                var currentColor: Int? = null
-                var animator: Animator? = null
-                color.collect { newColor ->
-                    animator?.end()
-                    val previousColor = currentColor
-                    if (shouldAnimate() && previousColor != null) {
-                        ValueAnimator.ofArgb(previousColor, newColor)
-                            .apply {
-                                addUpdateListener { setColor(it.animatedValue as Int) }
-                                duration = COLOR_ANIMATION_DURATION_MILLIS
-                            }
-                            .also { animator = it }
-                            .start()
-                    } else {
-                        setColor(newColor)
+    ): Binding {
+        val job =
+            lifecycleOwner.lifecycleScope.launch {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    var currentColor: Int? = null
+                    var animator: Animator? = null
+                    color.collect { newColor ->
+                        animator?.end()
+                        val previousColor = currentColor
+                        if (shouldAnimate() && previousColor != null) {
+                            ValueAnimator.ofArgb(previousColor, newColor)
+                                .apply {
+                                    addUpdateListener { setColor(it.animatedValue as Int) }
+                                    duration = COLOR_ANIMATION_DURATION_MILLIS
+                                }
+                                .also { animator = it }
+                                .start()
+                        } else {
+                            setColor(newColor)
+                        }
+                        currentColor = newColor
                     }
-                    currentColor = newColor
                 }
+            }
+        return object : Binding {
+            override fun destroy() {
+                job.cancel()
             }
         }
     }
