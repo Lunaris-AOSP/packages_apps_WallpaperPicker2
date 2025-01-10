@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"ওয়ালপেপার"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"আপনার ফটো এডিট করতে ট্যাপ করুন"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"আপনার ফটোর পজিশন, স্কেল ও কোণ অ্যাডজাস্ট করুন"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"পরিবর্তন বাতিল করতে চান?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"এডিট করা চালিয়ে যান"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"বাতিল করুন"</string>
 </resources>

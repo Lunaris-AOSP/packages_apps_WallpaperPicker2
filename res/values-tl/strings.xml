@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Wallpaper"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"I-tap para i-edit ang iyong larawan"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"I-adjust ang posisyon, scale, at anggulo ng iyong mga larawan"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"I-discard ang pagbabago?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Mag-edit pa"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"I-discard"</string>
 </resources>

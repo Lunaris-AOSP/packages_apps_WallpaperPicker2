@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"వాల్‌పేపర్"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"మీ ఫోటోను ఎడిట్ చేయడానికి ట్యాప్ చేయండి"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"మీ ఫోటోల స్థానం, స్కేల్ ఇంకా కోణాన్ని సర్దుబాటు చేయండి"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"మార్పులను విస్మరించాలా?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"ఎడిట్ చేయడం కొనసాగించండి"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"విస్మరించండి"</string>
 </resources>
