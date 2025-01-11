@@ -144,4 +144,10 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Fondo de pantalla"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Presiona para editar tu foto"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"Ajustar la posición, la escala y el ángulo de tus fotos"</string>
+    <!-- no translation found for discard_changes_dialog_message (8462485277292103457) -->
+    <skip />
+    <!-- no translation found for discard_changes_dialog_button_keep_editing (9118931326834547216) -->
+    <skip />
+    <!-- no translation found for discard_changes_dialog_button_discard (6585071548322908206) -->
+    <skip />
 </resources>

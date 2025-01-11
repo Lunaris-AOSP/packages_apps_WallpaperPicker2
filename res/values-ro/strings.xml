@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Imaginea de fundal"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Atinge pentru a edita fotografia"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"Ajustează poziția, scara și unghiul fotografiilor"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Renunți la modificări?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Continuă editarea"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"Renunță"</string>
 </resources>

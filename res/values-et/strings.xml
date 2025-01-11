@@ -144,4 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Taustapilt"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Puudutage oma foto muutmiseks"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"Reguleerige oma fotode asendit, mõõtmeid ja nurka"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Kas soovite muudatustest loobuda?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Jätka muutmist"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"Loobu"</string>
 </resources>
