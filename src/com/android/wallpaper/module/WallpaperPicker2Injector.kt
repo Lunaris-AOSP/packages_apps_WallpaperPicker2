@@ -75,6 +75,7 @@ constructor(
     private val wallpaperColorsRepository: Lazy<WallpaperColorsRepository>,
     private val defaultWallpaperCategoryWrapper: Lazy<WallpaperCategoryWrapper>,
     private val packageNotifier: Lazy<PackageStatusNotifier>,
+    private var wallpaperRefresher: Lazy<WallpaperRefresher>,
 ) : Injector {
     private var alarmManagerWrapper: AlarmManagerWrapper? = null
     private var bitmapCropper: BitmapCropper? = null
@@ -87,7 +88,6 @@ constructor(
     private var performanceMonitor: PerformanceMonitor? = null
     private var systemFeatureChecker: SystemFeatureChecker? = null
     private var wallpaperPersister: WallpaperPersister? = null
-    private var wallpaperRefresher: WallpaperRefresher? = null
     private var wallpaperStatusChecker: WallpaperStatusChecker? = null
     private var flags: BaseFlags? = null
     private var undoInteractor: UndoInteractor? = null
@@ -264,10 +264,7 @@ constructor(
 
     @Synchronized
     override fun getWallpaperRefresher(context: Context): WallpaperRefresher {
-        return wallpaperRefresher
-            ?: DefaultWallpaperRefresher(context.applicationContext).also {
-                wallpaperRefresher = it
-            }
+        return wallpaperRefresher.get()
     }
 
     override fun getWallpaperStatusChecker(context: Context): WallpaperStatusChecker {
