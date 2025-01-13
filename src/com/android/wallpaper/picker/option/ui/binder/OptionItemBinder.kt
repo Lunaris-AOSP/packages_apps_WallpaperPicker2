@@ -82,10 +82,16 @@ object OptionItemBinder {
 
         if (textView != null && viewModel.isTextUserVisible) {
             TextViewBinder.bind(view = textView, viewModel = viewModel.text)
+            viewModel.contentDescription?.let {
+                ContentDescriptionViewBinder.bind(view = textView, viewModel = it)
+            }
         } else {
             // Use the text as the content description of the foreground if we don't have a TextView
             // dedicated to for the text.
-            ContentDescriptionViewBinder.bind(view = foregroundView, viewModel = viewModel.text)
+            ContentDescriptionViewBinder.bind(
+                view = foregroundView,
+                viewModel = viewModel.contentDescription ?: viewModel.text,
+            )
         }
         textView?.isVisible = viewModel.isTextUserVisible
 

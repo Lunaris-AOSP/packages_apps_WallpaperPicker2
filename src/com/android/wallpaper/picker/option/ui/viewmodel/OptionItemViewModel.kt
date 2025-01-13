@@ -40,6 +40,9 @@ data class OptionItemViewModel<Payload>(
      */
     val text: Text,
 
+    /** Content description for the item. If it is null, we will use [text] by default. */
+    val contentDescription: Text? = null,
+
     /** Hides text and places the provided text in the content description instead */
     val isTextUserVisible: Boolean = true,
 
