@@ -144,10 +144,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Zaslonsko ozadje"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Dotaknite se urejanje fotografije"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"Prilagajanje položaja, velikosti in kota fotografij"</string>
-    <!-- no translation found for discard_changes_dialog_message (8462485277292103457) -->
-    <skip />
-    <!-- no translation found for discard_changes_dialog_button_keep_editing (9118931326834547216) -->
-    <skip />
-    <!-- no translation found for discard_changes_dialog_button_discard (6585071548322908206) -->
-    <skip />
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Želite zavreči spremembe?"</string>
+    <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Nadaljuj urejanje"</string>
+    <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"Zavrzi"</string>
 </resources>
