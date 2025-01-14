@@ -24,6 +24,7 @@ import com.android.wallpaper.module.LargeScreenMultiPanesChecker
 import com.android.wallpaper.module.MultiPanesChecker
 import com.android.wallpaper.module.NetworkStatusNotifier
 import com.android.wallpaper.module.PackageStatusNotifier
+import com.android.wallpaper.module.WallpaperRefresher
 import com.android.wallpaper.picker.category.client.LiveWallpapersClient
 import com.android.wallpaper.picker.category.data.repository.WallpaperCategoryRepository
 import com.android.wallpaper.picker.category.domain.interactor.CategoriesLoadingStatusInteractor
@@ -49,8 +50,10 @@ import com.android.wallpaper.testing.FakePowerManager
 import com.android.wallpaper.testing.FakeUiModeManager
 import com.android.wallpaper.testing.FakeWallpaperClient
 import com.android.wallpaper.testing.FakeWallpaperParser
+import com.android.wallpaper.testing.FakeWallpaperRefresher
 import com.android.wallpaper.testing.TestNetworkStatusNotifier
 import com.android.wallpaper.testing.TestPackageStatusNotifier
+import com.android.wallpaper.testing.TestWallpaperPreferences
 import com.android.wallpaper.util.WallpaperParser
 import com.android.wallpaper.util.converter.category.CategoryFactory
 import dagger.Binds
@@ -209,6 +212,12 @@ internal abstract class SharedAppTestModule {
         @Singleton
         fun provideWallpaperManager(@ApplicationContext appContext: Context): WallpaperManager {
             return WallpaperManager.getInstance(appContext)
+        }
+
+        @Provides
+        @Singleton
+        fun provideWallpaperRefresher(prefs: TestWallpaperPreferences): WallpaperRefresher {
+            return FakeWallpaperRefresher(prefs)
         }
     }
 }
