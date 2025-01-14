@@ -131,13 +131,7 @@ class WallpaperPreviewViewModelTest {
             contentProvider,
         )
 
-        effectsWallpaperInfo =
-            WallpaperInfoUtils.createWallpaperInfo(
-                context = appContext,
-                stubPackage = FakeEffectsController.LIVE_WALLPAPER_COMPONENT_PKG_NAME,
-                wallpaperSplit = "effectsWallpaper",
-                wallpaperClass = FakeEffectsController.LIVE_WALLPAPER_COMPONENT_CLASS_NAME,
-            )
+        effectsWallpaperInfo = WallpaperInfoUtils.createWallpaperInfo(context = appContext)
 
         startActivityIntent =
             Intent.makeMainActivity(ComponentName(appContext, PreviewTestActivity::class.java))
