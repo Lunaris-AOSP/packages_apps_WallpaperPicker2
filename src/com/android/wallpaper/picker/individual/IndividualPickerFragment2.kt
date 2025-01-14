@@ -198,6 +198,10 @@ class IndividualPickerFragment2 :
         register: Boolean,
         forceRefreshLiveWallpaperCategory: Boolean,
     ) {
+        // TODO (b/385059403): Remove these log lines once the bug is fixed
+        if (wallpaperCategoryWrapper == null) {
+            Log.w(TAG, "WallpaperCategoryWrapper is null")
+        }
         val categories =
             wallpaperCategoryWrapper?.getCategories(forceRefreshLiveWallpaperCategory) ?: return
         val fetchedCategory =
@@ -209,6 +213,12 @@ class IndividualPickerFragment2 :
                 )
             }
                 ?: run {
+                    // TODO (b/385059403): Remove these log lines once the bug is fixed
+                    if (arguments == null) {
+                        Log.w(TAG, "Arguments are null!")
+                    } else if (arguments.getString(ARG_CATEGORY_COLLECTION_ID) == null) {
+                        Log.w(TAG, "Category Collection ID is null or missing in arguments.")
+                    }
                     parentFragmentManager.popBackStack()
                     Toast.makeText(context, R.string.collection_not_exist_msg, Toast.LENGTH_SHORT)
                         .show()
