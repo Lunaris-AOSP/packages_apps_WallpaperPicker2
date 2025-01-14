@@ -21,6 +21,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.pm.ServiceInfo
+import android.os.Bundle
 import android.service.wallpaper.WallpaperService
 import org.robolectric.Shadows.shadowOf
 
@@ -44,6 +45,7 @@ class WallpaperInfoUtils {
             wallpaperSplit: String = WALLPAPER_SPLIT,
             wallpaperClass: String = WALLPAPER_CLASS,
             configureService: Boolean = true,
+            metaData: Bundle? = null,
         ): WallpaperInfo {
             val resolveInfo =
                 ResolveInfo().apply {
@@ -52,6 +54,7 @@ class WallpaperInfoUtils {
                     serviceInfo.splitName = wallpaperSplit
                     serviceInfo.name = wallpaperClass
                     serviceInfo.flags = PackageManager.GET_META_DATA
+                    serviceInfo.metaData = metaData
                 }
             // ShadowWallpaperInfo allows the creation of this object
             val wallpaperInfo = WallpaperInfo(context, resolveInfo)

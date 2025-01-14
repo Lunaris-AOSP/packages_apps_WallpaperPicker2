@@ -39,6 +39,8 @@ import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.wallpaper.R;
 import com.android.wallpaper.asset.BitmapUtils;
 import com.android.wallpaper.model.CreativeCategory;
@@ -411,8 +413,8 @@ public class DefaultWallpaperRefresher implements WallpaperRefresher {
     }
 
     // Queries a live wallpaper for its preview Uri, and returns it if it exists.
-    private static @Nullable Uri getCreativePreviewUri(Context context,
-            android.app.WallpaperInfo info,
+    @VisibleForTesting
+    static @Nullable Uri getCreativePreviewUri(Context context, android.app.WallpaperInfo info,
             WallpaperDestination destination) {
         Bundle metaData = info.getServiceInfo().metaData;
         String uri = metaData.getString(
