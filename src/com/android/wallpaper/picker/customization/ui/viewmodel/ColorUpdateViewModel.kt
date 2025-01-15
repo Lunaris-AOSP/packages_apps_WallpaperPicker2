@@ -139,6 +139,7 @@ constructor(
         )
     val colorSurfaceBright =
         createColorFlow(R.color.system_surface_bright, MaterialDynamicColors().surfaceBright())
+    val colorOutline = createColorFlow(R.color.system_outline, MaterialDynamicColors().outline())
 
     // Custom day/night color pairing
     val floatingToolbarBackground =

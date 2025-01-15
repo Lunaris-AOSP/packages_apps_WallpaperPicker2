@@ -34,17 +34,28 @@ object ColorUpdateBinder {
         fun destroy()
     }
 
+    /**
+     * Binds the color of any view according to a color flow, optionally with a color transition
+     * animation.
+     *
+     * @param setColor a function that sets the color on a view or views when given a color int
+     * @param color a color flow used to bind the view color
+     * @param shouldAnimate a function that evaluates whether the color update should be animated at
+     *   a given time
+     * @param lifecycleOwner the lifecycle owner for collecting the color flow
+     * @return a binding object that can be used to stop the color flow collection
+     */
     fun bind(
         setColor: (color: Int) -> Unit,
         color: Flow<Int>,
         shouldAnimate: () -> Boolean = { true },
         lifecycleOwner: LifecycleOwner,
     ): Binding {
+        var animator: Animator? = null
         val job =
             lifecycleOwner.lifecycleScope.launch {
                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     var currentColor: Int? = null
-                    var animator: Animator? = null
                     color.collect { newColor ->
                         animator?.end()
                         val previousColor = currentColor
@@ -66,6 +77,7 @@ object ColorUpdateBinder {
         return object : Binding {
             override fun destroy() {
                 job.cancel()
+                animator?.cancel()
             }
         }
     }
