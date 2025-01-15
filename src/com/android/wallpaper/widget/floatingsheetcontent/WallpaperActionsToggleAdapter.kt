@@ -30,16 +30,12 @@ import com.android.wallpaper.model.WallpaperAction
  */
 class WallpaperActionsToggleAdapter(
     private val actionToggles: List<WallpaperAction>,
-    private val wallpaperEffectSwitchListener: WallpaperEffectSwitchListener
+    private val wallpaperEffectSwitchListener: WallpaperEffectSwitchListener,
 ) : RecyclerView.Adapter<WallpaperActionsToggleAdapter.ViewHolder>() {
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val textView: TextView
-        val switchView: Switch
-        init {
-            textView = v.requireViewById(R.id.wallpaper_action_switch_label)
-            switchView = v.requireViewById(R.id.wallpaper_action_switch)
-        }
+        val textView: TextView = v.requireViewById(R.id.wallpaper_action_switch_label)
+        val switchView: Switch = v.requireViewById(R.id.wallpaper_action_switch)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -55,24 +51,19 @@ class WallpaperActionsToggleAdapter(
         viewHolder.textView.text = actionToggles[position].label
         viewHolder.switchView.setOnCheckedChangeListener(null)
         viewHolder.switchView.isChecked = actionToggles[position].toggled
-
-        viewHolder.switchView.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                // Notify all observers that a switch has been flipped
-                wallpaperEffectSwitchListener.onEffectSwitchChanged(position)
-            } else {
+        viewHolder.itemView.setOnClickListener { _ ->
+            if (viewHolder.switchView.isChecked) {
                 // Initiate query to disable all effects on this wallpaper
                 wallpaperEffectSwitchListener.onEffectSwitchChanged(-1)
+            } else {
+                // Notify all observers that a switch has been flipped
+                wallpaperEffectSwitchListener.onEffectSwitchChanged(position)
             }
             notifyDataSetChanged()
         }
     }
 
     override fun getItemCount() = actionToggles.size
-
-    companion object {
-        private val TAG = "WallpaperActionsToggleAdapter"
-    }
 
     interface WallpaperEffectSwitchListener {
         /**
