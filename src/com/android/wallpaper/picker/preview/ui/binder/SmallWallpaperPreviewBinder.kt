@@ -26,6 +26,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.android.wallpaper.R
+import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
 import com.android.wallpaper.picker.customization.shared.model.WallpaperColorsModel
 import com.android.wallpaper.picker.data.WallpaperModel
@@ -53,6 +54,7 @@ object SmallWallpaperPreviewBinder {
     fun bind(
         surface: SurfaceView,
         viewModel: WallpaperPreviewViewModel,
+        screen: Screen,
         displaySize: Point,
         applicationContext: Context,
         mainScope: CoroutineScope,
@@ -69,6 +71,7 @@ object SmallWallpaperPreviewBinder {
                         applicationContext = applicationContext,
                         surface = surface,
                         viewModel = viewModel,
+                        screen = screen,
                         deviceDisplayType = deviceDisplayType,
                         displaySize = displaySize,
                         mainScope = mainScope,
@@ -96,6 +99,7 @@ object SmallWallpaperPreviewBinder {
         applicationContext: Context,
         surface: SurfaceView,
         viewModel: WallpaperPreviewViewModel,
+        screen: Screen,
         deviceDisplayType: DeviceDisplayType,
         displaySize: Point,
         mainScope: CoroutineScope,
@@ -119,7 +123,7 @@ object SmallWallpaperPreviewBinder {
                                     applicationContext,
                                     wallpaper,
                                     whichPreview,
-                                    viewModel.getWallpaperPreviewSource().toFlag(),
+                                    screen.toFlag(),
                                     surface,
                                     WallpaperConnectionUtils.Companion.EngineRenderingConfig(
                                         wallpaper.shouldEnforceSingleEngine(),

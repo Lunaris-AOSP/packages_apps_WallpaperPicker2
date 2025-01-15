@@ -241,6 +241,7 @@ object FullWallpaperPreviewBinder {
                                         wallpaperConnectionUtils.dispatchTouchEvent(
                                             wallpaper,
                                             engineRenderingConfig,
+                                            viewModel.getWallpaperPreviewSource().toFlag(),
                                             event,
                                         )
                                     }
