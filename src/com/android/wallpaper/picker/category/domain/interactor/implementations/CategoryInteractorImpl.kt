@@ -25,6 +25,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -53,6 +54,8 @@ constructor(
                     finalList.sortedBy { it.commonCategoryData.priority }
                 }
             }
+
+    override val isNetworkCategoriesFetched: Flow<Boolean> = emptyFlow()
 
     override fun refreshNetworkCategories() {}
 
