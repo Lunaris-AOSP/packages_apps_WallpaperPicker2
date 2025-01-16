@@ -337,9 +337,7 @@ constructor(
             myPhotosViewModel ->
             buildList {
                 if (BaseFlags.get().isNewPickerUi()) {
-                    if (myPhotosViewModel.tileViewModels.isNotEmpty()) {
-                        add(myPhotosViewModel)
-                    }
+                    add(myPhotosViewModel)
                     add(creativeViewModel)
                 } else {
                     add(creativeViewModel)

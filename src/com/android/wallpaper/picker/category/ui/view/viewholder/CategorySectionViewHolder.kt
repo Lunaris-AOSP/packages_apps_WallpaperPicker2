@@ -92,7 +92,7 @@ class CategorySectionViewHolder(itemView: View, private val windowWidth: Int) :
             }
         }
 
-        if (item.sectionTitle != null) {
+        if (item.sectionTitle != null && item.tileViewModels.isNotEmpty()) {
             sectionTitle.text = item.sectionTitle
             sectionTitle.visibility = View.VISIBLE
         } else {
