@@ -20,6 +20,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/wallpaper_info_pane_interaction_top_margin"
     android:clickable="true"
+    android:focusable="true"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -36,5 +37,7 @@
         android:background="@null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
         style="@style/Switch.SettingsLib"/>
 </LinearLayout>
