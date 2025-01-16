@@ -392,8 +392,9 @@
     <string name="wallpaper_preview_card_content_description">Wallpaper preview</string>
 
     <!-- Content description of wallpaper preview card when preview can be edited, including folded state of preview.
-         Placeholder is replaced by folded/unfolded state of the preview for foldables, empty string for other devices.[CHAR_LIMIT=NONE]-->
-    <string name="wallpaper_preview_card_content_description_editable">Wallpaper preview %1$s, double tap to edit your photo</string>
+         First placeholder is replaced by the type of screen, home screen/ lock screen
+         Second placeholder is replaced by folded/unfolded state of the preview for foldables, empty string for other devices.[CHAR_LIMIT=NONE]-->
+    <string name="wallpaper_preview_card_content_description_editable">%1$s wallpaper preview %2$s, double tap to edit your photo</string>
 
     <!-- Content description of lock screen wallpaper preview card. [CHAR_LIMIT=NONE]-->
     <string name="lock_wallpaper_preview_card_content_description">Lock screen wallpaper preview</string>
