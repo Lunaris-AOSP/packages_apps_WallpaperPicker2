@@ -22,6 +22,7 @@ import com.android.wallpaper.picker.data.category.CommonCategoryData
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 
 /** This class implements the business logic in assembling ungrouped category models */
@@ -69,4 +70,6 @@ class FakeCategoryInteractor @Inject constructor() : CategoryInteractor {
             )
         return dataList
     }
+
+    override val isNetworkCategoriesFetched: Flow<Boolean> = emptyFlow()
 }
