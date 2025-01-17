@@ -107,7 +107,8 @@
     <string name="previous_page_content_description" msgid="1138597031571078429">"上一頁"</string>
     <string name="wallpaper_title" msgid="6754214682228331092">"桌布"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"桌布預覽"</string>
-    <string name="wallpaper_preview_card_content_description_editable" msgid="3111763100515242340">"%1$s手機桌布預覽畫面。輕觸可編輯相片"</string>
+    <!-- no translation found for wallpaper_preview_card_content_description_editable (8147628993184862003) -->
+    <skip />
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"螢幕鎖定畫面桌布預覽"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"主畫面桌布預覽"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"這個系列不存在"</string>
