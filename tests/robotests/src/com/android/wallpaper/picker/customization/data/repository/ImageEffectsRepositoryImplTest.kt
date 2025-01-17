@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.picker.customization.data.repository
 
+import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
 import com.android.wallpaper.effects.Effect
@@ -81,9 +82,12 @@ class ImageEffectsRepositoryImplTest {
         )
         WallpaperInfoUtils.createWallpaperInfo(
             context = context,
-            stubPackage = LIVE_WALLPAPER_COMPONENT_PKG_NAME,
+            componentName =
+                ComponentName(
+                    LIVE_WALLPAPER_COMPONENT_PKG_NAME,
+                    LIVE_WALLPAPER_COMPONENT_CLASS_NAME,
+                ),
             wallpaperSplit = "effectsWallpaper",
-            wallpaperClass = LIVE_WALLPAPER_COMPONENT_CLASS_NAME,
         )
     }
 
