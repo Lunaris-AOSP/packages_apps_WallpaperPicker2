@@ -16,8 +16,12 @@
 
 package com.android.wallpaper.picker.preview
 
+import androidx.activity.result.contract.ActivityResultContracts
 import com.android.wallpaper.picker.BasePreviewActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint(BasePreviewActivity::class)
-class PreviewTestActivity : Hilt_PreviewTestActivity() {}
+class PreviewTestActivity : Hilt_PreviewTestActivity() {
+    val activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+}
