@@ -16,8 +16,9 @@
 package com.android.wallpaper.testing
 
 import android.app.WallpaperInfo
+import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.pm.ServiceInfo
@@ -29,44 +30,75 @@ import org.robolectric.Shadows.shadowOf
 class WallpaperInfoUtils {
     companion object {
         const val STUB_PACKAGE = "com.google.android.apps.wallpaper.nexus"
-        const val WALLPAPER_SPLIT = "wallpaper_cities_ny"
         const val WALLPAPER_CLASS = "NewYorkWallpaper"
+        const val WALLPAPER_SPLIT = "wallpaper_cities_ny"
 
         /**
-         * Creates an instance of [android.app.WallpaperInfo], and optionally registers the
-         * associated service so that it will resolve if necessary.
+         * Creates an instance of [android.app.WallpaperInfo] This method must be called from a test
+         * that uses [com.android.wallpaper.testing.ShadowWallpaperInfo].
+         */
+        fun createWallpaperInfo(
+            context: Context,
+            stubPackage: String,
+            wallpaperClass: String,
+        ): WallpaperInfo {
+            return createWallpaperInfo(
+                context = context,
+                componentName = ComponentName(stubPackage, wallpaperClass),
+            )
+        }
+
+        /**
+         * Creates an instance of [android.app.WallpaperInfo]
          *
-         * This method must be called from a test that uses
+         * <p>Set [configureService] to register the associated service so that it will resolve if
+         * necessary.
+         *
+         * <p>Add any additional actions to [extraActions] so that queryIntentServices will return
+         * this wallpaper for that action. This ensures that PackageManager#resolveService in
+         * RecentWallpaperUtils#cleanUpRecentsArray returns non-null so that our test entry isn't
+         * removed from the recents list.
+         *
+         * <p>Set [configureCreative] to specify that this wallpaper should be returned when
+         * querying creative wallpapers. For example, including
+         * CreativeCategoryFetcher.CREATIVE_ACTION will add this wallpaper to those returned when
+         * querying creative wallpapers.
+         *
+         * <p>This method must be called from a test that uses
          * [com.android.wallpaper.testing.ShadowWallpaperInfo].
          */
         fun createWallpaperInfo(
             context: Context,
-            stubPackage: String = STUB_PACKAGE,
+            componentName: ComponentName = ComponentName(STUB_PACKAGE, WALLPAPER_CLASS),
             wallpaperSplit: String = WALLPAPER_SPLIT,
-            wallpaperClass: String = WALLPAPER_CLASS,
             configureService: Boolean = true,
+            extraActions: List<String> = listOf(),
             metaData: Bundle? = null,
         ): WallpaperInfo {
             val resolveInfo =
                 ResolveInfo().apply {
                     serviceInfo = ServiceInfo()
-                    serviceInfo.packageName = stubPackage
+                    serviceInfo.packageName = componentName.packageName
+                    serviceInfo.name = componentName.className
                     serviceInfo.splitName = wallpaperSplit
-                    serviceInfo.name = wallpaperClass
                     serviceInfo.flags = PackageManager.GET_META_DATA
                     serviceInfo.metaData = metaData
                 }
             // ShadowWallpaperInfo allows the creation of this object
             val wallpaperInfo = WallpaperInfo(context, resolveInfo)
-            if (configureService) {
+            val actions =
+                extraActions.toMutableList().apply {
+                    if (configureService) add(WallpaperService.SERVICE_INTERFACE)
+                }
+            if (actions.isNotEmpty()) {
+                val pm = shadowOf(context.packageManager)
+                pm.addOrUpdateService(resolveInfo.serviceInfo)
+                actions.forEach { action ->
+                    pm.addIntentFilterForService(componentName, IntentFilter(action))
+                }
                 // For live wallpapers, we need the call to PackageManager#resolveService in
                 // RecentWallpaperUtils#cleanUpRecentsArray to return non-null so that our test
                 // entry isn't removed from the recents list.
-                val pm = shadowOf(context.packageManager)
-                val intent =
-                    Intent(WallpaperService.SERVICE_INTERFACE)
-                        .setClassName(stubPackage, wallpaperClass)
-                pm.addResolveInfoForIntent(intent, resolveInfo)
             }
             return wallpaperInfo
         }

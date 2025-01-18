@@ -71,9 +71,16 @@ object SmallPreviewBinder {
                     view.context.getString(R.string.unfolded_device_state_description)
                 else -> ""
             }
+
+        val screenName =
+            when (screen) {
+                Screen.LOCK_SCREEN -> view.context.getString(R.string.lock_screen_tab)
+                Screen.HOME_SCREEN -> view.context.getString(R.string.home_screen_tab)
+            }
         previewCard.contentDescription =
             view.context.getString(
                 R.string.wallpaper_preview_card_content_description_editable,
+                screenName,
                 foldedStateDescription,
             )
         val wallpaperSurface = view.requireViewById<SurfaceView>(R.id.wallpaper_surface)
