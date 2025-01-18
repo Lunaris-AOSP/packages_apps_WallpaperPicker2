@@ -27,6 +27,7 @@ import android.net.Uri
 import android.net.wifi.WifiManager
 import android.service.wallpaper.WallpaperSettingsActivity
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
 import com.android.wallpaper.R
 import com.android.wallpaper.effects.Effect
 import com.android.wallpaper.effects.EffectsController.EffectEnumInterface
@@ -70,7 +71,6 @@ import com.android.wallpaper.widget.floatingsheetcontent.WallpaperEffectsView2.S
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -87,10 +87,9 @@ constructor(
     liveWallpaperDeleteUtil: LiveWallpaperDeleteUtil,
     @ApplicationContext private val context: Context,
 ) {
-    private val TAG = "PreviewActionsViewModel"
-    private var EXTENDED_WALLPAPER_EFFECTS_PACKAGE =
+    private val extendedWallpaperEffectPkgName =
         context.getString(R.string.extended_wallpaper_effects_package)
-    private var EXTENDED_WALLPAPER_EFFECTS_ACTIVITY =
+    private val extendedWallpaperEffectActivityName =
         context.getString(R.string.extended_wallpaper_effects_activity)
 
     /** [INFORMATION] */
@@ -413,20 +412,28 @@ constructor(
     private val _isEffectsChecked: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isEffectsChecked: Flow<Boolean> = _isEffectsChecked.asStateFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val onEffectsClicked: Flow<(() -> Unit)?> =
-        combine(isEffectsVisible, isEffectsChecked, imageEffectFloatingSheetViewModel) {
+    private val extendedWallpaperIntent =
+        Intent().apply {
+            component =
+                ComponentName(extendedWallpaperEffectPkgName, extendedWallpaperEffectActivityName)
+        }
+
+    private val isExtendedEffectAvailable: Flow<Boolean> =
+        imageEffectFloatingSheetViewModel.map {
+            it != null &&
+                extendedWallpaperIntent.resolveActivityInfo(context.packageManager, 0) != null
+        }
+
+    val onEffectsClicked: Flow<((ActivityResultLauncher<Intent>) -> Unit)?> =
+        combine(isEffectsVisible, isEffectsChecked, isExtendedEffectAvailable) {
             isVisible,
             isChecked,
-            imageEffect ->
+            extendedEffectAvailable ->
             if (isVisible) {
-                val intent = buildExtendedWallpaperIntent()
-                val isIntentValid =
-                    intent.resolveActivityInfo(context.getPackageManager(), 0) != null
-                if (imageEffect != null && isIntentValid) {
-                    { launchExtendedWallpaperEffects() }
+                if (extendedEffectAvailable) {
+                    { launcher -> launchExtendedWallpaperEffects(launcher) }
                 } else {
-                    fun() {
+                    fun(_: ActivityResultLauncher<Intent>) {
                         if (!isChecked) {
                             uncheckAllOthersExcept(EFFECTS)
                         }
@@ -438,7 +445,7 @@ constructor(
             }
         }
 
-    private fun launchExtendedWallpaperEffects() {
+    private fun launchExtendedWallpaperEffects(launcher: ActivityResultLauncher<Intent>) {
         val previewedWallpaperModel = interactor.wallpaperModel.value
         var photoUri: Uri? = null
         if (
@@ -448,31 +455,19 @@ constructor(
             photoUri = previewedWallpaperModel.imageWallpaperData.uri
         }
 
-        val intent = buildExtendedWallpaperIntent()
         context.grantUriPermission(
-            EXTENDED_WALLPAPER_EFFECTS_PACKAGE,
+            extendedWallpaperEffectPkgName,
             photoUri,
             Intent.FLAG_GRANT_READ_URI_PERMISSION,
         )
         Log.d(TAG, "PhotoURI is: $photoUri")
         photoUri?.let { uri ->
-            intent.putExtra("PHOTO_URI", uri)
+            extendedWallpaperIntent.putExtra("PHOTO_URI", uri)
             try {
-                context.startActivity(intent)
+                launcher.launch(extendedWallpaperIntent)
             } catch (ex: ActivityNotFoundException) {
                 Log.e(TAG, "Extended Wallpaper Activity is not available", ex)
             }
-        }
-    }
-
-    private fun buildExtendedWallpaperIntent(): Intent {
-        return Intent().apply {
-            component =
-                ComponentName(
-                    EXTENDED_WALLPAPER_EFFECTS_PACKAGE,
-                    EXTENDED_WALLPAPER_EFFECTS_ACTIVITY,
-                )
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
     }
 
@@ -593,6 +588,7 @@ constructor(
     }
 
     companion object {
+        private const val TAG = "PreviewActionsViewModel"
         const val EXTRA_KEY_IS_CREATE_NEW = "is_create_new"
         const val EXTRA_WALLPAPER_DESCRIPTION = "wp_description"
 

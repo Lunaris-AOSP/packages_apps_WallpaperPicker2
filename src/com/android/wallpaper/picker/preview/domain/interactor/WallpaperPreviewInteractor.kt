@@ -66,6 +66,10 @@ constructor(
 
     fun hideFullPreviewTooltip() = wallpaperPreviewRepository.hideFullPreviewTooltip()
 
+    fun setPreviewWallpaper(wallpaperModel: WallpaperModel) {
+        wallpaperPreviewRepository.setWallpaperModel(wallpaperModel)
+    }
+
     suspend fun setStaticWallpaper(
         @UserEventLogger.SetWallpaperEntryPoint setWallpaperEntryPoint: Int,
         destination: WallpaperDestination,

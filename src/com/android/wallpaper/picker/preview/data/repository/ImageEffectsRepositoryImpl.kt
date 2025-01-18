@@ -16,43 +16,36 @@
 
 package com.android.wallpaper.picker.preview.data.repository
 
-import android.app.WallpaperInfo
 import android.app.WallpaperManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.service.wallpaper.WallpaperService
 import android.stats.style.StyleEnums
-import android.util.Log
 import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.effects.Effect
 import com.android.wallpaper.effects.EffectContract
 import com.android.wallpaper.effects.EffectsController
 import com.android.wallpaper.effects.EffectsController.EffectEnumInterface
 import com.android.wallpaper.module.logging.UserEventLogger
-import com.android.wallpaper.picker.data.LiveWallpaperData
-import com.android.wallpaper.picker.data.WallpaperId
 import com.android.wallpaper.picker.data.WallpaperModel
 import com.android.wallpaper.picker.data.WallpaperModel.LiveWallpaperModel
 import com.android.wallpaper.picker.data.WallpaperModel.StaticWallpaperModel
 import com.android.wallpaper.picker.di.modules.BackgroundDispatcher
 import com.android.wallpaper.picker.preview.data.repository.ImageEffectsRepository.EffectStatus
 import com.android.wallpaper.picker.preview.shared.model.ImageEffectsModel
+import com.android.wallpaper.picker.preview.ui.util.ContentHandlingUtil.queryLiveWallpaperInfo
+import com.android.wallpaper.picker.preview.ui.util.ContentHandlingUtil.toLiveWallpaperModel
 import com.android.wallpaper.widget.floatingsheetcontent.WallpaperEffectsView2.EffectTextRes
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
-import org.xmlpull.v1.XmlPullParserException
 
 @ActivityRetainedScoped
 class ImageEffectsRepositoryImpl
@@ -85,7 +78,7 @@ constructor(
 
     override suspend fun initializeEffect(
         staticWallpaperModel: StaticWallpaperModel,
-        onWallpaperModelUpdated: (wallpaper: WallpaperModel) -> Unit
+        onWallpaperModelUpdated: (wallpaper: WallpaperModel) -> Unit,
     ) {
         this.staticWallpaperModel = staticWallpaperModel
         onWallpaperUpdated = onWallpaperModelUpdated
@@ -153,7 +146,7 @@ constructor(
                                     resultCode,
                                     errorMessage,
                                 )
-                            bundle.getCinematicWallpaperModel(effect)?.let {
+                            bundle.getCinematicWallpaperModel(effect, staticWallpaperModel)?.let {
                                 onWallpaperUpdated.invoke(it)
                             }
                             logger.logEffectApply(
@@ -167,7 +160,7 @@ constructor(
                         EffectsController.RESULT_SUCCESS_REUSED -> {
                             _imageEffectsModel.value =
                                 ImageEffectsModel(EffectStatus.EFFECT_APPLIED, resultCode)
-                            bundle.getCinematicWallpaperModel(effect)?.let {
+                            bundle.getCinematicWallpaperModel(effect, staticWallpaperModel)?.let {
                                 onWallpaperUpdated.invoke(it)
                             }
                         }
@@ -183,7 +176,7 @@ constructor(
                                 StyleEnums.EFFECT_APPLIED_ON_FAILED,
                                 /* timeElapsedMillis= */ System.currentTimeMillis() -
                                     startGeneratingTime,
-                                /* resultCode= */ originalStatusCode
+                                /* resultCode= */ originalStatusCode,
                             )
                         }
                         else -> {
@@ -217,7 +210,7 @@ constructor(
                         /* projection= */ null,
                         /* selection= */ null,
                         /* selectionArgs= */ null,
-                        /* sortOrder= */ null
+                        /* sortOrder= */ null,
                     )
                     ?.use {
                         while (it.moveToNext()) {
@@ -249,7 +242,8 @@ constructor(
     }
 
     private fun Bundle.getCinematicWallpaperModel(
-        effect: EffectEnumInterface
+        effect: EffectEnumInterface,
+        staticWallpaperModel: StaticWallpaperModel,
     ): LiveWallpaperModel? {
         val componentName =
             if (containsKey(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT)) {
@@ -263,52 +257,15 @@ constructor(
                 getInt(EffectContract.ASSET_ID).toString()
             } else null
 
-        val resolveInfos =
-            Intent(WallpaperService.SERVICE_INTERFACE)
-                .apply { setClassName(componentName.packageName, componentName.className) }
-                .let {
-                    context.packageManager.queryIntentServices(it, PackageManager.GET_META_DATA)
-                }
-        if (resolveInfos.isEmpty()) {
-            Log.w(TAG, "Couldn't find live wallpaper for " + componentName.className)
-            return null
-        }
+        val wallpaperInfo = queryLiveWallpaperInfo(context, componentName)
 
-        try {
-            val wallpaperInfo = WallpaperInfo(context, resolveInfos[0])
-            val commonWallpaperData =
-                staticWallpaperModel.commonWallpaperData.copy(
-                    id =
-                        WallpaperId(
-                            componentName = componentName,
-                            uniqueId =
-                                if (assetId != null) "${wallpaperInfo.serviceName}_$assetId"
-                                else wallpaperInfo.serviceName,
-                            collectionId = staticWallpaperModel.commonWallpaperData.id.collectionId,
-                        ),
-                )
-            val liveWallpaperData =
-                LiveWallpaperData(
-                    groupName = "",
-                    systemWallpaperInfo = wallpaperInfo,
-                    isTitleVisible = false,
-                    isApplied = false,
-                    isEffectWallpaper = effectsController.isEffectsWallpaper(wallpaperInfo),
-                    effectNames = effect.toString(),
-                )
-            return LiveWallpaperModel(
-                commonWallpaperData = commonWallpaperData,
-                liveWallpaperData = liveWallpaperData,
-                creativeWallpaperData = null,
-                internalLiveWallpaperData = null,
-            )
-        } catch (e: XmlPullParserException) {
-            Log.w(TAG, "Skipping wallpaper " + resolveInfos[0].serviceInfo, e)
-            return null
-        } catch (e: IOException) {
-            Log.w(TAG, "Skipping wallpaper " + resolveInfos[0].serviceInfo, e)
-            return null
-        }
+        return staticWallpaperModel.toLiveWallpaperModel(
+            context = context,
+            componentName = componentName,
+            assetId = assetId,
+            isEffectWallpaper = effectsController.isEffectsWallpaper(checkNotNull(wallpaperInfo)),
+            effectNames = effect.toString(),
+        )
     }
 
     override fun enableImageEffect(effect: EffectEnumInterface) {
@@ -332,7 +289,7 @@ constructor(
                     EffectsController.ERROR_ORIGINAL_TIME_OUT,
                 )
             },
-            TIME_OUT_TIME_IN_MS
+            TIME_OUT_TIME_IN_MS,
         )
     }
 

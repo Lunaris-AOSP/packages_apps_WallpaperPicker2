@@ -92,6 +92,10 @@ constructor(
 
     val wallpaper: StateFlow<WallpaperModel?> = interactor.wallpaperModel
 
+    fun setPreviewWallpaperModel(wallpaperModel: WallpaperModel) {
+        interactor.setPreviewWallpaper(wallpaperModel)
+    }
+
     // Used to display loading indication on the preview.
     val imageEffectsModel = actionsInteractor.imageEffectsModel
 
