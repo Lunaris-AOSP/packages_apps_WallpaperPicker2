@@ -45,7 +45,6 @@ import kotlinx.coroutines.launch
 // Based on SmallPreviewBinder, except cleaned up to only bind bind wallpaper and workspace
 // (workspace binding to be added). Also we enable a screen to be defined during binding rather than
 // reading from viewModel.isViewAsHome.
-// TODO (b/348462236): bind workspace
 object BasePreviewBinder {
     fun bind(
         applicationContext: Context,

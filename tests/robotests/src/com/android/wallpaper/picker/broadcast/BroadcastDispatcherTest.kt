@@ -21,48 +21,50 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Looper
-import android.os.Process
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.SmallTest
-import com.android.wallpaper.picker.di.modules.SharedAppModule.Companion.BroadcastRunning
+import com.android.wallpaper.module.InjectorProvider
+import com.android.wallpaper.testing.TestInjector
 import com.google.common.truth.Truth.assertThat
-import java.util.concurrent.Executor
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@HiltAndroidTest
 @SmallTest
 @RunWith(RobolectricTestRunner::class)
 class BroadcastDispatcherTest {
-
-    private lateinit var mContext: Context
+    @get:Rule var hiltRule = HiltAndroidRule(this)
 
     private lateinit var broadcastReceiver: BroadcastReceiver
     private lateinit var intentFilter: IntentFilter
-    private lateinit var broadcastDispatcher: BroadcastDispatcher
 
-    private lateinit var mainExecutor: Executor
+    @Inject @ApplicationContext lateinit var appContext: Context
+    @Inject lateinit var broadcastDispatcher: BroadcastDispatcher
+    @Inject lateinit var testInjector: TestInjector
 
     @Before
     fun setUp() {
-        mContext = ApplicationProvider.getApplicationContext()
-        val backgroundRunningLooper = provideBroadcastRunningLooper()
-        mainExecutor = provideBroadcastRunningExecutor(backgroundRunningLooper)
+        hiltRule.inject()
+
+        InjectorProvider.setInjector(testInjector)
+
         broadcastReceiver =
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {}
             }
-        broadcastDispatcher = BroadcastDispatcher(mContext, backgroundRunningLooper)
     }
 
     @Test
@@ -80,19 +82,21 @@ class BroadcastDispatcherTest {
         // Waits for the flow collection coroutine to start and collect any immediate emissions
         advanceUntilIdle()
 
+        // "Broadcast" test intent by finding the BroadcastReceiver associated with the broadcast
+        // flow created above and call onReceive
         val shadowApplication =
             Shadows.shadowOf(ApplicationProvider.getApplicationContext() as Application)
         val receivers = shadowApplication.registeredReceivers
-        val capturedReceiver = receivers.find { it.broadcastReceiver is BroadcastReceiver }
+        val capturedReceiver = receivers.find { it.intentFilter == intentFilter }
         assertThat(capturedReceiver).isNotNull()
-        capturedReceiver?.let { collectedValues.add(testIntent to it.broadcastReceiver) }
+        capturedReceiver!!.broadcastReceiver.onReceive(appContext, testIntent)
 
         // Processes any additional tasks that may have been scheduled as a result of
         // adding to collectedValues
         advanceUntilIdle()
 
         val expectedValues = listOf(testIntent to capturedReceiver?.broadcastReceiver)
-        assertThat(expectedValues).isEqualTo(collectedValues)
+        assertThat(collectedValues).isEqualTo(expectedValues)
         job.cancel()
     }
 
@@ -136,23 +140,6 @@ class BroadcastDispatcherTest {
             IntentFilter(TEST_ACTION).apply { priority = IntentFilter.SYSTEM_HIGH_PRIORITY }
 
         broadcastDispatcher.registerReceiver(broadcastReceiver, testFilter)
-    }
-
-    private fun provideBroadcastRunningLooper(): Looper {
-        return HandlerThread("BroadcastRunning", Process.THREAD_PRIORITY_BACKGROUND)
-            .apply {
-                start()
-                looper.setSlowLogThresholdMs(
-                    BROADCAST_SLOW_DISPATCH_THRESHOLD,
-                    BROADCAST_SLOW_DELIVERY_THRESHOLD,
-                )
-            }
-            .looper
-    }
-
-    private fun provideBroadcastRunningExecutor(@BroadcastRunning looper: Looper?): Executor {
-        val handler = Handler(looper ?: Looper.getMainLooper())
-        return Executor { command -> handler.post(command) }
     }
 
     companion object {
