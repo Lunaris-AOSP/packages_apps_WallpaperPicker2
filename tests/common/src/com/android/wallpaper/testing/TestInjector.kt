@@ -313,7 +313,7 @@ constructor(
 
     override fun getWallpaperColorsRepository(): WallpaperColorsRepository {
         return wallpaperColorsRepository
-            ?: WallpaperColorsRepository(wallpaperClient).also { wallpaperColorsRepository = it }
+            ?: WallpaperColorsRepository().also { wallpaperColorsRepository = it }
     }
 
     override fun getMyPhotosIntentProvider(): MyPhotosStarter.MyPhotosIntentProvider {

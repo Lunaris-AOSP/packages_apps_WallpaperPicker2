@@ -16,12 +16,9 @@
 
 package com.android.wallpaper.picker.customization.data.repository
 
-import android.platform.test.annotations.DisableFlags
-import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import com.android.wallpaper.module.InjectorProvider
 import com.android.wallpaper.picker.customization.shared.model.WallpaperColorsModel
-import com.android.wallpaper.testing.FakeWallpaperClient
 import com.android.wallpaper.testing.TestInjector
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -40,27 +37,18 @@ class WallpaperColorsRepositoryTest {
     @get:Rule(order = 1) val setFlagsRule = SetFlagsRule()
 
     @Inject lateinit var testInjector: TestInjector
-    @Inject lateinit var client: FakeWallpaperClient
     lateinit var repository: WallpaperColorsRepository
 
     @Before
     fun setUp() {
         hiltRule.inject()
         InjectorProvider.setInjector(testInjector)
-        repository = WallpaperColorsRepository(client)
+        repository = WallpaperColorsRepository()
     }
 
     @Test
-    @DisableFlags(com.android.systemui.shared.Flags.FLAG_NEW_CUSTOMIZATION_PICKER_UI)
-    fun initialState_oldPickerUi() {
+    fun initialState() {
         assertThat(repository.homeWallpaperColors.value)
             .isInstanceOf(WallpaperColorsModel.Loading::class.java)
-    }
-
-    @Test
-    @EnableFlags(com.android.systemui.shared.Flags.FLAG_NEW_CUSTOMIZATION_PICKER_UI)
-    fun initialState_newPickerUi() {
-        assertThat(repository.homeWallpaperColors.value)
-            .isInstanceOf(WallpaperColorsModel.Loaded::class.java)
     }
 }
