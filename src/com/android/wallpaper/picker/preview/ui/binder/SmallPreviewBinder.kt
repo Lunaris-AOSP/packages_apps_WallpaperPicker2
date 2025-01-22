@@ -220,6 +220,7 @@ object SmallPreviewBinder {
         SmallWallpaperPreviewBinder.bind(
             surface = wallpaperSurface,
             viewModel = viewModel,
+            screen = screen,
             displaySize = displaySize,
             applicationContext = applicationContext,
             mainScope = mainScope,
