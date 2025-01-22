@@ -1013,6 +1013,7 @@ class IndividualPickerFragment2 :
             } else {
                 badge.visibility = View.GONE
             }
+            holder.itemView.isSelected = show
         }
     }
 
