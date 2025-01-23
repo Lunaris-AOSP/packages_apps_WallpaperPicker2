@@ -147,14 +147,14 @@ public class DefaultWallpaperRefresher implements WallpaperRefresher {
                         /* wallpaperComponent= */ null,
                         getCurrentWallpaperCropHints(FLAG_SYSTEM)));
             } else {
+                Uri previewUri = getCreativePreviewUri(mAppContext, homeInfo,
+                        WallpaperDestination.HOME);
                 if (liveWallpaperContentHandling()) {
                     WallpaperInstance instance = mWallpaperManager.getWallpaperInstance(
                             FLAG_SYSTEM);
-                    wallpaperMetadatas.add(
-                            new LiveWallpaperMetadata(homeInfo, null, instance.getDescription()));
+                    wallpaperMetadatas.add(new LiveWallpaperMetadata(homeInfo, previewUri,
+                            instance.getDescription()));
                 } else {
-                    Uri previewUri = getCreativePreviewUri(mAppContext, homeInfo,
-                            WallpaperDestination.HOME);
                     wallpaperMetadatas.add(new LiveWallpaperMetadata(homeInfo, previewUri));
                 }
             }
@@ -182,13 +182,13 @@ public class DefaultWallpaperRefresher implements WallpaperRefresher {
                         /* wallpaperComponent= */ null,
                         getCurrentWallpaperCropHints(FLAG_LOCK)));
             } else {
+                Uri previewUri = getCreativePreviewUri(mAppContext, lockInfo,
+                        WallpaperDestination.LOCK);
                 if (liveWallpaperContentHandling()) {
                     WallpaperInstance instance = mWallpaperManager.getWallpaperInstance(FLAG_LOCK);
-                    wallpaperMetadatas.add(
-                            new LiveWallpaperMetadata(lockInfo, null, instance.getDescription()));
+                    wallpaperMetadatas.add(new LiveWallpaperMetadata(lockInfo, previewUri,
+                            instance.getDescription()));
                 } else {
-                    Uri previewUri = getCreativePreviewUri(mAppContext, lockInfo,
-                            WallpaperDestination.LOCK);
                     wallpaperMetadatas.add(new LiveWallpaperMetadata(lockInfo, previewUri));
                 }
             }
