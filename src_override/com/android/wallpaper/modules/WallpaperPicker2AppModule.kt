@@ -47,7 +47,9 @@ import com.android.wallpaper.picker.customization.ui.binder.DefaultToolbarBinder
 import com.android.wallpaper.picker.customization.ui.binder.ToolbarBinder
 import com.android.wallpaper.picker.preview.ui.util.DefaultImageEffectDialogUtil
 import com.android.wallpaper.picker.preview.ui.util.ImageEffectDialogUtil
+import com.android.wallpaper.util.converter.DefaultPhotosErrorConvertor
 import com.android.wallpaper.util.converter.DefaultWallpaperModelFactory
+import com.android.wallpaper.util.converter.PhotosErrorConvertor
 import com.android.wallpaper.util.converter.WallpaperModelFactory
 import dagger.Binds
 import dagger.Module
@@ -109,6 +111,10 @@ abstract class WallpaperPicker2AppModule {
     @Binds
     @Singleton
     abstract fun bindPartnerProvider(impl: DefaultPartnerProvider): PartnerProvider
+
+    @Binds
+    @Singleton
+    abstract fun bindPhotosErrorConvertor(impl: DefaultPhotosErrorConvertor): PhotosErrorConvertor
 
     @Binds
     @Singleton

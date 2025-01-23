@@ -17,6 +17,7 @@
 package com.android.wallpaper.picker.category.ui.viewmodel
 
 import com.android.wallpaper.picker.category.ui.viewmodel.CategoriesViewModel.*
+import com.android.wallpaper.picker.data.PhotosErrorData
 
 /**
  * This class represents the view model for a single section that can contain a number of individual
@@ -27,5 +28,6 @@ class SectionViewModel(
     val columnCount: Int,
     val sectionTitle: String? = null,
     val displayType: DisplayType = DisplayType.Default,
+    val status: PhotosErrorData? = null,
     val onSectionClicked: (() -> Unit)? = null,
 )
