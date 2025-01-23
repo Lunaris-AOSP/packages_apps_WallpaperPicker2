@@ -36,6 +36,7 @@ import com.android.wallpaper.picker.preview.data.repository.DownloadableWallpape
 import com.android.wallpaper.picker.preview.data.repository.ImageEffectsRepository.EffectStatus
 import com.android.wallpaper.picker.preview.data.repository.WallpaperPreviewRepository
 import com.android.wallpaper.picker.preview.domain.interactor.PreviewActionsInteractor
+import com.android.wallpaper.picker.preview.domain.interactor.WallpaperPreviewInteractor
 import com.android.wallpaper.picker.preview.shared.model.ImageEffectsModel
 import com.android.wallpaper.picker.preview.ui.util.LiveWallpaperDeleteUtil
 import com.android.wallpaper.testing.FakeImageEffectsRepository
@@ -46,6 +47,10 @@ import com.android.wallpaper.testing.TestWallpaperPreferences
 import com.android.wallpaper.testing.WallpaperModelUtils
 import com.android.wallpaper.testing.collectLastValue
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -75,6 +80,7 @@ class PreviewActionsViewModelTest {
     private lateinit var underTest: PreviewActionsViewModel
     private lateinit var scenario: ActivityScenario<PreviewTestActivity>
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var wallpaperPreviewInteractor: WallpaperPreviewInteractor
 
     @Inject lateinit var testDispatcher: TestDispatcher
     @Inject lateinit var wallpaperPreferences: TestWallpaperPreferences
@@ -89,18 +95,6 @@ class PreviewActionsViewModelTest {
         hiltRule.inject()
         InjectorProvider.setInjector(testInjector)
         Dispatchers.setMain(testDispatcher)
-        wallpaperPreviewRepository = WallpaperPreviewRepository(wallpaperPreferences)
-        underTest =
-            PreviewActionsViewModel(
-                PreviewActionsInteractor(
-                    wallpaperPreviewRepository,
-                    imageEffectsRepository,
-                    CreativeEffectsRepository(appContext, testDispatcher),
-                    DownloadableWallpaperRepository(liveWallpaperDownloader),
-                ),
-                liveWallpaperDeleteUtil,
-                appContext,
-            )
 
         val activityInfo =
             ActivityInfo().apply {
@@ -110,7 +104,35 @@ class PreviewActionsViewModelTest {
         Shadows.shadowOf(appContext.packageManager).addOrUpdateActivity(activityInfo)
 
         scenario = ActivityScenario.launch(PreviewTestActivity::class.java)
-        scenario.onActivity { activity -> activityResultLauncher = activity.activityResultLauncher }
+        scenario.onActivity {
+            setEverything(it)
+            activityResultLauncher = it.activityResultLauncher
+        }
+    }
+
+    @EntryPoint
+    @InstallIn(ActivityComponent::class)
+    interface ActivityScopeEntryPoint {
+        fun interactor(): WallpaperPreviewInteractor
+    }
+
+    private fun setEverything(activity: PreviewTestActivity) {
+        val activityScopeEntryPoint =
+            EntryPointAccessors.fromActivity(activity, ActivityScopeEntryPoint::class.java)
+
+        wallpaperPreviewRepository = WallpaperPreviewRepository(wallpaperPreferences)
+        underTest =
+            PreviewActionsViewModel(
+                PreviewActionsInteractor(
+                    wallpaperPreviewRepository,
+                    imageEffectsRepository,
+                    CreativeEffectsRepository(appContext, testDispatcher),
+                    DownloadableWallpaperRepository(liveWallpaperDownloader),
+                ),
+                activityScopeEntryPoint.interactor(),
+                liveWallpaperDeleteUtil,
+                appContext,
+            )
     }
 
     @Test
