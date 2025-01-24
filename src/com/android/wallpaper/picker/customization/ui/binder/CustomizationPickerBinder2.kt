@@ -35,6 +35,7 @@ import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewMo
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2.PickerScreen.CUSTOMIZATION_OPTION
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2.PickerScreen.MAIN
+import com.android.wallpaper.picker.data.WallpaperModel
 import kotlinx.coroutines.launch
 
 object CustomizationPickerBinder2 {
@@ -64,6 +65,7 @@ object CustomizationPickerBinder2 {
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
         navigateToColorContrastSettingsActivity: () -> Unit,
         navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
+        navigateToPreviewScreen: ((wallpaperModel: WallpaperModel) -> Unit)?,
     ) {
         val optionContainer =
             view.requireViewById<MotionLayout>(R.id.customization_option_container)
@@ -178,6 +180,7 @@ object CustomizationPickerBinder2 {
             navigateToMoreLockScreenSettingsActivity,
             navigateToColorContrastSettingsActivity,
             navigateToLockScreenNotificationsSettingsActivity,
+            navigateToPreviewScreen,
         )
     }
 }

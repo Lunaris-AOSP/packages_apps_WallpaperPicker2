@@ -26,6 +26,7 @@ import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUti
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationOptionsViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
+import com.android.wallpaper.picker.data.WallpaperModel
 
 interface CustomizationOptionsBinder {
 
@@ -47,6 +48,7 @@ interface CustomizationOptionsBinder {
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
         navigateToColorContrastSettingsActivity: () -> Unit,
         navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
+        navigateToPreviewScreen: ((wallpaperModel: WallpaperModel) -> Unit)?,
     )
 
     fun bindClockPreview(
