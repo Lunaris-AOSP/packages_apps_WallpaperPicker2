@@ -21,3 +21,10 @@ flag {
     description: "Add new column for the new creative wallpaper."
     bug: "381009822"
 }
+
+flag {
+   name: "compose_refactor_flag"
+   namespace: "customization_picker"
+   description: "Refactor pieces of picker UI into compose."
+   bug: "391918848"
+}

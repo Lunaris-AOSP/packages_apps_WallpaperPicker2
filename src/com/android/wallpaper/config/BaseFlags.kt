@@ -25,6 +25,7 @@ import com.android.systemui.shared.Flags.newCustomizationPickerUi
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClient
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClientImpl
 import com.android.systemui.shared.customization.data.content.CustomizationProviderContract as Contract
+import com.android.wallpaper.Flags.composeRefactorFlag
 import com.android.wallpaper.Flags.newCreativeWallpaperCategory
 import com.android.wallpaper.Flags.refactorWallpaperCategoryFlag
 import com.android.wallpaper.Flags.wallpaperRestorerFlag
@@ -59,6 +60,8 @@ abstract class BaseFlags {
     open fun isClockReactiveVariantsEnabled() = clockReactiveVariants()
 
     open fun isMultiCropEnabled() = WallpaperManager.isMultiCropEnabled()
+
+    open fun isComposeRefactorEnabled() = composeRefactorFlag()
 
     open fun isKeyguardQuickAffordanceEnabled(context: Context): Boolean {
         return getCachedFlags(context)
