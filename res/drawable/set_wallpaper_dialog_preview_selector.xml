@@ -17,7 +17,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_activated="false"
-        android:drawable="@drawable/set_wallpaper_dialog_preview_selection_unchecked"/>
+        android:drawable="@android:color/transparent"/>
     <item
         android:state_activated="true"
         android:drawable="@drawable/set_wallpaper_dialog_preview_selection_checked"/>
