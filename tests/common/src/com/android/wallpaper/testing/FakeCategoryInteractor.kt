@@ -71,5 +71,5 @@ class FakeCategoryInteractor @Inject constructor() : CategoryInteractor {
         return dataList
     }
 
-    override val isNetworkCategoriesFetched: Flow<Boolean> = emptyFlow()
+    override val isNetworkCategoriesNotEmpty: Flow<Boolean> = emptyFlow()
 }

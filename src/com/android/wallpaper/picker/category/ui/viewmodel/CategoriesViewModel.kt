@@ -369,7 +369,7 @@ constructor(
     val shouldRefreshCategories: Flow<Boolean> =
         combine(
             networkStatusInteractor.isConnectionObtained,
-            singleCategoryInteractor.isNetworkCategoriesFetched,
+            singleCategoryInteractor.isNetworkCategoriesNotEmpty,
         ) { isConnected, isCategoriesCached ->
             // if there is connection and empty cache, then refetch
             if (isConnected) {

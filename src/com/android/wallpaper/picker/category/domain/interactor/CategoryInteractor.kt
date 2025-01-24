@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 interface CategoryInteractor {
     val categories: Flow<List<CategoryModel>>
 
-    val isNetworkCategoriesFetched: Flow<Boolean>
+    val isNetworkCategoriesNotEmpty: Flow<Boolean>
 
     fun refreshNetworkCategories()
 
