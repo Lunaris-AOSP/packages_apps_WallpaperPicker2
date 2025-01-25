@@ -22,11 +22,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,9 +59,6 @@ public class StartRotationDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_start_rotation, null);
-
-        TextView bodyText = dialogView.findViewById(R.id.start_rotation_dialog_subhead);
-        bodyText.setText(Html.fromHtml(getResources().getString(getBodyTextResourceId())));
 
         final CheckBox wifiOnlyCheckBox = dialogView.findViewById(
                 R.id.start_rotation_wifi_only_checkbox);
@@ -104,10 +99,6 @@ public class StartRotationDialogFragment extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         ((Listener) getTargetFragment()).onStartRotationDialogDismiss(dialog);
-    }
-
-    private int getBodyTextResourceId() {
-        return R.string.start_rotation_dialog_body;
     }
 
     private int getPositiveButtonTextResourceId() {
