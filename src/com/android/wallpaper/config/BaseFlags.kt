@@ -18,7 +18,8 @@ package com.android.wallpaper.config
 import android.app.WallpaperManager
 import android.content.Context
 import com.android.settings.accessibility.Flags.enableColorContrastControl
-import com.android.systemui.Flags.clockReactiveVariants
+import com.android.systemui.shared.Flags.clockReactiveVariants
+import com.android.systemui.shared.Flags.lockscreenCustomClocks
 import com.android.systemui.shared.Flags.newCustomizationPickerUi
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClient
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClientImpl
@@ -69,11 +70,12 @@ abstract class BaseFlags {
     }
 
     open fun isCustomClocksEnabled(context: Context): Boolean {
-        return getCachedFlags(context)
-            .firstOrNull { flag ->
-                flag.name == Contract.FlagsTable.FLAG_NAME_CUSTOM_CLOCKS_ENABLED
-            }
-            ?.value == true
+        return lockscreenCustomClocks() ||
+            getCachedFlags(context)
+                .firstOrNull { flag ->
+                    flag.name == Contract.FlagsTable.FLAG_NAME_CUSTOM_CLOCKS_ENABLED
+                }
+                ?.value == true
     }
 
     open fun isMonochromaticThemeEnabled(context: Context): Boolean {
