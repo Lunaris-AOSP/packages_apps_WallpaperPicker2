@@ -107,8 +107,7 @@
     <string name="previous_page_content_description" msgid="1138597031571078429">"이전"</string>
     <string name="wallpaper_title" msgid="6754214682228331092">"배경화면"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"배경화면 미리보기"</string>
-    <!-- no translation found for wallpaper_preview_card_content_description_editable (8147628993184862003) -->
-    <skip />
+    <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"%2$s 상태의 %1$s 배경화면 미리보기. 사진을 수정하려면 두 번 탭하세요."</string>
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"잠금 화면 배경화면 미리보기"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"홈 화면 배경화면 미리보기"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"컬렉션이 없습니다."</string>
