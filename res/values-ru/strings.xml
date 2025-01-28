@@ -107,8 +107,7 @@
     <string name="previous_page_content_description" msgid="1138597031571078429">"Предыдущая страница"</string>
     <string name="wallpaper_title" msgid="6754214682228331092">"Обои"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"Предварительный просмотр обоев"</string>
-    <!-- no translation found for wallpaper_preview_card_content_description_editable (8147628993184862003) -->
-    <skip />
+    <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"%1$s: предварительный просмотр обоев (%2$s). Чтобы отредактировать фото, нажмите дважды."</string>
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"Предварительный просмотр обоев для заблокированного экрана"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"Предварительный просмотр обоев для главного экрана"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"Такой подборки не существует."</string>

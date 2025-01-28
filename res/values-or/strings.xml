@@ -107,8 +107,7 @@
     <string name="previous_page_content_description" msgid="1138597031571078429">"ପୂର୍ବବର୍ତ୍ତୀ"</string>
     <string name="wallpaper_title" msgid="6754214682228331092">"ୱାଲପେପର୍"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"ୱାଲପେପରର ପ୍ରିଭ୍ୟୁ"</string>
-    <!-- no translation found for wallpaper_preview_card_content_description_editable (8147628993184862003) -->
-    <skip />
+    <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"%1$s ୱାଲପେପର ପ୍ରିଭ୍ୟୁ %2$s, ଆପଣଙ୍କ ଫଟୋକୁ ଏଡିଟ କରିବା ପାଇଁ ଦୁଇଥର ଟାପ କରନ୍ତୁ"</string>
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"ଲକ ସ୍କ୍ରିନ ୱାଲପେପରର ପ୍ରିଭ୍ୟୁ"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"ହୋମ ସ୍କ୍ରିନ ୱାଲପେପରର ପ୍ରିଭ୍ୟୁ"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"ସଂଗ୍ରହ ଉପଲବ୍ଧ ନାହିଁ"</string>

@@ -107,8 +107,7 @@
     <string name="previous_page_content_description" msgid="1138597031571078429">"Uliotangulia"</string>
     <string name="wallpaper_title" msgid="6754214682228331092">"Mandhari"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"Onyesho la kukagua mandhari"</string>
-    <!-- no translation found for wallpaper_preview_card_content_description_editable (8147628993184862003) -->
-    <skip />
+    <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"Toleo la kukagua mandhari ya %1$s skrini ikiwa %2$s, gusa mara mbili ili ubadilishe picha yako"</string>
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"Onyesho la kukagua mandhari ya skrini iliyofungwa"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"Onyesho la kukagua mandhari ya skrini ya kwanza"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"Mkusanyiko huu haupo"</string>
