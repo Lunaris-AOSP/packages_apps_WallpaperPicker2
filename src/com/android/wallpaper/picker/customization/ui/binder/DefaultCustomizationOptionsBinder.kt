@@ -38,6 +38,7 @@ import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewMo
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationOptionsViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.picker.customization.ui.viewmodel.WallpaperCarouselViewModel
+import com.android.wallpaper.picker.data.WallpaperModel
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
 import javax.inject.Inject
@@ -59,6 +60,7 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
         navigateToColorContrastSettingsActivity: () -> Unit,
         navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
+        navigateToPreviewScreen: ((wallpaperModel: WallpaperModel) -> Unit)?,
     ) {
         val lockWallpaperEntry =
             lockScreenCustomizationOptionEntries
@@ -84,6 +86,7 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
             wallpaperCarouselHome = homeWallpaperEntry.requireViewById(R.id.wallpaper_carousel),
             viewModel = viewModel.customizationOptionsViewModel.wallpaperCarouselViewModel,
             lifecycleOwner = lifecycleOwner,
+            navigateToPreviewScreen,
         )
 
         moreWallpapersLock.setOnClickListener {
@@ -130,6 +133,7 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         wallpaperCarouselHome: RecyclerView,
         viewModel: WallpaperCarouselViewModel,
         lifecycleOwner: LifecycleOwner,
+        navigateToPreviewScreen: ((wallpaperModel: WallpaperModel) -> Unit)?,
     ) {
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -149,6 +153,16 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
                         }
                         if (wallpaperCarouselHome.onFlingListener == null) {
                             CarouselSnapHelper().attachToRecyclerView(wallpaperCarouselHome)
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.navigationEvents.collect { navigationEvent ->
+                        when (navigationEvent) {
+                            is WallpaperCarouselViewModel.NavigationEvent.NavigateToPreviewScreen -> {
+                                navigateToPreviewScreen?.invoke(navigationEvent.wallpaperModel)
+                            }
                         }
                     }
                 }

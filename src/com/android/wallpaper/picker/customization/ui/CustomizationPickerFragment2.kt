@@ -53,6 +53,8 @@ import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.Screen.HOME_SCREEN
 import com.android.wallpaper.model.Screen.LOCK_SCREEN
 import com.android.wallpaper.module.LargeScreenMultiPanesChecker
+import com.android.wallpaper.module.MultiPanesChecker
+import com.android.wallpaper.picker.WallpaperPickerDelegate.VIEW_ONLY_PREVIEW_WALLPAPER_REQUEST_CODE
 import com.android.wallpaper.picker.category.ui.view.CategoriesFragment
 import com.android.wallpaper.picker.common.preview.data.repository.PersistentWallpaperModelRepository
 import com.android.wallpaper.picker.common.preview.ui.binder.BasePreviewBinder
@@ -68,6 +70,7 @@ import com.android.wallpaper.picker.customization.ui.view.adapter.PreviewPagerAd
 import com.android.wallpaper.picker.customization.ui.view.transformer.PreviewPagerPageTransformer
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
+import com.android.wallpaper.picker.data.WallpaperModel
 import com.android.wallpaper.picker.di.modules.MainDispatcher
 import com.android.wallpaper.picker.preview.ui.WallpaperPreviewActivity
 import com.android.wallpaper.util.ActivityUtils
@@ -93,6 +96,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
     @Inject lateinit var wallpaperConnectionUtils: WallpaperConnectionUtils
     @Inject lateinit var persistentWallpaperModelRepository: PersistentWallpaperModelRepository
     @Inject @MainDispatcher lateinit var mainScope: CoroutineScope
+    @Inject lateinit var multiPanesChecker: MultiPanesChecker
 
     private val customizationPickerViewModel: CustomizationPickerViewModel2 by viewModels()
 
@@ -259,6 +263,10 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             },
             navigateToLockScreenNotificationsSettingsActivity = {
                 activity?.startActivity(Intent(Settings.ACTION_LOCKSCREEN_NOTIFICATIONS_SETTINGS))
+            },
+            navigateToPreviewScreen = { wallpaperModel ->
+                // navigate to standard preview screen
+                startWallpaperPreviewActivity(wallpaperModel, false)
             },
         )
 
@@ -514,6 +522,29 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             }
             onComplete()
         }
+    }
+
+    private fun startWallpaperPreviewActivity(
+        wallpaperModel: WallpaperModel,
+        isCreativeCategories: Boolean,
+    ) {
+        val appContext = requireContext()
+        val activity = requireActivity()
+        persistentWallpaperModelRepository.setWallpaperModel(wallpaperModel)
+        val isMultiPanel = multiPanesChecker.isMultiPanesEnabled(appContext)
+        val previewIntent =
+            WallpaperPreviewActivity.newIntent(
+                context = appContext,
+                isAssetIdPresent = true,
+                isViewAsHome = true,
+                isNewTask = isMultiPanel,
+                shouldCategoryRefresh = isCreativeCategories,
+            )
+        ActivityUtils.startActivityForResultSafely(
+            activity,
+            previewIntent,
+            VIEW_ONLY_PREVIEW_WALLPAPER_REQUEST_CODE,
+        )
     }
 
     interface EmptyTransitionListener : TransitionListener {
