@@ -295,7 +295,7 @@ class WallpaperConnectionUtils @Inject constructor(@ApplicationContext context: 
             this.packageName
                 .plus(":")
                 .plus(this.serviceName)
-                .plus(description.let { ":$it.id" }.plus(multiEngineExt))
+                .plus(description.let { ":${it.id}" }.plus(multiEngineExt))
         return if (displaySize != null) {
             keyWithoutSizeInformation.plus(":").plus("${displaySize.x}x${displaySize.y}")
         } else {
