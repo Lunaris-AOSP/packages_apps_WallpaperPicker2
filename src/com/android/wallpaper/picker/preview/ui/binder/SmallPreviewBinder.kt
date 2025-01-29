@@ -32,6 +32,7 @@ import com.android.wallpaper.R
 import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
+import com.android.wallpaper.picker.data.WallpaperModel
 import com.android.wallpaper.picker.preview.ui.fragment.SmallPreviewFragment
 import com.android.wallpaper.picker.preview.ui.viewmodel.FullPreviewConfigViewModel
 import com.android.wallpaper.picker.preview.ui.viewmodel.WallpaperPreviewViewModel
@@ -77,12 +78,29 @@ object SmallPreviewBinder {
                 Screen.LOCK_SCREEN -> view.context.getString(R.string.lock_screen_tab)
                 Screen.HOME_SCREEN -> view.context.getString(R.string.home_screen_tab)
             }
+
+        val isWallpaperEditable =
+            if (viewModel.wallpaper.value is WallpaperModel.LiveWallpaperModel) {
+                false
+            } else {
+                !(viewModel.wallpaper.value is WallpaperModel.StaticWallpaperModel &&
+                    (viewModel.wallpaper.value as? WallpaperModel.StaticWallpaperModel)
+                        ?.downloadableWallpaperData != null)
+            }
         previewCard.contentDescription =
-            view.context.getString(
-                R.string.wallpaper_preview_card_content_description_editable,
-                screenName,
-                foldedStateDescription,
-            )
+            if (isWallpaperEditable) {
+                view.context.getString(
+                    R.string.wallpaper_preview_card_content_description_editable,
+                    screenName,
+                    foldedStateDescription,
+                )
+            } else {
+                view.context.getString(
+                    R.string.wallpaper_preview_card_content_description_non_editable,
+                    screenName,
+                    foldedStateDescription,
+                )
+            }
         val wallpaperSurface = view.requireViewById<SurfaceView>(R.id.wallpaper_surface)
 
         // Don't set radius for set wallpaper dialog
