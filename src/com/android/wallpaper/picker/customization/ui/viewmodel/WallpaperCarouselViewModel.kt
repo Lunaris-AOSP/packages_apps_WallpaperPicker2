@@ -20,7 +20,6 @@ import android.content.Context
 import com.android.wallpaper.asset.ContentUriAsset
 import com.android.wallpaper.picker.category.domain.interactor.CuratedPhotosInteractor
 import com.android.wallpaper.picker.category.ui.view.SectionCardinality
-import com.android.wallpaper.picker.category.ui.viewmodel.CategoriesViewModel
 import com.android.wallpaper.picker.category.ui.viewmodel.TileViewModel
 import com.android.wallpaper.picker.data.WallpaperModel
 import dagger.assisted.Assisted
@@ -44,7 +43,7 @@ constructor(
     @Assisted private val viewModelScope: CoroutineScope,
 ) {
 
-    private val _navigationEvents = MutableSharedFlow<CategoriesViewModel.NavigationEvent>()
+    private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents = _navigationEvents.asSharedFlow()
 
     val wallpaperCarouselItems: Flow<List<TileViewModel>> =
@@ -65,12 +64,7 @@ constructor(
 
     private fun navigateToPreviewScreen(wallpaperModel: WallpaperModel) {
         viewModelScope.launch {
-            _navigationEvents.emit(
-                CategoriesViewModel.NavigationEvent.NavigateToPreviewScreen(
-                    wallpaperModel,
-                    CategoriesViewModel.CategoryType.MyPhotosCategories,
-                )
-            )
+            _navigationEvents.emit(NavigationEvent.NavigateToPreviewScreen(wallpaperModel))
         }
     }
 
@@ -78,5 +72,11 @@ constructor(
     @AssistedFactory
     interface Factory {
         fun create(viewModelScope: CoroutineScope): WallpaperCarouselViewModel
+    }
+
+    sealed class NavigationEvent {
+        data class NavigateToPreviewScreen(val wallpaperModel: WallpaperModel) : NavigationEvent()
+        // in case the carrousel may contain suggestions to navigate to different types of previews
+        // additional cases can be added here
     }
 }

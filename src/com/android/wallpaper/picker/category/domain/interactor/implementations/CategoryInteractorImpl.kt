@@ -55,7 +55,7 @@ constructor(
                 }
             }
 
-    override val isNetworkCategoriesFetched: Flow<Boolean> = emptyFlow()
+    override val isNetworkCategoriesNotEmpty: Flow<Boolean> = emptyFlow()
 
     override fun refreshNetworkCategories() {}
 
