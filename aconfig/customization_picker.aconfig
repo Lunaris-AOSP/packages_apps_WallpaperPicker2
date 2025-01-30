@@ -21,10 +21,3 @@ flag {
     description: "Add new column for the new creative wallpaper."
     bug: "381009822"
 }
-
-flag {
-    name: "magic_portrait_flag"
-    namespace: "customization_picker"
-    description: "Enables magic portrait integration when flag is turned on."
-    bug: "334125919"
-}

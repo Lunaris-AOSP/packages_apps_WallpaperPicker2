@@ -87,6 +87,7 @@ constructor(
     liveWallpaperDeleteUtil: LiveWallpaperDeleteUtil,
     @ApplicationContext private val context: Context,
 ) {
+    private var flags = InjectorProvider.getInjector().getFlags()
     private val extendedWallpaperEffectPkgName =
         context.getString(R.string.extended_wallpaper_effects_package)
     private val extendedWallpaperEffectActivityName =
@@ -420,7 +421,8 @@ constructor(
 
     private val isExtendedEffectAvailable: Flow<Boolean> =
         imageEffectFloatingSheetViewModel.map {
-            it != null &&
+            flags.isExtendedWallpaperEnabled() &&
+                it != null &&
                 extendedWallpaperIntent.resolveActivityInfo(context.packageManager, 0) != null
         }
 
