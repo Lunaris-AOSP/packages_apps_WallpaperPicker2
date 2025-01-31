@@ -136,6 +136,7 @@ object OptionItemBinder {
                         // last
                         // value of isSelected.
                         var lastSelected: Boolean? = null
+                        var animationDisposableHandle: DisposableHandle? = null
 
                         viewModel.key
                             .flatMapLatest {
@@ -148,6 +149,7 @@ object OptionItemBinder {
                                 viewModel.isSelected
                             }
                             .collect { isSelected ->
+                                animationDisposableHandle?.dispose()
                                 if (foregroundTintSpec != null && foregroundView is ImageView) {
                                     if (isSelected) {
                                         foregroundView.setColorFilter(
@@ -160,13 +162,14 @@ object OptionItemBinder {
                                     }
                                 }
 
-                                animatedSelection(
-                                    animationSpec = animationSpec,
-                                    borderView = borderView,
-                                    contentView = backgroundView,
-                                    isSelected = isSelected,
-                                    animate = lastSelected != null && lastSelected != isSelected,
-                                )
+                                animationDisposableHandle =
+                                    animatedSelection(
+                                        animationSpec = animationSpec,
+                                        borderView = borderView,
+                                        contentView = backgroundView,
+                                        isSelected = isSelected,
+                                        animate = lastSelected != null && lastSelected != isSelected,
+                                    )
                                 view.isSelected = isSelected
                                 lastSelected = isSelected
                             }
@@ -219,81 +222,97 @@ object OptionItemBinder {
         isSelected: Boolean,
         animationSpec: AnimationSpec,
         animate: Boolean = true,
-    ) {
+    ): DisposableHandle? {
         if (isSelected) {
             if (!animate) {
                 borderView.alpha = 1f
                 borderView.scale(1f)
                 contentView.scale(0.86f)
-                return
+                return null
             }
 
             // Border scale.
-            borderView
-                .animate()
-                .scale(1.099f)
-                .setDuration(animationSpec.durationMs / 2)
-                .setInterpolator(PathInterpolator(0.29f, 0f, 0.67f, 1f))
-                .withStartAction {
-                    borderView.scaleX = 0.98f
-                    borderView.scaleY = 0.98f
-                    borderView.alpha = 1f
-                }
-                .withEndAction {
-                    borderView
-                        .animate()
-                        .scale(1f)
-                        .setDuration(animationSpec.durationMs / 2)
-                        .setInterpolator(PathInterpolator(0.33f, 0f, 0.15f, 1f))
-                        .start()
-                }
-                .start()
+            val borderAnimator =
+                borderView
+                    .animate()
+                    .scale(1.099f)
+                    .setDuration(animationSpec.durationMs / 2)
+                    .setInterpolator(PathInterpolator(0.29f, 0f, 0.67f, 1f))
+                    .withStartAction {
+                        borderView.scaleX = 0.98f
+                        borderView.scaleY = 0.98f
+                        borderView.alpha = 1f
+                    }
+                    .withEndAction {
+                        borderView
+                            .animate()
+                            .scale(1f)
+                            .setDuration(animationSpec.durationMs / 2)
+                            .setInterpolator(PathInterpolator(0.33f, 0f, 0.15f, 1f))
+                            .start()
+                    }
+                    .also { it.start() }
 
             // Background scale.
-            contentView
-                .animate()
-                .scale(0.9321f)
-                .setDuration(animationSpec.durationMs / 2)
-                .setInterpolator(PathInterpolator(0.29f, 0f, 0.67f, 1f))
-                .withEndAction {
-                    contentView
-                        .animate()
-                        .scale(0.86f)
-                        .setDuration(animationSpec.durationMs / 2)
-                        .setInterpolator(PathInterpolator(0.33f, 0f, 0.15f, 1f))
-                        .start()
-                }
-                .start()
+            val backgroundAnimator =
+                contentView
+                    .animate()
+                    .scale(0.9321f)
+                    .setDuration(animationSpec.durationMs / 2)
+                    .setInterpolator(PathInterpolator(0.29f, 0f, 0.67f, 1f))
+                    .withEndAction {
+                        contentView
+                            .animate()
+                            .scale(0.86f)
+                            .setDuration(animationSpec.durationMs / 2)
+                            .setInterpolator(PathInterpolator(0.33f, 0f, 0.15f, 1f))
+                            .start()
+                    }
+                    .also { it.start() }
+
+            return DisposableHandle {
+                borderAnimator.cancel()
+                backgroundAnimator.cancel()
+            }
         } else {
             if (!animate) {
                 borderView.alpha = 0f
                 contentView.scale(1f)
-                return
+                return null
             }
 
             // Border opacity.
-            borderView
-                .animate()
-                .alpha(0f)
-                .setDuration(animationSpec.durationMs / 2)
-                .setInterpolator(LinearInterpolator())
-                .start()
+            val borderOpacityAnimator =
+                borderView
+                    .animate()
+                    .alpha(0f)
+                    .setDuration(animationSpec.durationMs / 2)
+                    .setInterpolator(LinearInterpolator())
+                    .also { it.start() }
 
             // Border scale.
-            borderView
-                .animate()
-                .scale(1f)
-                .setDuration(animationSpec.durationMs)
-                .setInterpolator(PathInterpolator(0.2f, 0f, 0f, 1f))
-                .start()
+            val borderScaleAnimator =
+                borderView
+                    .animate()
+                    .scale(1f)
+                    .setDuration(animationSpec.durationMs)
+                    .setInterpolator(PathInterpolator(0.2f, 0f, 0f, 1f))
+                    .also { it.start() }
 
             // Background scale.
-            contentView
-                .animate()
-                .scale(1f)
-                .setDuration(animationSpec.durationMs)
-                .setInterpolator(PathInterpolator(0.2f, 0f, 0f, 1f))
-                .start()
+            val backgroundAnimator =
+                contentView
+                    .animate()
+                    .scale(1f)
+                    .setDuration(animationSpec.durationMs)
+                    .setInterpolator(PathInterpolator(0.2f, 0f, 0f, 1f))
+                    .also { it.start() }
+
+            return DisposableHandle {
+                borderOpacityAnimator.cancel()
+                borderScaleAnimator.cancel()
+                backgroundAnimator.cancel()
+            }
         }
     }
 
