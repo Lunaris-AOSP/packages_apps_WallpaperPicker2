@@ -55,6 +55,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /** Binds wallpaper preview surface view and its view models. */
@@ -92,7 +93,7 @@ object FullWallpaperPreviewBinder {
 
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.fullWallpaper.collect { (_, _, displaySize, _) ->
+                viewModel.fullWallpaper.collect { (wallpaper, _, displaySize, _) ->
                     val currentSize = displayUtils.getRealSize(checkNotNull(view.context.display))
                     wallpaperPreviewCrop.setCurrentAndTargetDisplaySize(currentSize, displaySize)
                     val isPreviewingFullScreen = displaySize == currentSize
@@ -139,29 +140,50 @@ object FullWallpaperPreviewBinder {
         if (displayUtils.hasMultiInternalDisplays()) {
             lifecycleOwner.lifecycleScope.launch {
                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.fullPreviewConfigViewModel.collect { fullPreviewConfigViewModel ->
-                        val deviceDisplayType = fullPreviewConfigViewModel?.deviceDisplayType
-                        val descriptionResourceId =
-                            when (deviceDisplayType) {
-                                DeviceDisplayType.FOLDED -> R.string.folded_device_state_description
-                                else -> R.string.unfolded_device_state_description
-                            }
-                        val descriptionString =
-                            surfaceTouchForwardingLayout.context.getString(descriptionResourceId)
+                    combine(viewModel.fullWallpaper, viewModel.fullPreviewConfigViewModel) {
+                            fullWallpaper,
+                            fullWallpaperPreviewConfig ->
+                            fullWallpaper to fullWallpaperPreviewConfig
+                        }
+                        .collect { (fullWallpaper, fullWallpaperPreviewConfig) ->
+                            val deviceDisplayType = fullWallpaperPreviewConfig?.deviceDisplayType
+                            val descriptionResourceId =
+                                when (deviceDisplayType) {
+                                    DeviceDisplayType.FOLDED ->
+                                        R.string.folded_device_state_description
+                                    else -> R.string.unfolded_device_state_description
+                                }
+                            val descriptionString =
+                                surfaceTouchForwardingLayout.context.getString(
+                                    descriptionResourceId
+                                )
+                            val isPreviewEditable =
+                                fullWallpaper.wallpaper is WallpaperModel.StaticWallpaperModel
+                            surfaceTouchForwardingLayout.contentDescription =
+                                surfaceTouchForwardingLayout.context.getString(
+                                    if (isPreviewEditable)
+                                        R.string.preview_screen_description_editable
+                                    else R.string.preview_screen_description_non_editable,
+                                    descriptionString,
+                                )
+                        }
+                }
+            }
+        } else {
+            lifecycleOwner.lifecycleScope.launch {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.fullWallpaper.collect { fullWallpaper ->
+                        val isPreviewEditable =
+                            fullWallpaper.wallpaper is WallpaperModel.StaticWallpaperModel
                         surfaceTouchForwardingLayout.contentDescription =
                             surfaceTouchForwardingLayout.context.getString(
-                                R.string.preview_screen_description_editable,
-                                descriptionString,
+                                if (isPreviewEditable) R.string.preview_screen_description_editable
+                                else R.string.preview_screen_description_non_editable,
+                                "",
                             )
                     }
                 }
             }
-        } else {
-            surfaceTouchForwardingLayout.contentDescription =
-                surfaceTouchForwardingLayout.context.getString(
-                    R.string.preview_screen_description_editable,
-                    "",
-                )
         }
 
         var surfaceCallback: SurfaceViewUtils.SurfaceCallback? = null
