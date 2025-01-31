@@ -21,6 +21,7 @@ import android.app.WallpaperColors
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import com.android.wallpaper.asset.Asset
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.WallpaperModelsPair
@@ -192,6 +193,17 @@ class FakeWallpaperClient @Inject constructor() : WallpaperClient {
                     .also { wallpapersSet[WallpaperDestination.HOME] = it }),
             wallpapersSet[WallpaperDestination.LOCK],
         )
+    }
+
+    override fun addOnColorsChangedListener(
+        listener: (WallpaperColors?, Int) -> Unit,
+        handler: Handler,
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeOnColorsChangedListener(listener: (WallpaperColors?, Int) -> Unit) {
+        TODO("Not yet implemented")
     }
 
     companion object {

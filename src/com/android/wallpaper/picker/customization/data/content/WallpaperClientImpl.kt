@@ -35,6 +35,7 @@ import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Handler
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.android.app.tracing.TraceUtils.traceAsync
@@ -677,6 +678,17 @@ constructor(
                 k.resumeWith(Result.success(null))
             }
         }
+
+    override fun addOnColorsChangedListener(
+        listener: (WallpaperColors?, Int) -> Unit,
+        handler: Handler,
+    ) {
+        wallpaperManager.addOnColorsChangedListener(listener, handler)
+    }
+
+    override fun removeOnColorsChangedListener(listener: (WallpaperColors?, Int) -> Unit) {
+        wallpaperManager.removeOnColorsChangedListener(listener)
+    }
 
     companion object {
         private const val TAG = "WallpaperClientImpl"
