@@ -69,7 +69,10 @@
     <string name="refresh_daily_wallpaper_home_content_description" msgid="2770445044556164259">"Əsas ekranın divar kağızını gündəlik yeniləyin"</string>
     <string name="refresh_daily_wallpaper_content_description" msgid="4362142658237147583">"Divar kağızını gündəlik yeniləyin"</string>
     <string name="preview_screen_description" msgid="3386387053327775919">"Divar kağızını önizləmə ekranı"</string>
-    <string name="preview_screen_description_editable" msgid="506875963019888699">"Divar kağızı önizləmə ekranı %1$s. Panorama effekti və zum üçün iki barmağınızdan istifadə edin."</string>
+    <!-- no translation found for preview_screen_description_editable (5558037286562127705) -->
+    <skip />
+    <!-- no translation found for preview_screen_description_non_editable (5861996326502454566) -->
+    <skip />
     <string name="folded_device_state_description" msgid="4972608448265616264">"Qatlanıb"</string>
     <string name="unfolded_device_state_description" msgid="3071975681472460627">"Qatlanmayıb"</string>
     <string name="full_preview_check_button_description" msgid="700484353763952975">"Divar kağızı redaktə edildi"</string>
@@ -108,6 +111,8 @@
     <string name="wallpaper_title" msgid="6754214682228331092">"Divar kağızı"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"Divar Kağızı önizləməsi"</string>
     <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"%1$s divar kağızı önizləməsi %2$s, fotonu redaktə etmək üçün iki dəfə toxunun"</string>
+    <!-- no translation found for wallpaper_preview_card_content_description_non_editable (2201116657175733260) -->
+    <skip />
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"Kilid ekranında divar kağızı önizləməsi"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"Əsas ekranda divar kağızı önizləməsi"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"Kolleksiya mövcud deyil"</string>
