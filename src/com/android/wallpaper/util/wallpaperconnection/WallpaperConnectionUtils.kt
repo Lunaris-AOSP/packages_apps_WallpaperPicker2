@@ -42,7 +42,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 @ActivityRetainedScoped
-class WallpaperConnectionUtils @Inject constructor(@ApplicationContext context: Context) {
+class WallpaperConnectionUtils
+@Inject
+constructor(@ApplicationContext private val context: Context) {
 
     // The engineMap and the surfaceControlMap are used for disconnecting wallpaper services.
     private val wallpaperConnectionMap = ConcurrentHashMap<String, Deferred<WallpaperConnection>>()
@@ -56,9 +58,6 @@ class WallpaperConnectionUtils @Inject constructor(@ApplicationContext context: 
     private val creativeWallpaperConfigPreviewUriMap = mutableMapOf<String, Uri>()
 
     private val mutex = Mutex()
-
-    private val extendedWallpaperEffectPkgName =
-        context.getString(R.string.extended_wallpaper_effects_package)
 
     /** Only call this function when the surface view is attached. */
     suspend fun connect(
@@ -286,7 +285,7 @@ class WallpaperConnectionUtils @Inject constructor(@ApplicationContext context: 
     ): String {
         // This is NOT the right way to do this long term. See b/390731022.
         val multiEngineExt =
-            if (component.packageName == extendedWallpaperEffectPkgName) ":$destinationFlag" else ""
+            if (isExtendedEffectWallpaper(context, component)) ":$destinationFlag" else ""
         val keyWithoutSizeInformation =
             this.packageName
                 .plus(":")
@@ -459,5 +458,8 @@ class WallpaperConnectionUtils @Inject constructor(@ApplicationContext context: 
                 else -> true // Only fallback to single engine rendering for legacy live wallpapers
             }
         }
+
+        fun isExtendedEffectWallpaper(context: Context, component: ComponentName) =
+            component.packageName == context.getString(R.string.extended_wallpaper_effects_package)
     }
 }
