@@ -119,6 +119,8 @@
         <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
         <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
         <item name="android:dialogCornerRadius">24dp</item>
+        <item name="android:textColor">@color/system_on_surface</item>
+        <item name="android:colorBackground">@color/system_surface_container</item>
     </style>
 
     <style name="ResetDialogTheme" parent="LightDialogTheme">

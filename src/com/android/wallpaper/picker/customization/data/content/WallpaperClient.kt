@@ -22,6 +22,7 @@ import android.app.WallpaperManager
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import com.android.wallpaper.asset.Asset
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.WallpaperModelsPair
@@ -107,4 +108,8 @@ interface WallpaperClient {
     suspend fun getCurrentWallpaperModels(): WallpaperModelsPair
 
     fun getWallpaperColors(screen: Screen): WallpaperColors?
+
+    fun addOnColorsChangedListener(listener: (WallpaperColors?, Int) -> Unit, handler: Handler)
+
+    fun removeOnColorsChangedListener(listener: (WallpaperColors?, Int) -> Unit)
 }
