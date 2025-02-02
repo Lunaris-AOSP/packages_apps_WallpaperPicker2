@@ -19,24 +19,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/wallpaper_info_pane_padding"
     android:theme="@style/WallpaperPicker.BottomPaneStyle">
 
     <TextView
         android:id="@+id/wallpaper_effects_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineHeight="24dp"
         android:textAlignment="viewStart"
         android:textAppearance="@style/TitleTextAppearance"
-        android:textColor="?android:textColorPrimary" />
+        android:textColor="?android:textColorPrimary"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/wallpaper_effects_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/wallpaper_info_pane_subtitle1_top_margin"
-        android:lineHeight="20dp"
         android:textColor="?android:textColorSecondary"
         android:textSize="14sp" />
 

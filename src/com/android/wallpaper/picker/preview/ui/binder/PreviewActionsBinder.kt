@@ -500,9 +500,4 @@ object PreviewActionsBinder {
             }
         }
     }
-
-    private fun getActionUri(actionUrl: String?, contextUri: Uri?): Uri? {
-        val actionUri = actionUrl?.let { Uri.parse(actionUrl) }
-        return contextUri ?: actionUri
-    }
 }
