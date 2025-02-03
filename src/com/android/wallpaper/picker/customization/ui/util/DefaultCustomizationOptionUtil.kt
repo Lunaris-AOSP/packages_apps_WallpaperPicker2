@@ -21,10 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import com.android.wallpaper.R
 import com.android.wallpaper.model.Screen
-import com.android.wallpaper.model.Screen.HOME_SCREEN
-import com.android.wallpaper.model.Screen.LOCK_SCREEN
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil.CustomizationOption
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
@@ -32,39 +29,11 @@ import javax.inject.Inject
 @ActivityScoped
 class DefaultCustomizationOptionUtil @Inject constructor() : CustomizationOptionUtil {
 
-    enum class DefaultLockCustomizationOption : CustomizationOption {
-        WALLPAPER
-    }
-
-    enum class DefaultHomeCustomizationOption : CustomizationOption {
-        WALLPAPER
-    }
-
     override fun getOptionEntries(
         screen: Screen,
         optionContainer: LinearLayout,
         layoutInflater: LayoutInflater,
-    ): List<Pair<CustomizationOption, View>> =
-        when (screen) {
-            LOCK_SCREEN ->
-                listOf(
-                    DefaultLockCustomizationOption.WALLPAPER to
-                        layoutInflater.inflate(
-                            R.layout.customization_option_entry_wallpaper,
-                            optionContainer,
-                            false,
-                        )
-                )
-            HOME_SCREEN ->
-                listOf(
-                    DefaultHomeCustomizationOption.WALLPAPER to
-                        layoutInflater.inflate(
-                            R.layout.customization_option_entry_wallpaper,
-                            optionContainer,
-                            false,
-                        )
-                )
-        }
+    ): List<Pair<CustomizationOption, View>> = emptyList()
 
     override fun initFloatingSheet(
         bottomSheetContainer: FrameLayout,
