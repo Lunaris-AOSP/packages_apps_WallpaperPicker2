@@ -176,11 +176,9 @@ object CustomizationPickerBinder2 {
             viewModel,
             colorUpdateViewModel,
             lifecycleOwner,
-            navigateToWallpaperCategoriesScreen,
             navigateToMoreLockScreenSettingsActivity,
             navigateToColorContrastSettingsActivity,
             navigateToLockScreenNotificationsSettingsActivity,
-            navigateToPreviewScreen,
         )
     }
 }
