@@ -31,7 +31,7 @@
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"صفحه اصلی و صفحه قفل"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"انتخاب کاغذدیواری"</string>
     <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"عکس‌های پیشنهادی"</string>
-    <string name="creative_wallpaper_title" msgid="3581650238648981372">"ساخت کاغذدیواری"</string>
+    <string name="creative_wallpaper_title" msgid="3581650238648981372">"ساختن کاغذدیواری"</string>
     <string name="home_screen_message" msgid="106444102822522813">"صفحه اصلی"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"صفحه در حالت قفل"</string>
     <string name="home_and_lock_short_label" msgid="2937922943541927983">"صفحه اصلی و صفحه در حالت قفل"</string>
@@ -69,10 +69,8 @@
     <string name="refresh_daily_wallpaper_home_content_description" msgid="2770445044556164259">"بازآوری کاغذدیواری روزانه در صفحه اصلی"</string>
     <string name="refresh_daily_wallpaper_content_description" msgid="4362142658237147583">"بازآوری کاغذدیواری روزانه"</string>
     <string name="preview_screen_description" msgid="3386387053327775919">"صفحه پیش‌نمای کاغذدیواری"</string>
-    <!-- no translation found for preview_screen_description_editable (5558037286562127705) -->
-    <skip />
-    <!-- no translation found for preview_screen_description_non_editable (5861996326502454566) -->
-    <skip />
+    <string name="preview_screen_description_editable" msgid="5558037286562127705">"‏صفحه پیش‌نمایش کاغذدیواری %1$s. از دو انگشت برای جابه‌جایی و بزرگ‌نمایی استفاده کنید"</string>
+    <string name="preview_screen_description_non_editable" msgid="5861996326502454566">"‏صفحه پیش‌نمایش کاغذدیواری %1$s"</string>
     <string name="folded_device_state_description" msgid="4972608448265616264">"تاشده"</string>
     <string name="unfolded_device_state_description" msgid="3071975681472460627">"تانشده"</string>
     <string name="full_preview_check_button_description" msgid="700484353763952975">"پایان ویرایش کاغذدیواری"</string>
@@ -111,8 +109,7 @@
     <string name="wallpaper_title" msgid="6754214682228331092">"کاغذدیواری"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"پیش‌نمای کاغذدیواری"</string>
     <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"‏%1$s پیش‌نمایش کاغذدیواری %2$s، برای ویرایش عکس، دو تک‌ضرب بزنید"</string>
-    <!-- no translation found for wallpaper_preview_card_content_description_non_editable (2201116657175733260) -->
-    <skip />
+    <string name="wallpaper_preview_card_content_description_non_editable" msgid="2201116657175733260">"‏پیش‌نمایش کاغذدیواری %2$s برای %1$s"</string>
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"پیش‌نمای کاغذدیواری صفحه قفل"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"پیش‌نمای کاغذدیواری صفحه اصلی"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"مجموعه وجود ندارد"</string>
