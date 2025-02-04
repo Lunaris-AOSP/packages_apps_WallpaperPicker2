@@ -31,7 +31,7 @@
     <string name="wallpaper_destination_both" msgid="1124197176741944063">"Startskjermen og låseskjermen"</string>
     <string name="choose_a_wallpaper_section_title" msgid="1009823506890453891">"Velg en bakgrunn"</string>
     <string name="choose_a_curated_photo_section_title" msgid="7360675459203465887">"Foreslåtte bilder"</string>
-    <string name="creative_wallpaper_title" msgid="3581650238648981372">"Opprett bakgrunn"</string>
+    <string name="creative_wallpaper_title" msgid="3581650238648981372">"Lag bakgrunn"</string>
     <string name="home_screen_message" msgid="106444102822522813">"Startskjerm"</string>
     <string name="lock_screen_message" msgid="1534506081955058013">"Låseskjerm"</string>
     <string name="home_and_lock_short_label" msgid="2937922943541927983">"Startskjermen og låseskjermen"</string>
@@ -69,7 +69,10 @@
     <string name="refresh_daily_wallpaper_home_content_description" msgid="2770445044556164259">"Oppdater den daglige bakgrunnen på startskjermen"</string>
     <string name="refresh_daily_wallpaper_content_description" msgid="4362142658237147583">"Oppdater daglig bakgrunn"</string>
     <string name="preview_screen_description" msgid="3386387053327775919">"Skjerm for forhåndsvisning av bakgrunn"</string>
-    <string name="preview_screen_description_editable" msgid="506875963019888699">"Skjerm for forhåndsvisning av bakgrunn %1$s. Bruk to fingre for å panorere og zoome."</string>
+    <!-- no translation found for preview_screen_description_editable (5558037286562127705) -->
+    <skip />
+    <!-- no translation found for preview_screen_description_non_editable (5861996326502454566) -->
+    <skip />
     <string name="folded_device_state_description" msgid="4972608448265616264">"Lagt sammen"</string>
     <string name="unfolded_device_state_description" msgid="3071975681472460627">"Åpnet"</string>
     <string name="full_preview_check_button_description" msgid="700484353763952975">"Ferdig med å endre bakgrunnen"</string>
@@ -108,6 +111,8 @@
     <string name="wallpaper_title" msgid="6754214682228331092">"Bakgrunn"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"Forhåndsvisning av bakgrunn"</string>
     <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"Forhåndsvisning av bakgrunnen for %1$s %2$s – dobbelttrykk for å redigere bildet"</string>
+    <!-- no translation found for wallpaper_preview_card_content_description_non_editable (2201116657175733260) -->
+    <skip />
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"Forhåndsvisning av bakgrunn for låseskjermen"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"Forhåndsvisning av bakgrunn for startskjermen"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"Samlingen eksisterer ikke"</string>

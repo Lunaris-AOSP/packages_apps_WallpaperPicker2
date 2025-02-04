@@ -41,10 +41,9 @@ class WallpaperActionSelectionBottomSheet(context: Context?, attrs: AttributeSet
     // recycler view to present the list of toggle options.
     fun setUpActionToggleOptions(adapter: WallpaperActionsToggleAdapter) {
         // Set CustomAdapter as the adapter for RecyclerView.
-        wallpaperActionsToggles.setAdapter(adapter)
-        wallpaperActionsToggles.setLayoutManager(
+        wallpaperActionsToggles.adapter = adapter
+        wallpaperActionsToggles.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, /* reverseLayout= */ false)
-        )
     }
 
     fun setBottomSheetTitle(title: String) {

@@ -69,7 +69,10 @@
     <string name="refresh_daily_wallpaper_home_content_description" msgid="2770445044556164259">"गृहपृष्ठको दैनिक वालपेपर पुनः ताजा गर्नुहोस्"</string>
     <string name="refresh_daily_wallpaper_content_description" msgid="4362142658237147583">"दैनिक वालपेपर पुनः ताजा गर्नुहोस्"</string>
     <string name="preview_screen_description" msgid="3386387053327775919">"वालपेपरको प्रिभ्यू स्क्रिन"</string>
-    <string name="preview_screen_description_editable" msgid="506875963019888699">"वालपेपरको प्रिभ्यू देखाउने स्क्रिन %1$s। प्यान तथा जुम गर्न दुई वटा औँला प्रयोग गर्नुहोस्।"</string>
+    <!-- no translation found for preview_screen_description_editable (5558037286562127705) -->
+    <skip />
+    <!-- no translation found for preview_screen_description_non_editable (5861996326502454566) -->
+    <skip />
     <string name="folded_device_state_description" msgid="4972608448265616264">"फोल्ड गरिएको"</string>
     <string name="unfolded_device_state_description" msgid="3071975681472460627">"अनफोल्ड गरिएको"</string>
     <string name="full_preview_check_button_description" msgid="700484353763952975">"वालपेपर सम्पादन गर्ने कार्य पूरा भयो"</string>
@@ -108,6 +111,8 @@
     <string name="wallpaper_title" msgid="6754214682228331092">"वालपेपर"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"वालपेपरको प्रिभ्यु"</string>
     <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"%1$s वालपेपरको प्रिभ्यू %2$s, आफ्नो फोटो सम्पादन गर्न डबल ट्याप गर्नुहोस्"</string>
+    <!-- no translation found for wallpaper_preview_card_content_description_non_editable (2201116657175733260) -->
+    <skip />
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"लकस्क्रिनमा देखिने वालपेपरको प्रिभ्यू"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"होम स्क्रिनमा देखिने वालपेपरको प्रिभ्यू"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"यो सङ्ग्रह छैन"</string>
