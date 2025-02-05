@@ -17,7 +17,6 @@
 <com.google.android.material.carousel.MaskableFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/carousel_item_container"
     android:layout_width="@dimen/curated_photo_tile_width"
     android:layout_marginStart="@dimen/curated_photo_horizontal_margin"

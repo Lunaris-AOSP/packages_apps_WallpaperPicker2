@@ -536,11 +536,20 @@
 
     <!--
     Label for button that lets the user navigate to a full-screen experience of selecting
-    wallpapers.
+    wallpapers. This button needs to be paired with wallpaper candidates, e.g. list of recent
+    wallpapers or suggested photos.
 
     [CHAR LIMIT=128].
     -->
     <string name="more_wallpapers">More wallpapers</string>
+
+    <!--
+    Label for button that lets the user navigate to a full-screen experience of selecting
+    wallpapers.
+
+    [CHAR LIMIT=128].
+    -->
+    <string name="wallpapers">Wallpapers</string>
 
     <!--
      Accessibility label for recent wallpaper collection items

@@ -17,8 +17,9 @@
 package com.android.wallpaper.picker.customization.ui.binder
 
 import android.view.View
-import androidx.constraintlayout.motion.widget.MotionLayout
+import android.widget.LinearLayout
 import androidx.core.view.doOnLayout
+import androidx.core.view.isInvisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -67,8 +68,10 @@ object CustomizationPickerBinder2 {
         navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
         navigateToPreviewScreen: ((wallpaperModel: WallpaperModel) -> Unit)?,
     ) {
-        val optionContainer =
-            view.requireViewById<MotionLayout>(R.id.customization_option_container)
+        val lockCustomizationOptionContainer: LinearLayout =
+            view.requireViewById(R.id.lock_customization_option_container)
+        val homeCustomizationOptionContainer: LinearLayout =
+            view.requireViewById(R.id.home_customization_option_container)
         val pager = view.requireViewById<ViewPager2>(R.id.preview_pager)
         pager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {
@@ -156,17 +159,28 @@ object CustomizationPickerBinder2 {
                         when (it) {
                             LOCK_SCREEN -> {
                                 pager.currentItem = 0
-                                optionContainer.transitionToStart()
+                                lockCustomizationOptionContainer.isInvisible = false
+                                homeCustomizationOptionContainer.isInvisible = true
                             }
                             HOME_SCREEN -> {
                                 pager.currentItem = 1
-                                optionContainer.transitionToEnd()
+                                lockCustomizationOptionContainer.isInvisible = true
+                                homeCustomizationOptionContainer.isInvisible = false
                             }
                         }
                     }
                 }
             }
         }
+
+        WallpaperPickerEntryBinder.bind(
+            view = view.requireViewById(R.id.wallpaper_picker_entry),
+            viewModel = viewModel,
+            colorUpdateViewModel = colorUpdateViewModel,
+            lifecycleOwner = lifecycleOwner,
+            navigateToWallpaperCategoriesScreen = navigateToWallpaperCategoriesScreen,
+            navigateToPreviewScreen = navigateToPreviewScreen,
+        )
 
         customizationOptionsBinder.bind(
             view,
