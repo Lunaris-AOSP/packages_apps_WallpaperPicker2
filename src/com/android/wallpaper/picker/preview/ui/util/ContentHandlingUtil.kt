@@ -76,6 +76,7 @@ object ContentHandlingUtil {
                     context = context,
                     componentName = checkNotNull(description.component),
                     assetId = description.id,
+                    isEffectWallpaper = true,
                 )
             }
 

@@ -35,6 +35,7 @@ import com.android.wallpaper.picker.data.ImageWallpaperData
 import com.android.wallpaper.picker.data.LiveWallpaperData
 import com.android.wallpaper.picker.data.WallpaperId
 import com.android.wallpaper.picker.data.WallpaperModel
+import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils.Companion.isExtendedEffectWallpaper
 
 /** This class creates an instance of [WallpaperModel] from a given [WallpaperInfo] object. */
 interface WallpaperModelFactory {
@@ -120,7 +121,8 @@ interface WallpaperModelFactory {
                 // TODO (331227828): don't relay on effectNames to determine if this is an effect
                 // live wallpaper
                 isEffectWallpaper =
-                    effectsController?.isEffectsWallpaper(info) ?: (effectNames != null),
+                    isExtendedEffectWallpaper(context, info.component) ||
+                        effectsController?.isEffectsWallpaper(info) ?: (effectNames != null),
                 effectNames = effectNames,
                 contextDescription = contextDescription,
                 description = wallpaperDescription,
