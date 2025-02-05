@@ -153,8 +153,8 @@ abstract class SharedAppModule {
         @Retention(AnnotationRetention.RUNTIME)
         annotation class BroadcastRunning
 
-        private const val BROADCAST_SLOW_DISPATCH_THRESHOLD = 1000L
-        private const val BROADCAST_SLOW_DELIVERY_THRESHOLD = 1000L
+        const val BROADCAST_SLOW_DISPATCH_THRESHOLD = 1000L
+        const val BROADCAST_SLOW_DELIVERY_THRESHOLD = 1000L
 
         @Provides
         @BackgroundDispatcher

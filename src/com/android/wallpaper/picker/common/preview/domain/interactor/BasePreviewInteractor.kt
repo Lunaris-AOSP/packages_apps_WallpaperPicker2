@@ -18,7 +18,7 @@ package com.android.wallpaper.picker.common.preview.domain.interactor
 
 import com.android.wallpaper.model.WallpaperModelsPair
 import com.android.wallpaper.picker.common.preview.data.repository.BasePreviewRepository
-import com.android.wallpaper.picker.customization.data.repository.WallpaperRepository
+import com.android.wallpaper.picker.customization.data.repository.WallpaperRepository2
 import com.android.wallpaper.picker.data.WallpaperModel
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import javax.inject.Inject
@@ -34,7 +34,7 @@ class BasePreviewInteractor
 @Inject
 constructor(
     basePreviewRepository: BasePreviewRepository,
-    wallpaperRepository: WallpaperRepository,
+    wallpaperRepository: WallpaperRepository2,
 ) {
     private val previewingWallpaper: StateFlow<WallpaperModel?> =
         basePreviewRepository.wallpaperModel

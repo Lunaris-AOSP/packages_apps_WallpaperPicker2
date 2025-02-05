@@ -18,20 +18,18 @@ package com.android.wallpaper.picker.common.preview.ui.viewmodel
 
 import android.app.WallpaperInfo
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import androidx.test.core.app.ActivityScenario
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.module.InjectorProvider
+import com.android.wallpaper.picker.broadcast.BroadcastDispatcher
 import com.android.wallpaper.picker.common.preview.data.repository.BasePreviewRepository
 import com.android.wallpaper.picker.common.preview.domain.interactor.BasePreviewInteractor
-import com.android.wallpaper.picker.customization.data.repository.WallpaperRepository
-import com.android.wallpaper.picker.preview.PreviewTestActivity
+import com.android.wallpaper.picker.customization.data.repository.WallpaperRepository2
 import com.android.wallpaper.picker.preview.shared.model.FullPreviewCropModel
 import com.android.wallpaper.testing.FakeWallpaperClient
 import com.android.wallpaper.testing.ShadowWallpaperInfo
@@ -46,6 +44,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -59,7 +58,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
 
@@ -73,16 +71,16 @@ class StaticPreviewViewModelTest {
     private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
     private val testScope: TestScope = TestScope(testDispatcher)
 
-    private lateinit var scenario: ActivityScenario<PreviewTestActivity>
     private lateinit var viewModel: StaticPreviewViewModel
     private lateinit var basePreviewRepository: BasePreviewRepository
-    private lateinit var wallpaperRepository: WallpaperRepository
     private lateinit var interactor: BasePreviewInteractor
+    private lateinit var wallpaperRepository: WallpaperRepository2
 
     @Inject @ApplicationContext lateinit var appContext: Context
     @Inject lateinit var testInjector: TestInjector
     @Inject lateinit var wallpaperPreferences: TestWallpaperPreferences
     @Inject lateinit var wallpaperClient: FakeWallpaperClient
+    @Inject lateinit var broadcastDispatcher: BroadcastDispatcher
 
     @Before
     fun setUp() {
@@ -91,29 +89,16 @@ class StaticPreviewViewModelTest {
         InjectorProvider.setInjector(testInjector)
         Dispatchers.setMain(testDispatcher)
 
-        val activityInfo =
-            ActivityInfo().apply {
-                name = PreviewTestActivity::class.java.name
-                packageName = appContext.packageName
-            }
-        shadowOf(appContext.packageManager).addOrUpdateActivity(activityInfo)
-        scenario = ActivityScenario.launch(PreviewTestActivity::class.java)
-        scenario.onActivity {
-            wallpaperRepository =
-                WallpaperRepository(
-                    testScope.backgroundScope,
-                    wallpaperClient,
-                    wallpaperPreferences,
-                    testDispatcher,
-                )
-            basePreviewRepository = BasePreviewRepository()
-            interactor =
-                BasePreviewInteractor(
-                    basePreviewRepository,
-                    wallpaperRepository,
-                )
-            setViewModel(Screen.HOME_SCREEN)
-        }
+        wallpaperRepository =
+            WallpaperRepository2(
+                scope = testScope.backgroundScope,
+                client = wallpaperClient,
+                broadcastDispatcher = broadcastDispatcher,
+                backgroundDispatcher = testDispatcher,
+            )
+        basePreviewRepository = BasePreviewRepository()
+        interactor = BasePreviewInteractor(basePreviewRepository, wallpaperRepository)
+        setViewModel(Screen.HOME_SCREEN)
     }
 
     private fun setViewModel(screen: Screen) {
@@ -154,7 +139,7 @@ class StaticPreviewViewModelTest {
             // Current wallpaper models need to be set up before the view model is run.
             wallpaperClient.setCurrentWallpaperModels(
                 homeStaticWallpaperModel,
-                lockStaticWallpaperModel
+                lockStaticWallpaperModel,
             )
             setViewModel(Screen.HOME_SCREEN)
 
@@ -210,7 +195,7 @@ class StaticPreviewViewModelTest {
             // Current wallpaper models need to be set up before the view model is run.
             wallpaperClient.setCurrentWallpaperModels(
                 homeStaticWallpaperModel,
-                lockStaticWallpaperModel
+                lockStaticWallpaperModel,
             )
             setViewModel(Screen.LOCK_SCREEN)
 
@@ -293,7 +278,7 @@ class StaticPreviewViewModelTest {
                 WallpaperModelUtils.getStaticWallpaperModel(
                     wallpaperId = "testWallpaperId",
                     collectionId = "testCollection",
-                    cropHints = cropHints.toMap()
+                    cropHints = cropHints.toMap(),
                 )
             // Create an empty collector for the wallpaper model so the flow runs
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -317,13 +302,13 @@ class StaticPreviewViewModelTest {
                 WallpaperModelUtils.getStaticWallpaperModel(
                     wallpaperId = "testWallpaperId",
                     collectionId = "testCollection",
-                    cropHints = cropHints1.toMap()
+                    cropHints = cropHints1.toMap(),
                 )
             val testStaticWallpaperModel2 =
                 WallpaperModelUtils.getStaticWallpaperModel(
                     wallpaperId = "testWallpaperId",
                     collectionId = "testCollection",
-                    cropHints = cropHints2.toMap()
+                    cropHints = cropHints2.toMap(),
                 )
             // Create an empty collector for the wallpaper model so the flow runs
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -388,8 +373,8 @@ class StaticPreviewViewModelTest {
                 mapOf(
                     createPreviewCropModel(
                         displaySize = Point(1000, 1000),
-                        cropHint = Rect(100, 200, 300, 400)
-                    ),
+                        cropHint = Rect(100, 200, 300, 400),
+                    )
                 )
 
             basePreviewRepository.setWallpaperModel(testStaticWallpaperModel)
@@ -418,8 +403,8 @@ class StaticPreviewViewModelTest {
                 mapOf(
                     createPreviewCropModel(
                         displaySize = Point(1000, 1000),
-                        cropHint = Rect(100, 200, 300, 400)
-                    ),
+                        cropHint = Rect(100, 200, 300, 400),
+                    )
                 )
 
             basePreviewRepository.setWallpaperModel(testStaticWallpaperModel)
@@ -440,22 +425,22 @@ class StaticPreviewViewModelTest {
         val cropHintA =
             createPreviewCropModel(
                 displaySize = Point(1000, 1000),
-                cropHint = Rect(100, 200, 300, 400)
+                cropHint = Rect(100, 200, 300, 400),
             )
         val cropHintB =
             createPreviewCropModel(
                 displaySize = Point(500, 1500),
-                cropHint = Rect(100, 100, 100, 100)
+                cropHint = Rect(100, 100, 100, 100),
             )
         val cropHintB2 =
             createPreviewCropModel(
                 displaySize = Point(500, 1500),
-                cropHint = Rect(400, 300, 200, 100)
+                cropHint = Rect(400, 300, 200, 100),
             )
         val cropHintC =
             createPreviewCropModel(
                 displaySize = Point(400, 600),
-                cropHint = Rect(200, 200, 200, 200)
+                cropHint = Rect(200, 200, 200, 200),
             )
         val cropHintsInfo = mapOf(cropHintA, cropHintB)
         val additionalCropHintsInfo = mapOf(cropHintB2, cropHintC)
@@ -472,22 +457,22 @@ class StaticPreviewViewModelTest {
         val cropHintA =
             createPreviewCropModel(
                 displaySize = Point(1000, 1000),
-                cropHint = Rect(100, 200, 300, 400)
+                cropHint = Rect(100, 200, 300, 400),
             )
         val cropHintB =
             createPreviewCropModel(
                 displaySize = Point(500, 1500),
-                cropHint = Rect(100, 100, 100, 100)
+                cropHint = Rect(100, 100, 100, 100),
             )
         val cropHintB2 =
             createPreviewCropModel(
                 displaySize = Point(500, 1500),
-                cropHint = Rect(400, 300, 200, 100)
+                cropHint = Rect(400, 300, 200, 100),
             )
         val cropHintC =
             createPreviewCropModel(
                 displaySize = Point(400, 600),
-                cropHint = Rect(200, 200, 200, 200)
+                cropHint = Rect(200, 200, 200, 200),
             )
         val cropHintsInfo = mapOf(cropHintA, cropHintB)
         val additionalCropHintsInfo = mapOf(cropHintB2, cropHintC)
@@ -504,17 +489,17 @@ class StaticPreviewViewModelTest {
         val cropHintA =
             createPreviewCropModel(
                 displaySize = Point(1000, 1000),
-                cropHint = Rect(100, 200, 300, 400)
+                cropHint = Rect(100, 200, 300, 400),
             )
         val cropHintB =
             createPreviewCropModel(
                 displaySize = Point(500, 1500),
-                cropHint = Rect(100, 100, 100, 100)
+                cropHint = Rect(100, 100, 100, 100),
             )
         val cropHintB2 =
             createPreviewCropModel(
                 displaySize = Point(500, 1500),
-                cropHint = Rect(400, 300, 200, 100)
+                cropHint = Rect(400, 300, 200, 100),
             )
         val cropHintsInfo = mapOf(cropHintA, cropHintB)
 
@@ -529,17 +514,17 @@ class StaticPreviewViewModelTest {
         val cropHintA =
             createPreviewCropModel(
                 displaySize = Point(1000, 1000),
-                cropHint = Rect(100, 200, 300, 400)
+                cropHint = Rect(100, 200, 300, 400),
             )
         val cropHintB =
             createPreviewCropModel(
                 displaySize = Point(500, 1500),
-                cropHint = Rect(100, 100, 100, 100)
+                cropHint = Rect(100, 100, 100, 100),
             )
         val cropHintC =
             createPreviewCropModel(
                 displaySize = Point(400, 600),
-                cropHint = Rect(200, 200, 200, 200)
+                cropHint = Rect(200, 200, 200, 200),
             )
         val cropHintsInfo = mapOf(cropHintA, cropHintB)
         val expectedCropHintsInfo = mapOf(cropHintA, cropHintB, cropHintC)
@@ -552,14 +537,8 @@ class StaticPreviewViewModelTest {
 
     private fun createPreviewCropModel(
         displaySize: Point,
-        cropHint: Rect
+        cropHint: Rect,
     ): Pair<Point, FullPreviewCropModel> {
-        return Pair(
-            displaySize,
-            FullPreviewCropModel(
-                cropHint = cropHint,
-                cropSizeModel = null,
-            ),
-        )
+        return Pair(displaySize, FullPreviewCropModel(cropHint = cropHint, cropSizeModel = null))
     }
 }
