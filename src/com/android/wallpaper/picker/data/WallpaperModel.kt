@@ -33,7 +33,7 @@ sealed class WallpaperModel {
         override val commonWallpaperData: CommonWallpaperData,
         val liveWallpaperData: LiveWallpaperData,
         val creativeWallpaperData: CreativeWallpaperData?,
-        val internalLiveWallpaperData: InternalLiveWallpaperData?
+        val internalLiveWallpaperData: InternalLiveWallpaperData?,
     ) : WallpaperModel()
 
     data class StaticWallpaperModel(
