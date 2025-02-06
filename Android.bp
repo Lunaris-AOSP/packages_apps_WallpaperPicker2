@@ -70,6 +70,14 @@ android_library {
         "androidx.compose.ui_ui-tooling",
         "androidx.lifecycle_lifecycle-runtime-compose",
         "androidx.lifecycle_lifecycle-viewmodel-compose",
+        "grpc-java-api",
+        "grpc-java-protobuf-lite",
+        "grpc-java-context",
+        "grpc-java-core",
+        "grpc-java-core-util",
+        "grpc-java-core-internal",
+        "grpc-java-stub",
+        "grpc-java-binder",
     ],
 
     resource_dirs: [

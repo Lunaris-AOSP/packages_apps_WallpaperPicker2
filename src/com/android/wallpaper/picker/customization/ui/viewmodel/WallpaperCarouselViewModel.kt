@@ -48,13 +48,13 @@ constructor(
 
     val wallpaperCarouselItems: Flow<List<TileViewModel>> =
         curatedPhotosInteractor.category.distinctUntilChanged().map { category ->
-            category.collectionCategoryData?.wallpaperModels?.map { wallpaperModel ->
+            category.categoryModel.collectionCategoryData?.wallpaperModels?.map { wallpaperModel ->
                 val staticWallpaperModel = wallpaperModel as? WallpaperModel.StaticWallpaperModel
                 TileViewModel(
                     defaultDrawable = null,
                     thumbnailAsset =
                         ContentUriAsset(context, staticWallpaperModel?.imageWallpaperData?.uri),
-                    text = category.commonCategoryData.title,
+                    text = category.categoryModel.commonCategoryData.title,
                     maxCategoriesInRow = SectionCardinality.Single,
                 ) {
                     navigateToPreviewScreen(wallpaperModel)

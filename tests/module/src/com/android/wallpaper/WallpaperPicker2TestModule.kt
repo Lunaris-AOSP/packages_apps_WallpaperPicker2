@@ -41,6 +41,7 @@ import com.android.wallpaper.picker.preview.ui.util.DefaultImageEffectDialogUtil
 import com.android.wallpaper.picker.preview.ui.util.ImageEffectDialogUtil
 import com.android.wallpaper.testing.FakeCategoryInteractor
 import com.android.wallpaper.testing.FakeCuratedPhotosInteractorImpl
+import com.android.wallpaper.testing.FakeDefaultPhotosErrorConvertor
 import com.android.wallpaper.testing.FakeDefaultRequester
 import com.android.wallpaper.testing.FakeDefaultWallpaperCategoryClient
 import com.android.wallpaper.testing.FakeDefaultWallpaperModelFactory
@@ -49,6 +50,7 @@ import com.android.wallpaper.testing.FakeWallpaperCategoryWrapper
 import com.android.wallpaper.testing.TestInjector
 import com.android.wallpaper.testing.TestPartnerProvider
 import com.android.wallpaper.testing.TestWallpaperPreferences
+import com.android.wallpaper.util.converter.PhotosErrorConvertor
 import com.android.wallpaper.util.converter.WallpaperModelFactory
 import dagger.Binds
 import dagger.Module
@@ -94,6 +96,12 @@ abstract class WallpaperPicker2TestModule {
     abstract fun bindCuratedPhotosInteractor(
         impl: FakeCuratedPhotosInteractorImpl
     ): CuratedPhotosInteractor
+
+    @Binds
+    @Singleton
+    abstract fun bindDefaultPhotosErrorConvertor(
+        impl: FakeDefaultPhotosErrorConvertor
+    ): PhotosErrorConvertor
 
     @Binds
     @Singleton

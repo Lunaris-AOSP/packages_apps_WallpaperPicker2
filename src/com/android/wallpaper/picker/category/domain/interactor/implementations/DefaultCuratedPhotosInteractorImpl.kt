@@ -17,7 +17,7 @@
 package com.android.wallpaper.picker.category.domain.interactor.implementations
 
 import com.android.wallpaper.picker.category.domain.interactor.CuratedPhotosInteractor
-import com.android.wallpaper.picker.data.category.CategoryModel
+import com.android.wallpaper.picker.data.category.PhotoCategoryModel
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -26,5 +26,5 @@ import kotlinx.coroutines.flow.emptyFlow
 /** This is the default implementation for fetching curated photos. */
 @Singleton
 class DefaultCuratedPhotosInteractorImpl @Inject constructor() : CuratedPhotosInteractor {
-    override val category: Flow<CategoryModel> = emptyFlow()
+    override val category: Flow<PhotoCategoryModel> = emptyFlow()
 }
