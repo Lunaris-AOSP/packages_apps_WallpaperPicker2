@@ -17,13 +17,13 @@
 package com.android.wallpaper.testing
 
 import com.android.wallpaper.picker.category.domain.interactor.CuratedPhotosInteractor
-import com.android.wallpaper.picker.data.category.CategoryModel
+import com.android.wallpaper.picker.data.category.PhotoCategoryModel
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 
 @Singleton
 class FakeCuratedPhotosInteractorImpl @Inject constructor() : CuratedPhotosInteractor {
-    override val category: Flow<CategoryModel>
+    override val category: Flow<PhotoCategoryModel>
         get() = TODO("Not yet implemented")
 }

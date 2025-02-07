@@ -29,6 +29,7 @@ import com.android.wallpaper.picker.data.WallpaperId
 import com.android.wallpaper.picker.data.WallpaperModel
 import com.android.wallpaper.picker.data.WallpaperModel.LiveWallpaperModel
 import com.android.wallpaper.picker.data.WallpaperModel.StaticWallpaperModel
+import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils.Companion.isExtendedEffectWallpaper
 import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import org.xmlpull.v1.XmlPullParserException
@@ -39,6 +40,9 @@ object ContentHandlingUtil {
 
     /**
      * Updates the current preview using the WallpaperDescription returned with the Intent if any.
+     *
+     * For creative wallpaper and extended effect wallpaper. Use [ImageEffectsRepositoryImpl] for
+     * updating effect wallpaper preview.
      */
     fun updatePreview(
         context: Context,
@@ -76,6 +80,8 @@ object ContentHandlingUtil {
                     context = context,
                     componentName = checkNotNull(description.component),
                     assetId = description.id,
+                    isEffectWallpaper =
+                        isExtendedEffectWallpaper(context, checkNotNull(description.component)),
                 )
             }
 
@@ -141,7 +147,7 @@ object ContentHandlingUtil {
     ): LiveWallpaperModel? {
         return queryLiveWallpaperInfo(context, componentName)?.let {
             val commonWallpaperData =
-                this.commonWallpaperData.copy(
+                commonWallpaperData.copy(
                     id =
                         WallpaperId(
                             componentName = componentName,
@@ -149,7 +155,7 @@ object ContentHandlingUtil {
                             uniqueId =
                                 if (assetId != null) "${it.serviceName}_$assetId"
                                 else it.serviceName,
-                            collectionId = this.commonWallpaperData.id.collectionId,
+                            collectionId = commonWallpaperData.id.collectionId,
                         )
                 )
             val liveWallpaperData =

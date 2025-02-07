@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.wallpaper.picker.category.domain.interactor
+package com.android.wallpaper.picker.data.category
 
-import com.android.wallpaper.picker.data.category.PhotoCategoryModel
-import kotlinx.coroutines.flow.Flow
+import com.android.wallpaper.picker.data.PhotosErrorData
 
 /**
- * Classes that implement this interface implement the business logic in assembling curated photos
- * category model
+ * This is a wrapper class around photos category since we also need to take into account the
+ * different status code returned by the PhotosClient API.
  */
-interface CuratedPhotosInteractor {
-    val category: Flow<PhotoCategoryModel>
-}
+class PhotoCategoryModel(val categoryModel: CategoryModel, val status: PhotosErrorData)

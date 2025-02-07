@@ -270,8 +270,8 @@ constructor(
                 curatedPhotosInteractor.category.distinctUntilChanged().map { category ->
                     SectionViewModel(
                         tileViewModels =
-                            category.collectionCategoryData?.wallpaperModels?.map { wallpaperModel
-                                ->
+                            category.categoryModel.collectionCategoryData?.wallpaperModels?.map {
+                                wallpaperModel ->
                                 val staticWallpaperModel =
                                     wallpaperModel as? WallpaperModel.StaticWallpaperModel
                                 TileViewModel(
@@ -281,7 +281,7 @@ constructor(
                                             context,
                                             staticWallpaperModel?.imageWallpaperData?.uri,
                                         ),
-                                    text = category.commonCategoryData.title,
+                                    text = category.categoryModel.commonCategoryData.title,
                                     maxCategoriesInRow = SectionCardinality.Single,
                                 ) {
                                     navigateToPreviewScreen(
@@ -294,6 +294,7 @@ constructor(
                         sectionTitle =
                             context.getString(R.string.choose_a_curated_photo_section_title),
                         displayType = DisplayType.Carousel,
+                        status = category.status,
                     ) {
                         navigateToPhotosPicker(null)
                     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.wallpaper.picker.category.domain.interactor
+package com.android.wallpaper.testing
 
-import com.android.wallpaper.picker.data.category.PhotoCategoryModel
-import kotlinx.coroutines.flow.Flow
+import com.android.wallpaper.picker.data.PhotosErrorData
+import com.android.wallpaper.util.converter.PhotosErrorConvertor
+import io.grpc.Status
+import javax.inject.Inject
+import javax.inject.Singleton
 
-/**
- * Classes that implement this interface implement the business logic in assembling curated photos
- * category model
- */
-interface CuratedPhotosInteractor {
-    val category: Flow<PhotoCategoryModel>
+@Singleton
+class FakeDefaultPhotosErrorConvertor @Inject constructor() : PhotosErrorConvertor {
+    override fun handleError(status: Status): PhotosErrorData {
+        TODO("Not yet implemented")
+    }
 }

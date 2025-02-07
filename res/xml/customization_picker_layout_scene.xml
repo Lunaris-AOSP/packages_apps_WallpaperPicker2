@@ -25,7 +25,7 @@
 
         <OnSwipe
             app:dragDirection="dragUp"
-            app:onTouchUp="stop"
+            app:onTouchUp="autoComplete"
             app:touchAnchorId="@+id/bottom_scroll_view"
             app:touchAnchorSide="top" />
     </Transition>
