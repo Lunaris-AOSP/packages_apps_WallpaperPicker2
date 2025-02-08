@@ -74,6 +74,7 @@ object StaticWallpaperPreviewBinder {
             wallpaperSurface,
             staticPreviewView,
             fullResImageView,
+            isFullScreen,
         )
 
         lowResImageView.initLowResImageView()
@@ -213,6 +214,7 @@ object StaticWallpaperPreviewBinder {
         surfaceView: SurfaceView,
         preview: View,
         fullResView: SystemScaledSubsamplingScaleImageView,
+        isFullScreen: Boolean,
     ) {
         val width = surfacePosition.width()
         val height = surfacePosition.height()
@@ -223,7 +225,11 @@ object StaticWallpaperPreviewBinder {
         preview.layout(0, 0, width, height)
 
         fullResView.setSurfaceSize(Point(width, height))
-        surfaceView.attachView(preview, width, height)
+
+        // For small preview it contains the low res view, for full preview it only contains the
+        // full res view to calculate crops correctly.
+        val targetView = if (isFullScreen) fullResView else preview
+        surfaceView.attachView(targetView, width, height)
     }
 
     private const val TAG = "StaticWallpaperPreviewBinder"
