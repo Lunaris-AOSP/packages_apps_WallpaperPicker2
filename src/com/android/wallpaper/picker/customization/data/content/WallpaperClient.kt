@@ -105,7 +105,7 @@ interface WallpaperClient {
     /** Returns the wallpaper colors for preview a bitmap with a set of crop hints */
     suspend fun getWallpaperColors(bitmap: Bitmap, cropHints: Map<Point, Rect>?): WallpaperColors?
 
-    suspend fun getCurrentWallpaperModels(): WallpaperModelsPair
+    suspend fun getCurrentWallpaperModels(forceRefresh: Boolean = false): WallpaperModelsPair
 
     fun getWallpaperColors(screen: Screen): WallpaperColors?
 
