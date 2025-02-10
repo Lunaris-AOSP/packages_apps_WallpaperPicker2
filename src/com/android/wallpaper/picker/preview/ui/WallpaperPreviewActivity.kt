@@ -110,7 +110,7 @@ class WallpaperPreviewActivity :
                     ?.convertToWallpaperModel()
             }
 
-        wallpaper ?: throw UnsupportedOperationException()
+        wallpaper ?: throw IllegalStateException("No wallpaper for previewing")
 
         val navController =
             (supportFragmentManager.findFragmentById(R.id.wallpaper_preview_nav_host)
@@ -150,7 +150,7 @@ class WallpaperPreviewActivity :
             liveWallpaperDownloader.initiateDownloadableService(
                 this,
                 wallpaper,
-                registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {}
+                registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {},
             )
         }
 
@@ -158,7 +158,9 @@ class WallpaperPreviewActivity :
             (wallpaper as? WallpaperModel.LiveWallpaperModel)
                 ?.creativeWallpaperData
                 ?.creativeWallpaperEffectsData
-        if (creativeWallpaperEffectData != null) {
+        if (
+            creativeWallpaperEffectData != null && !creativeEffectsRepository.isEffectInitialized()
+        ) {
             lifecycleScope.launch {
                 creativeEffectsRepository.initializeEffect(creativeWallpaperEffectData)
             }
@@ -195,15 +197,27 @@ class WallpaperPreviewActivity :
         }
     }
 
-    override fun onDestroy() {
+    override fun onPause() {
+        super.onPause()
+
+        // When back to main screen user could launch preview again before it's fully destroyed and
+        // it could clean up the repo set by the new launching call, move it earlier to on pause.
         if (isFinishing) {
             persistentWallpaperModelRepository.cleanup()
+        }
+    }
+
+    override fun onDestroy() {
+        if (isFinishing) {
             // ImageEffectsRepositoryImpl is Activity-Retained Scoped, and its injected
             // EffectsController is Singleton scoped. Therefore, persist state on config change
             // restart, and only destroy when activity is finishing.
             imageEffectsRepository.destroy()
+            // CreativeEffectsRepository is Activity-Retained Scoped, and its injected
+            // EffectsController is Singleton scoped. Therefore, persist state on config change
+            // restart, and only destroy when activity is finishing.
+            creativeEffectsRepository.destroy()
         }
-        creativeEffectsRepository.destroy()
         liveWallpaperDownloader.cleanup()
         // TODO(b/333879532): Only disconnect when leaving the Activity without introducing black
         //  preview. If onDestroy is caused by an orientation change, we should keep the connection
@@ -268,7 +282,7 @@ class WallpaperPreviewActivity :
             isAssetIdPresent: Boolean,
             isViewAsHome: Boolean = false,
             isNewTask: Boolean = false,
-            shouldCategoryRefresh: Boolean
+            shouldCategoryRefresh: Boolean,
         ): Intent {
             val isNewPickerUi = BaseFlags.get().isNewPickerUi()
             val isCategoriesRefactorEnabled =
@@ -329,7 +343,7 @@ class WallpaperPreviewActivity :
             isAssetIdPresent: Boolean,
             isViewAsHome: Boolean = false,
             isNewTask: Boolean = false,
-            shouldRefreshCategory: Boolean
+            shouldRefreshCategory: Boolean,
         ): Intent {
             val intent = Intent(context.applicationContext, WallpaperPreviewActivity::class.java)
             if (isNewTask) {
@@ -367,7 +381,7 @@ class WallpaperPreviewActivity :
                     ImageWallpaperInfo(data),
                     isAssetIdPresent,
                     isViewAsHome,
-                    isNewTask
+                    isNewTask,
                 )
             // Both these lines are required for permission propagation
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
