@@ -69,10 +69,8 @@
     <string name="refresh_daily_wallpaper_home_content_description" msgid="2770445044556164259">"Vuselela isithombe sangemuva sasekhaya sansuku zonke"</string>
     <string name="refresh_daily_wallpaper_content_description" msgid="4362142658237147583">"Vuselela isithombe sangemuva sansuku zonke"</string>
     <string name="preview_screen_description" msgid="3386387053327775919">"Isikrini sokubuka kuqala sangemuva"</string>
-    <!-- no translation found for preview_screen_description_editable (5558037286562127705) -->
-    <skip />
-    <!-- no translation found for preview_screen_description_non_editable (5861996326502454566) -->
-    <skip />
+    <string name="preview_screen_description_editable" msgid="5558037286562127705">"Isikrini sokubuka kuqala sesithombe sangemuva esingu-%1$s. Sebenzisa iminwe emibili ukuze uphene futhi usondeze"</string>
+    <string name="preview_screen_description_non_editable" msgid="5861996326502454566">"Isikrini sokubuka kuqala sesithombe sangemuva esingu-%1$s"</string>
     <string name="folded_device_state_description" msgid="4972608448265616264">"Kugoqiwe"</string>
     <string name="unfolded_device_state_description" msgid="3071975681472460627">"Kuvuliwe"</string>
     <string name="full_preview_check_button_description" msgid="700484353763952975">"Iqedile ukuhlela isithombe sangemuva"</string>
@@ -111,8 +109,7 @@
     <string name="wallpaper_title" msgid="6754214682228331092">"Isithombe sangemuva"</string>
     <string name="wallpaper_preview_card_content_description" msgid="6049261033541034584">"Ukubuka kuqala kwesithombe sangemuva"</string>
     <string name="wallpaper_preview_card_content_description_editable" msgid="8147628993184862003">"I-%1$s yokubuka kuqala kwesithombe sangemuva se-%2$s, thepha kabili ukuze uhlele isithombe sakho"</string>
-    <!-- no translation found for wallpaper_preview_card_content_description_non_editable (2201116657175733260) -->
-    <skip />
+    <string name="wallpaper_preview_card_content_description_non_editable" msgid="2201116657175733260">"%1$s ukubuka kuqala kwesithombe sangemuva %2$s"</string>
     <string name="lock_wallpaper_preview_card_content_description" msgid="5236839857695985498">"Ukubuka kuqala kwesithombe sangemuva sokukhiya isikrini"</string>
     <string name="home_wallpaper_preview_card_content_description" msgid="4059418716070821630">"Ukuhlola kuqala isithombe sangemuva sesikrini sasekhaya"</string>
     <string name="collection_not_exist_msg" msgid="3504852962885064842">"Uqoqo alutholakali"</string>
@@ -145,6 +142,8 @@
     <string name="reset_confirmation_dialog_title" msgid="3391905685838213712">"Setha kabusha izinguquko"</string>
     <string name="reset_confirmation_dialog_message" msgid="888669268626289603">"Izinguquko zakho ngeke zilondolozwe"</string>
     <string name="more_wallpapers" msgid="8116268433411881705">"Izithombe zangemuva ezengeziwe"</string>
+    <!-- no translation found for wallpapers (7133442512006469886) -->
+    <skip />
     <string name="recents_wallpaper_label" msgid="8653165542635660222">"%1$s (%2$d)"</string>
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Isithombe sangemuva"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Thepha ukuze uhlele isithombe sakho"</string>
