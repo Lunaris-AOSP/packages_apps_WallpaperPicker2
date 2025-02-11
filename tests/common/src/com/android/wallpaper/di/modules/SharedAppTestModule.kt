@@ -24,6 +24,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Process
+import com.android.wallpaper.module.CreativeHelper
 import com.android.wallpaper.module.LargeScreenMultiPanesChecker
 import com.android.wallpaper.module.MultiPanesChecker
 import com.android.wallpaper.module.NetworkStatusNotifier
@@ -48,6 +49,7 @@ import com.android.wallpaper.picker.network.domain.NetworkStatusInteractor
 import com.android.wallpaper.system.PowerManagerWrapper
 import com.android.wallpaper.system.UiModeManagerWrapper
 import com.android.wallpaper.testing.FakeCategoriesLoadingStatusInteractor
+import com.android.wallpaper.testing.FakeCreativeHelper
 import com.android.wallpaper.testing.FakeCreativeWallpaperInteractor
 import com.android.wallpaper.testing.FakeDefaultCategoryFactory
 import com.android.wallpaper.testing.FakeDefaultWallpaperCategoryRepository
@@ -91,6 +93,8 @@ internal abstract class SharedAppTestModule {
     @Binds
     @Singleton
     abstract fun bindCategoryFactory(impl: FakeDefaultCategoryFactory): CategoryFactory
+
+    @Binds @Singleton abstract fun bindCreativeHelper(impl: FakeCreativeHelper): CreativeHelper
 
     @Binds
     @Singleton

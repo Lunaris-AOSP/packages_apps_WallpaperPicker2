@@ -25,6 +25,8 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Process
+import com.android.wallpaper.module.CreativeHelper
+import com.android.wallpaper.module.DefaultCreativeHelper
 import com.android.wallpaper.module.DefaultNetworkStatusNotifier
 import com.android.wallpaper.module.DefaultPackageStatusNotifier
 import com.android.wallpaper.module.DefaultWallpaperRefresher
@@ -86,6 +88,8 @@ abstract class SharedAppModule {
     @Singleton
     abstract fun bindCategoryFactory(impl: DefaultCategoryFactory): CategoryFactory
 
+    @Binds @Singleton abstract fun bindCreativeHelper(impl: DefaultCreativeHelper): CreativeHelper
+
     @Binds
     @Singleton
     abstract fun bindLiveWallpapersClient(impl: LiveWallpapersClientImpl): LiveWallpapersClient
@@ -145,6 +149,10 @@ abstract class SharedAppModule {
     @Binds
     @Singleton
     abstract fun bindWallpaperPickerDelegate2(impl: MyPhotosStarterImpl): MyPhotosStarter
+
+    @Binds
+    @Singleton
+    abstract fun bindWallpaperRefresher(impl: DefaultWallpaperRefresher): WallpaperRefresher
 
     companion object {
 
@@ -224,12 +232,6 @@ abstract class SharedAppModule {
         @Singleton
         fun provideWallpaperManager(@ApplicationContext appContext: Context): WallpaperManager {
             return WallpaperManager.getInstance(appContext)
-        }
-
-        @Provides
-        @Singleton
-        fun provideWallpaperRefresher(@ApplicationContext context: Context): WallpaperRefresher {
-            return DefaultWallpaperRefresher(context)
         }
     }
 }
