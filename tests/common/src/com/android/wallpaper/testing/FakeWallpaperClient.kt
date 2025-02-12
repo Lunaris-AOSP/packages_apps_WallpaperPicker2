@@ -183,7 +183,7 @@ class FakeWallpaperClient @Inject constructor() : WallpaperClient {
     }
 
     // Getting current home wallpaper should always return non-null value
-    override suspend fun getCurrentWallpaperModels(): WallpaperModelsPair {
+    override suspend fun getCurrentWallpaperModels(forceRefresh: Boolean): WallpaperModelsPair {
         return WallpaperModelsPair(
             wallpapersSet[WallpaperDestination.HOME]
                 ?: (WallpaperModelUtils.getStaticWallpaperModel(

@@ -513,20 +513,21 @@ constructor(
         )
     }
 
-    private suspend fun getCurrentWallpapers(): Pair<WallpaperInfo, WallpaperInfo?> =
-        suspendCancellableCoroutine { continuation ->
-            InjectorProvider.getInjector()
-                .getCurrentWallpaperInfoFactory(context)
-                .createCurrentWallpaperInfos(context, /* forceRefresh= */ false) {
-                    homeWallpaper,
-                    lockWallpaper,
-                    _ ->
-                    continuation.resume(Pair(homeWallpaper, lockWallpaper), null)
-                }
-        }
+    private suspend fun getCurrentWallpapers(
+        forceRefresh: Boolean = false
+    ): Pair<WallpaperInfo, WallpaperInfo?> = suspendCancellableCoroutine { continuation ->
+        InjectorProvider.getInjector()
+            .getCurrentWallpaperInfoFactory(context)
+            .createCurrentWallpaperInfos(context, /* forceRefresh= */ forceRefresh) {
+                homeWallpaper,
+                lockWallpaper,
+                _ ->
+                continuation.resume(Pair(homeWallpaper, lockWallpaper), null)
+            }
+    }
 
-    override suspend fun getCurrentWallpaperModels(): WallpaperModelsPair {
-        val currentWallpapers = getCurrentWallpapers()
+    override suspend fun getCurrentWallpaperModels(forceRefresh: Boolean): WallpaperModelsPair {
+        val currentWallpapers = getCurrentWallpapers(forceRefresh)
         val homeWallpaper = currentWallpapers.first
         val lockWallpaper = currentWallpapers.second
         return WallpaperModelsPair(

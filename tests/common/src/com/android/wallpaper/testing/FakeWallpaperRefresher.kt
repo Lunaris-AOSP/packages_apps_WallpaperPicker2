@@ -29,6 +29,7 @@ import javax.inject.Singleton
 @Singleton
 class FakeWallpaperRefresher @Inject constructor(private val prefs: WallpaperPreferences) :
     WallpaperRefresher {
+
     override fun refresh(listener: RefreshListener) {
         if (prefs.getLockWallpaperManagerId() > 0) {
             listener.onRefreshed(

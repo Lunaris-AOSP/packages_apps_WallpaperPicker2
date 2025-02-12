@@ -51,7 +51,8 @@ constructor(
 
     val currentWallpaperModels =
         wallpaperChanged
-            .map { client.getCurrentWallpaperModels() }
+            // Turn forceRefresh on to ensure creative wallpapers are updated
+            .map { client.getCurrentWallpaperModels(forceRefresh = true) }
             .flowOn(backgroundDispatcher)
             .shareIn(scope = scope, started = SharingStarted.WhileSubscribed(), replay = 1)
 }

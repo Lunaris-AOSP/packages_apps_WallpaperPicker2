@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.module
 
+import android.app.wallpaper.WallpaperDescription
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Context
@@ -23,6 +24,8 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import com.android.wallpaper.model.CreativeCategory
 import com.android.wallpaper.model.WallpaperInfoContract
 import com.android.wallpaper.picker.customization.shared.model.WallpaperDestination
@@ -44,9 +47,10 @@ import org.robolectric.shadows.ShadowContentResolver
 @HiltAndroidTest
 @Config(shadows = [ShadowWallpaperInfo::class, ShadowContentResolver::class])
 @RunWith(RobolectricTestRunner::class)
-class DefaultWallpaperRefresherTest {
+class DefaultCreativeHelperTest {
     @get:Rule(order = 0) var hiltRule = HiltAndroidRule(this)
     @Inject @ApplicationContext lateinit var context: Context
+    @Inject lateinit var creativeHelper: DefaultCreativeHelper
 
     @Before
     fun setUp() {
@@ -69,12 +73,7 @@ class DefaultWallpaperRefresherTest {
             }
         val info = createWallpaperInfo(context, metaData = metaData)
 
-        val uri =
-            DefaultWallpaperRefresher.getCreativePreviewUri(
-                context,
-                info,
-                WallpaperDestination.HOME,
-            )
+        val uri = creativeHelper.getCreativePreviewUri(context, info, WallpaperDestination.HOME)
 
         assertThat(uri).isEqualTo(CurrentWallpapersContentProvider.PREVIEW_URI_HOME)
     }
@@ -90,14 +89,51 @@ class DefaultWallpaperRefresherTest {
             }
         val info = createWallpaperInfo(context, metaData = metaData)
 
-        val uri =
-            DefaultWallpaperRefresher.getCreativePreviewUri(
-                context,
-                info,
-                WallpaperDestination.LOCK,
-            )
+        val uri = creativeHelper.getCreativePreviewUri(context, info, WallpaperDestination.LOCK)
 
         assertThat(uri).isEqualTo(CurrentWallpapersContentProvider.PREVIEW_URI_LOCK)
+    }
+
+    @Test
+    fun getCreativeDescription_homeScreen_succeeds() {
+        val metaData =
+            Bundle().apply {
+                putString(
+                    CreativeCategory.KEY_WALLPAPER_SAVE_CREATIVE_WALLPAPER_CURRENT,
+                    "content://com.example.fake/currentwallpapers",
+                )
+            }
+        val info = createWallpaperInfo(context, metaData = metaData)
+        val expectedDescription =
+            CurrentWallpapersContentProvider.DESCRIPTION_HOME.toBuilder()
+                .setComponent(info.component)
+                .build()
+
+        val description =
+            creativeHelper.getCreativeDescription(context, info, WallpaperDestination.HOME)
+
+        assertThat(description).isEqualTo(expectedDescription)
+    }
+
+    @Test
+    fun getCreativeDescription_lockScreen_succeeds() {
+        val metaData =
+            Bundle().apply {
+                putString(
+                    CreativeCategory.KEY_WALLPAPER_SAVE_CREATIVE_WALLPAPER_CURRENT,
+                    "content://com.example.fake/currentwallpapers",
+                )
+            }
+        val info = createWallpaperInfo(context, metaData = metaData)
+        val expectedDescription =
+            CurrentWallpapersContentProvider.DESCRIPTION_LOCK.toBuilder()
+                .setComponent(info.component)
+                .build()
+
+        val description =
+            creativeHelper.getCreativeDescription(context, info, WallpaperDestination.LOCK)
+
+        assertThat(description).isEqualTo(expectedDescription)
     }
 
     private class CurrentWallpapersContentProvider : ContentProvider() {
@@ -117,16 +153,19 @@ class DefaultWallpaperRefresherTest {
                     arrayOf(
                         WallpaperInfoContract.CURRENT_DESTINATION,
                         WallpaperInfoContract.CURRENT_CONFIG_PREVIEW_URI,
+                        WallpaperInfoContract.CURRENT_DESCRIPITION,
                     )
                 )
             cursor
                 .newRow()
                 .add(WallpaperInfoContract.CURRENT_DESTINATION, "home")
                 .add(WallpaperInfoContract.CURRENT_CONFIG_PREVIEW_URI, PREVIEW_URI_HOME)
+                .add(WallpaperInfoContract.CURRENT_DESCRIPITION, marshall(DESCRIPTION_HOME))
             cursor
                 .newRow()
                 .add(WallpaperInfoContract.CURRENT_DESTINATION, "lock")
                 .add(WallpaperInfoContract.CURRENT_CONFIG_PREVIEW_URI, PREVIEW_URI_LOCK)
+                .add(WallpaperInfoContract.CURRENT_DESCRIPITION, marshall(DESCRIPTION_LOCK))
             return cursor
         }
 
@@ -154,6 +193,16 @@ class DefaultWallpaperRefresherTest {
         companion object {
             val PREVIEW_URI_HOME = Uri.parse("www.bogus.com/reallybogus/home")
             val PREVIEW_URI_LOCK = Uri.parse("www.bogus.com/reallybogus/lock")
+            val DESCRIPTION_HOME = WallpaperDescription.Builder().setId("id_1").build()
+            val DESCRIPTION_LOCK = WallpaperDescription.Builder().setId("id_1").build()
+
+            private fun marshall(parcelable: Parcelable): ByteArray {
+                val parcel = Parcel.obtain()
+                parcelable.writeToParcel(parcel, 0)
+                val bytes = parcel.marshall()
+                parcel.recycle()
+                return bytes
+            }
         }
     }
 }
