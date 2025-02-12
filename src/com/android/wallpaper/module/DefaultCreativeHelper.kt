@@ -60,61 +60,65 @@ class DefaultCreativeHelper @Inject constructor() : CreativeHelper {
             destination: WallpaperDestination,
         ): Pair<Uri?, WallpaperDescription?> {
             val metaData = info.serviceInfo.metaData
+            val defaultValue: Pair<Uri?, WallpaperDescription?> = Pair(null, null)
             val uri =
                 metaData.getString(CreativeCategory.KEY_WALLPAPER_SAVE_CREATIVE_WALLPAPER_CURRENT)
-            if (uri == null) {
-                return Pair(null, null)
-            }
+                    ?: return defaultValue
 
             val currentAssetsUri = Uri.parse(uri)
-            if (currentAssetsUri.authority == null) return Pair(null, null)
-            val client =
-                context.contentResolver.acquireContentProviderClient(currentAssetsUri.authority!!)
-                    ?: return Pair(null, null)
-            try {
-                client.query(currentAssetsUri, null, null, null, null).use { cursor ->
-                    if (cursor == null || !cursor.moveToFirst()) {
-                        return Pair(null, null)
-                    }
-                    do {
-                        val dest =
-                            cursor.getString(
-                                cursor.getColumnIndex(WallpaperInfoContract.CURRENT_DESTINATION)
-                            )
-                        val previewUri =
-                            Uri.parse(
-                                cursor.getString(
-                                    cursor.getColumnIndex(
-                                        WallpaperInfoContract.CURRENT_CONFIG_PREVIEW_URI
+            if (currentAssetsUri.authority == null) return defaultValue
+            context.contentResolver
+                .acquireContentProviderClient(currentAssetsUri.authority!!)
+                ?.use { client ->
+                    try {
+                        client.query(currentAssetsUri, null, null, null, null)?.use { cursor ->
+                            if (!cursor.moveToFirst()) return defaultValue
+                            do {
+                                val dest =
+                                    cursor.getString(
+                                        cursor.getColumnIndex(
+                                            WallpaperInfoContract.CURRENT_DESTINATION
+                                        )
                                     )
-                                )
-                            )
-                        val descriptionIndex =
-                            cursor.getColumnIndex(WallpaperInfoContract.CURRENT_DESCRIPITION)
-                        val description =
-                            if (descriptionIndex >= 0) {
-                                cursor.getBlobOrNull(descriptionIndex)?.let {
-                                    descriptionFromBytes(it).let { desc ->
-                                        if (desc.component == null) {
-                                            desc.toBuilder().setComponent(info.component).build()
-                                        } else desc
-                                    }
+                                val previewUri =
+                                    Uri.parse(
+                                        cursor.getString(
+                                            cursor.getColumnIndex(
+                                                WallpaperInfoContract.CURRENT_CONFIG_PREVIEW_URI
+                                            )
+                                        )
+                                    )
+                                val descriptionIndex =
+                                    cursor.getColumnIndex(
+                                        WallpaperInfoContract.CURRENT_DESCRIPITION
+                                    )
+                                val description =
+                                    if (descriptionIndex >= 0) {
+                                        cursor.getBlobOrNull(descriptionIndex)?.let {
+                                            descriptionFromBytes(it).let { desc ->
+                                                if (desc.component == null) {
+                                                    desc
+                                                        .toBuilder()
+                                                        .setComponent(info.component)
+                                                        .build()
+                                                } else desc
+                                            }
+                                        }
+                                    } else null
+                                if (
+                                    (dest == "home" && destination == WallpaperDestination.HOME) ||
+                                        (dest == "lock" && destination == WallpaperDestination.LOCK)
+                                ) {
+                                    return Pair(previewUri, description)
                                 }
-                            } else null
-                        if (
-                            (dest == "home" && destination == WallpaperDestination.HOME) ||
-                                (dest == "lock" && destination == WallpaperDestination.LOCK)
-                        ) {
-                            return Pair(previewUri, description)
+                            } while (cursor.moveToNext())
                         }
-                    } while (cursor.moveToNext())
+                    } catch (e: RemoteException) {
+                        Log.w(TAG, "Error retrieving current creative asset id: ", e)
+                    }
                 }
-            } catch (e: RemoteException) {
-                Log.w(TAG, "Error retrieving current creative asset id: ", e)
-            }
 
-            client.close()
-            return Pair(null, null)
+            return defaultValue
         }
 
         private fun descriptionFromBytes(bytes: ByteArray): WallpaperDescription {
