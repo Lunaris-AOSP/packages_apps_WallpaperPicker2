@@ -59,7 +59,6 @@ import com.android.wallpaper.picker.category.ui.view.CategoriesFragment
 import com.android.wallpaper.picker.common.preview.data.repository.PersistentWallpaperModelRepository
 import com.android.wallpaper.picker.common.preview.ui.binder.BasePreviewBinder
 import com.android.wallpaper.picker.common.preview.ui.binder.WorkspaceCallbackBinder
-import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationOptionsBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2
 import com.android.wallpaper.picker.customization.ui.binder.PagerTouchInterceptorBinder
@@ -126,14 +125,6 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             view.requireViewById(R.id.nav_button),
             view.requireViewById(R.id.toolbar),
             view.requireViewById(R.id.apply_button),
-        )
-
-        val rootView = view.requireViewById<View>(R.id.root_view)
-        ColorUpdateBinder.bind(
-            setColor = { color -> rootView.setBackgroundColor(color) },
-            color = colorUpdateViewModel.colorSurfaceContainer,
-            shouldAnimate = { true },
-            lifecycleOwner = viewLifecycleOwner,
         )
 
         val pickerMotionContainer = view.requireViewById<MotionLayout>(R.id.picker_motion_layout)
