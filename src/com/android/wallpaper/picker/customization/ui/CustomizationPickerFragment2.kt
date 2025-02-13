@@ -174,26 +174,30 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         val wallpaperPickerEntry: WallpaperPickerEntry =
             view.requireViewById(R.id.wallpaper_picker_entry)
         view.post {
-            val wallpaperPickerEntryHeight = wallpaperPickerEntry.height
-            val collapsedButtonHeight = wallpaperPickerEntry.collapsedButton.height
-
-            // The collapsed header height should be updated when optionContainer height is known
+            val wallpaperPickerEntryExpandedHeight = wallpaperPickerEntry.height
+            val wallpaperPickerEntryCollapsedHeight = wallpaperPickerEntry.collapsedButton.height
+            // The expanded / collapsed header height should be updated when optionContainer
+            // height is known.
+            // For expanded, it needs to show at least half of the entry view below the wallpaper
+            // entry.
+            val expandedHeaderHeight =
+                pickerMotionContainer.height -
+                    wallpaperPickerEntryExpandedHeight -
+                    resources.getDimensionPixelSize(R.dimen.customization_option_entry_height) / 2
+            pickerMotionContainer
+                .getConstraintSet(R.id.expanded_header_primary)
+                ?.constrainHeight(R.id.preview_header, expandedHeaderHeight)
+            // For collapsed, it needs to show the all option entries, with the collapsed wallpaper
+            // entry, which shows as a single button.
             val collapsedHeaderHeight =
                 pickerMotionContainer.height -
                     (optionContainer.height -
-                        (wallpaperPickerEntryHeight - collapsedButtonHeight)) -
+                        (wallpaperPickerEntryExpandedHeight -
+                            wallpaperPickerEntryCollapsedHeight)) -
                     navBarHeight
-            if (
-                collapsedHeaderHeight >
-                    resources.getDimensionPixelSize(
-                        R.dimen.customization_picker_preview_header_collapsed_height
-                    )
-            ) {
-                pickerMotionContainer
-                    .getConstraintSet(R.id.collapsed_header_primary)
-                    ?.constrainHeight(R.id.preview_header, collapsedHeaderHeight)
-                pickerMotionContainer.setTransition(R.id.transition_primary)
-            }
+            pickerMotionContainer
+                .getConstraintSet(R.id.collapsed_header_primary)
+                ?.constrainHeight(R.id.preview_header, collapsedHeaderHeight)
 
             // Transition listener handle 2 things
             // 1. Expand and collapse the wallpaper entry
