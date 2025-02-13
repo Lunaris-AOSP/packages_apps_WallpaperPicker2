@@ -228,7 +228,7 @@ constructor(
             list1 + list2
         }
 
-    private val creativeSectionViewModel: Flow<SectionViewModel> =
+    private val creativeSectionViewModel: Flow<SectionViewModel?> =
         creativeCategoryInteractor.categories
             .distinctUntilChanged { old, new -> categoryModelListDifferentiator(old, new) }
             .map { categories ->
@@ -255,6 +255,10 @@ constructor(
                             }
                         }
                     }
+
+                if (tiles.isEmpty()) {
+                    return@map null
+                }
                 return@map SectionViewModel(
                     tileViewModels = tiles,
                     columnCount = 3,
@@ -339,9 +343,9 @@ constructor(
             buildList {
                 if (BaseFlags.get().isNewPickerUi()) {
                     add(myPhotosViewModel)
-                    add(creativeViewModel)
+                    creativeViewModel?.let { add(it) }
                 } else {
-                    add(creativeViewModel)
+                    creativeViewModel?.let { add(it) }
                     add(myPhotosViewModel)
                 }
                 addAll(individualViewModels)
