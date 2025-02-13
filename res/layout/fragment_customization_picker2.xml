@@ -86,7 +86,8 @@
             android:layout_height="@dimen/customization_picker_preview_header_expanded_height"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingBottom="@dimen/customization_picker_preview_bottom_padding">
 
             <com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout
                 android:id="@+id/preview_pager"
