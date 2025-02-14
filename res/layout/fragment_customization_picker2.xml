@@ -88,10 +88,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <androidx.viewpager2.widget.ViewPager2
+            <com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout
                 android:id="@+id/preview_pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:layoutDescription="@xml/preview_pager_motion_scene">
+
+                <include layout="@layout/customization_picker_preview_card"
+                    android:id="@+id/lock_preview" />
+
+                <include layout="@layout/customization_picker_preview_card"
+                    android:id="@+id/home_preview" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+            </com.android.wallpaper.picker.preview.ui.view.ClickableMotionLayout>
 
             <View
                 android:id="@+id/pager_touch_interceptor"
