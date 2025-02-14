@@ -26,6 +26,7 @@
         android:id="@+id/wallpaper_picker_entry_expanded_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/customization_option_entry_vertical_padding_large"
         android:paddingHorizontal="@dimen/customization_option_entry_horizontal_padding">
 
         <FrameLayout
