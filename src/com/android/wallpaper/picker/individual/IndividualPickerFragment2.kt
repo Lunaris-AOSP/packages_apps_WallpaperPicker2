@@ -981,6 +981,7 @@ class IndividualPickerFragment2 :
             if (!item.isApplied) {
                 showBadge(holder, wallpaper.badgeDrawableRes, wallpaper.badgeDrawableRes != ID_NULL)
             }
+            holder.itemView.isSelected = item.isApplied
         }
 
         private fun showBadge(
@@ -1005,7 +1006,6 @@ class IndividualPickerFragment2 :
             } else {
                 badge.visibility = View.GONE
             }
-            holder.itemView.isSelected = show
         }
     }
 
