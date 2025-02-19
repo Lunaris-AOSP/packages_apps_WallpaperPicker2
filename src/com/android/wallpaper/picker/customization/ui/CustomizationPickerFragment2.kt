@@ -54,6 +54,7 @@ import com.android.wallpaper.picker.category.ui.view.CategoriesFragment
 import com.android.wallpaper.picker.common.preview.data.repository.PersistentWallpaperModelRepository
 import com.android.wallpaper.picker.common.preview.ui.binder.BasePreviewBinder
 import com.android.wallpaper.picker.common.preview.ui.binder.WorkspaceCallbackBinder
+import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationOptionsBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2
 import com.android.wallpaper.picker.customization.ui.binder.PagerTouchInterceptorBinder
@@ -94,6 +95,10 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
     @Inject lateinit var multiPanesChecker: MultiPanesChecker
 
     private val customizationPickerViewModel: CustomizationPickerViewModel2 by viewModels()
+
+    private val isOnMainScreen = {
+        customizationPickerViewModel.customizationOptionsViewModel.selectedOption.value == null
+    }
 
     private var fullyCollapsed = false
     private var navBarHeight: Int = 0
@@ -385,6 +390,12 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                 LOCK_SCREEN -> resources.getString(R.string.lock_screen_tab)
                 HOME_SCREEN -> resources.getString(R.string.home_screen_tab)
             }
+        ColorUpdateBinder.bind(
+            setColor = { color -> previewLabel.setTextColor(color) },
+            color = colorUpdateViewModel.colorOnSurface,
+            shouldAnimate = isOnMainScreen,
+            lifecycleOwner = viewLifecycleOwner,
+        )
 
         val previewCard: View = preview.requireViewById(R.id.preview_card)
 
