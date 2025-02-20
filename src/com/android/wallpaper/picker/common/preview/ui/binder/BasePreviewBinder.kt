@@ -34,6 +34,7 @@ import com.android.wallpaper.picker.data.WallpaperModel
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -60,24 +61,30 @@ object BasePreviewBinder {
         wallpaperConnectionUtils: WallpaperConnectionUtils,
         isFirstBindingDeferred: CompletableDeferred<Boolean>,
         onLaunchPreview: ((WallpaperModel) -> Unit)? = null,
+        onTransitionToScreen: ((Screen) -> Unit)? = null,
         clockViewFactory: ClockViewFactory,
     ) {
-        if (onLaunchPreview != null) {
-            lifecycleOwner.lifecycleScope.launch {
-                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    launch { viewModel.isPreviewClickable.collect { view.isClickable = it } }
 
-                    launch {
-                        viewModel.basePreviewViewModel.wallpapers
-                            .filterNotNull()
-                            .map {
+        lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { viewModel.isPreviewClickable.collect { view.isClickable = it } }
+
+                launch {
+                    combine(
+                            viewModel.basePreviewViewModel.wallpapers.filterNotNull().map {
                                 if (screen == HOME_SCREEN) it.homeWallpaper
                                 else it.lockWallpaper ?: it.homeWallpaper
+                            },
+                            viewModel.selectedPreviewScreen,
+                            ::Pair,
+                        )
+                        .collect { (wallpaper, selectedPreviewScreen) ->
+                            if (selectedPreviewScreen == screen) {
+                                view.setOnClickListener { onLaunchPreview?.invoke(wallpaper) }
+                            } else {
+                                view.setOnClickListener { onTransitionToScreen?.invoke(screen) }
                             }
-                            .collect { wallpaper ->
-                                view.setOnClickListener { onLaunchPreview.invoke(wallpaper) }
-                            }
-                    }
+                        }
                 }
             }
         }
