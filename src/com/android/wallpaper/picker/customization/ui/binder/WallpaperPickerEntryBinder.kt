@@ -31,6 +31,7 @@ import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewMo
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.picker.customization.ui.viewmodel.WallpaperCarouselViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.WallpaperCarouselViewModel.NavigationEvent.NavigateToPreviewScreen
+import com.android.wallpaper.picker.customization.ui.viewmodel.WallpaperCarouselViewModel.NavigationEvent.NavigateToWallpaperCollection
 import com.android.wallpaper.picker.data.WallpaperModel
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
@@ -135,8 +136,13 @@ object WallpaperPickerEntryBinder {
                 }
 
                 launch {
-                    viewModel.navigationEvents.collect { navigationEvent ->
+                    viewModel.navigationEvents.collect {
+                        navigationEvent: WallpaperCarouselViewModel.NavigationEvent ->
                         when (navigationEvent) {
+                            is NavigateToWallpaperCollection -> {
+                                // TODO (b/398250531): implement navigation to creative
+                                // category collection page
+                            }
                             is NavigateToPreviewScreen -> {
                                 navigateToPreviewScreen?.invoke(navigationEvent.wallpaperModel)
                             }
