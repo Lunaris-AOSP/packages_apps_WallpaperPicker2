@@ -13,9 +13,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -95,10 +95,37 @@
                 android:layout_height="match_parent"
                 app:layoutDescription="@xml/preview_pager_motion_scene">
 
-                <include layout="@layout/customization_picker_preview_card"
+                <TextView
+                    android:id="@+id/label_placeholder"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/customization_picker_preview_label_padding_bottom"
+                    android:visibility="invisible"
+                    android:text="Placeholder for the previews to position below it"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/lock_preview_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/customization_picker_preview_label_padding_bottom"
+                    android:gravity="center"
+                    android:textColor="@color/system_on_surface"
+                    android:text="@string/lock_screen_tab" />
+
+                <include layout="@layout/wallpaper_preview_card2"
                     android:id="@+id/lock_preview" />
 
-                <include layout="@layout/customization_picker_preview_card"
+                <TextView
+                    android:id="@+id/home_preview_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/customization_picker_preview_label_padding_bottom"
+                    android:gravity="center"
+                    android:textColor="@color/system_on_surface"
+                    android:text="@string/home_screen_tab" />
+
+                <include layout="@layout/wallpaper_preview_card2"
                     android:id="@+id/home_preview" />
 
                 <androidx.constraintlayout.widget.Guideline

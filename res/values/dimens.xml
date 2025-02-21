@@ -407,7 +407,7 @@
     <!-- Dimensions for the customization picker  -->
     <dimen name="customization_picker_preview_header_collapsed_height">250dp</dimen>
     <dimen name="customization_picker_preview_header_expanded_height">530dp</dimen>
-    <dimen name="customization_picker_preview_label_margin_bottom">12dp</dimen>
+    <dimen name="customization_picker_preview_label_padding_bottom">12dp</dimen>
     <dimen name="customization_picker_preview_bottom_padding">16dp</dimen>
     <dimen name="customization_option_container_horizontal_padding">16dp</dimen>
     <dimen name="customization_option_entry_height">84dp</dimen>
