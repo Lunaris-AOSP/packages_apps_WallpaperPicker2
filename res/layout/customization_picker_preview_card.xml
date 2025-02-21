@@ -18,7 +18,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:clipChildren="false"
     android:clipToPadding="false">
 
@@ -34,11 +33,10 @@
         android:layout_centerHorizontal="true"
         tools:ignore="HardcodedText" />
 
-    <FrameLayout
+    <include layout="@layout/wallpaper_preview_card2"
+        android:id="@+id/preview_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@+id/preview_label"
-        android:paddingBottom="@dimen/customization_picker_preview_bottom_padding">
-        <include layout="@layout/wallpaper_preview_card2" />
-    </FrameLayout>
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
