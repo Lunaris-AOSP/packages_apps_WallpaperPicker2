@@ -150,4 +150,14 @@
     <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Да се отхвърлят ли промените?"</string>
     <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Продължаване на редактирането"</string>
     <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"Отхвърляне"</string>
+    <!-- no translation found for action_zoom_in (3326782160671405449) -->
+    <skip />
+    <!-- no translation found for action_zoom_out (5454911090443175449) -->
+    <skip />
+    <!-- no translation found for zoomed_to_percent (1243039994190840132) -->
+    <skip />
+    <!-- no translation found for max_zoom_percentage (2111670558746866030) -->
+    <skip />
+    <!-- no translation found for min_zoom_percentage (5931879817379214316) -->
+    <skip />
 </resources>
