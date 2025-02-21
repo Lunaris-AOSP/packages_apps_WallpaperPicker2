@@ -38,6 +38,7 @@
     <!-- Dimensions for creative categoriy tiles. -->
     <dimen name="creative_category_grid_padding_horizontal">8dp</dimen>
     <dimen name="creative_category_grid_padding_vertical">0dp</dimen>
+    <dimen name="creative_category_individual_item_view_space">8dp</dimen>
 
     <!-- Dimensions for featured "category" tiles. -->
     <dimen name="grid_item_featured_category_padding_bottom">16dp</dimen>
