@@ -16,6 +16,7 @@
 
 package com.android.wallpaper.picker.customization.ui.viewmodel
 
+import android.annotation.ColorInt
 import android.content.Context
 import com.android.systemui.monet.ColorScheme
 import com.android.systemui.monet.Style
@@ -164,8 +165,7 @@ constructor(
             },
         )
 
-    fun previewColors(colorSeed: Int, @Style.Type style: Int) {
-        val isDarkMode = context.resources.configuration.isNightModeActive
+    fun previewColors(@ColorInt colorSeed: Int, @Style.Type style: Int, isDarkMode: Boolean) {
         previewingColorScheme.value = ColorScheme(colorSeed, isDarkMode, style).materialScheme
     }
 
