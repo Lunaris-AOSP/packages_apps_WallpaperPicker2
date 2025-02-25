@@ -150,7 +150,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             )
 
         val previewViewModel = customizationPickerViewModel.basePreviewViewModel
-        previewViewModel.setWhichPreview(WallpaperConnection.WhichPreview.EDIT_CURRENT)
+        previewViewModel.setWhichPreview(WallpaperConnection.WhichPreview.PREVIEW_CURRENT)
         // TODO (b/348462236): adjust flow so this is always false when previewing current wallpaper
         previewViewModel.setIsWallpaperColorPreviewEnabled(false)
 
