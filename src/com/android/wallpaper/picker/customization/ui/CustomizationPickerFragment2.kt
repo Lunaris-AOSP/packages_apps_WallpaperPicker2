@@ -58,6 +58,7 @@ import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationOptionsBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2
 import com.android.wallpaper.picker.customization.ui.binder.PagerTouchInterceptorBinder
+import com.android.wallpaper.picker.customization.ui.binder.PreviewLabelBinder
 import com.android.wallpaper.picker.customization.ui.binder.ToolbarBinder
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil
 import com.android.wallpaper.picker.customization.ui.util.CustomizationOptionUtil.CustomizationOption
@@ -379,6 +380,12 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         }
 
         val lockPreviewLabel: TextView = previewPager.requireViewById(R.id.lock_preview_label)
+        PreviewLabelBinder.bind(
+            previewLabel = lockPreviewLabel,
+            screen = LOCK_SCREEN,
+            viewModel = customizationPickerViewModel,
+            lifecycleOwner = viewLifecycleOwner,
+        )
         ColorUpdateBinder.bind(
             setColor = { color -> lockPreviewLabel.setTextColor(color) },
             color = colorUpdateViewModel.colorOnSurface,
@@ -386,6 +393,12 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             lifecycleOwner = viewLifecycleOwner,
         )
         val homePreviewLabel: TextView = previewPager.requireViewById(R.id.home_preview_label)
+        PreviewLabelBinder.bind(
+            previewLabel = homePreviewLabel,
+            screen = HOME_SCREEN,
+            viewModel = customizationPickerViewModel,
+            lifecycleOwner = viewLifecycleOwner,
+        )
         ColorUpdateBinder.bind(
             setColor = { color -> homePreviewLabel.setTextColor(color) },
             color = colorUpdateViewModel.colorOnSurface,
