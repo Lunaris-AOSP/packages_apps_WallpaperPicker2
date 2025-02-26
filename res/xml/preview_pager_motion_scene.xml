@@ -22,8 +22,8 @@
         app:constraintSetEnd="@id/home_preview_selected"
         app:duration="200">
         <OnSwipe
-            app:dragDirection="dragStart"
-            app:maxAcceleration="50"/>
+            app:touchAnchorId="@id/lock_preview"
+            app:dragDirection="dragStart" />
     </Transition>
 
     <ConstraintSet android:id="@+id/lock_preview_selected">
