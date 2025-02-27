@@ -18,6 +18,7 @@ package com.android.wallpaper.picker.common.preview.ui.binder
 
 import android.content.Context
 import android.graphics.Point
+import android.view.SurfaceView
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -27,7 +28,9 @@ import com.android.customization.picker.clock.ui.view.ClockViewFactory
 import com.android.wallpaper.R
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.model.Screen.HOME_SCREEN
+import com.android.wallpaper.model.Screen.LOCK_SCREEN
 import com.android.wallpaper.model.wallpaper.DeviceDisplayType
+import com.android.wallpaper.picker.customization.ui.util.ViewAlphaAnimator.animateToAlpha
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.picker.data.WallpaperModel
@@ -64,6 +67,8 @@ object BasePreviewBinder {
         onTransitionToScreen: ((Screen) -> Unit)? = null,
         clockViewFactory: ClockViewFactory,
     ) {
+        val wallpaperSurface: SurfaceView = view.requireViewById(R.id.wallpaper_surface)
+        val workspaceSurface: SurfaceView = view.requireViewById(R.id.workspace_surface)
 
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -86,12 +91,22 @@ object BasePreviewBinder {
                             }
                         }
                 }
+
+                launch {
+                    when (screen) {
+                        LOCK_SCREEN -> viewModel.lockPreviewAnimateToAlpha
+                        HOME_SCREEN -> viewModel.homePreviewAnimateToAlpha
+                    }.collect {
+                        wallpaperSurface.animateToAlpha(it)
+                        workspaceSurface.animateToAlpha(it)
+                    }
+                }
             }
         }
 
         WallpaperPreviewBinder.bind(
             applicationContext = applicationContext,
-            surfaceView = view.requireViewById(R.id.wallpaper_surface),
+            surfaceView = wallpaperSurface,
             viewModel = viewModel.basePreviewViewModel,
             screen = screen,
             displaySize = displaySize,
@@ -103,7 +118,7 @@ object BasePreviewBinder {
         )
 
         WorkspacePreviewBinder.bind(
-            surfaceView = view.requireViewById(R.id.workspace_surface),
+            surfaceView = workspaceSurface,
             viewModel = viewModel,
             colorUpdateViewModel = colorUpdateViewModel,
             workspaceCallbackBinder = workspaceCallbackBinder,
