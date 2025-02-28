@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
@@ -38,10 +39,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import androidx.transition.Transition
 import com.android.customization.picker.clock.ui.view.ClockViewFactory
 import com.android.wallpaper.R
 import com.android.wallpaper.model.Screen
@@ -49,6 +50,7 @@ import com.android.wallpaper.model.Screen.HOME_SCREEN
 import com.android.wallpaper.model.Screen.LOCK_SCREEN
 import com.android.wallpaper.module.LargeScreenMultiPanesChecker
 import com.android.wallpaper.module.MultiPanesChecker
+import com.android.wallpaper.picker.AppbarFragment
 import com.android.wallpaper.picker.WallpaperPickerDelegate.VIEW_ONLY_PREVIEW_WALLPAPER_REQUEST_CODE
 import com.android.wallpaper.picker.category.ui.view.CategoriesFragment
 import com.android.wallpaper.picker.common.preview.data.repository.PersistentWallpaperModelRepository
@@ -80,7 +82,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint(Fragment::class)
+@AndroidEntryPoint(AppbarFragment::class)
 class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
     @Inject lateinit var customizationOptionUtil: CustomizationOptionUtil
@@ -109,17 +111,22 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
     private val startForResult =
         this.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         val isFromLauncher =
             activity?.intent?.let { ActivityUtils.isLaunchedFromLauncher(it) } ?: false
         if (isFromLauncher) {
             customizationPickerViewModel.selectPreviewScreen(HOME_SCREEN)
         }
+        (exitTransition as? Transition)?.let { prepareFragmentTransitionAnimation(it) }
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         val view = inflater.inflate(R.layout.fragment_customization_picker2, container, false)
 
         setupToolbar(
@@ -159,7 +166,6 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             pagerTouchInterceptor = view.requireViewById(R.id.pager_touch_interceptor),
             previewPager = view.requireViewById(R.id.preview_pager),
             isFirstBinding = savedInstanceState == null,
-            initialScreen = if (isFromLauncher) HOME_SCREEN else LOCK_SCREEN,
         )
 
         val optionContainer: ConstraintLayout =
@@ -320,6 +326,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                 .also { callback -> onBackPressedCallback = callback }
         }
 
+        (view as ViewGroup).isTransitionGroup = true
         return view
     }
 
@@ -359,7 +366,6 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         pagerTouchInterceptor: View,
         previewPager: ClickableMotionLayout,
         isFirstBinding: Boolean,
-        initialScreen: Screen,
     ) {
         PagerTouchInterceptorBinder.bind(
             pagerTouchInterceptor,
@@ -367,17 +373,6 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             viewLifecycleOwner,
         )
         previewPager.addClickableViewId(R.id.preview_card)
-        when (initialScreen) {
-            LOCK_SCREEN -> {
-                previewPager.setTransitionDuration(0)
-                previewPager.transitionToState(R.id.lock_preview_selected)
-            }
-
-            HOME_SCREEN -> {
-                previewPager.setTransitionDuration(0)
-                previewPager.transitionToState(R.id.home_preview_selected)
-            }
-        }
 
         val lockPreviewLabel: TextView = previewPager.requireViewById(R.id.lock_preview_label)
         PreviewLabelBinder.bind(
@@ -612,5 +607,50 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
     companion object {
         private const val ANIMATION_DURATION = 200
+    }
+
+    private fun prepareFragmentTransitionAnimation(transition: Transition) {
+        transition.addListener(
+            object : Transition.TransitionListener {
+                override fun onTransitionStart(transition: Transition) {
+                    setPreviewPagerVisible(false)
+                }
+
+                override fun onTransitionEnd(transition: Transition) {
+                    setPreviewPagerVisible(true)
+                }
+
+                override fun onTransitionCancel(transition: Transition) {
+                    setPreviewPagerVisible(true)
+                }
+
+                override fun onTransitionPause(transition: Transition) {}
+
+                override fun onTransitionResume(transition: Transition) {}
+            }
+        )
+    }
+
+    /**
+     * Specifically set the preview pager visible or invisible. We set the preview pager invisible
+     * early before some Fragment transitions. This is because we encounter the preview flashing
+     * issue due to the unexpected [SurfaceView] callbacks of onSurfaceCreated and
+     * onSurfaceDestroyed, during Fragment transition.
+     */
+    private fun setPreviewPagerVisible(isVisible: Boolean) {
+        val lockPreviewLabel: TextView = requireView().requireViewById(R.id.lock_preview_label)
+        val homePreviewLabel: TextView = requireView().requireViewById(R.id.home_preview_label)
+        val lockPreview: View = requireView().requireViewById(R.id.lock_preview)
+        val homePreview: View = requireView().requireViewById(R.id.home_preview)
+        val lockWallpaperSurface: SurfaceView = lockPreview.requireViewById(R.id.wallpaper_surface)
+        val lockWorkspaceSurface: SurfaceView = lockPreview.requireViewById(R.id.workspace_surface)
+        val homeWallpaperSurface: SurfaceView = homePreview.requireViewById(R.id.wallpaper_surface)
+        val homeWorkspaceSurface: SurfaceView = homePreview.requireViewById(R.id.workspace_surface)
+        lockPreviewLabel.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+        homePreviewLabel.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+        lockWallpaperSurface.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+        lockWorkspaceSurface.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+        homeWallpaperSurface.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+        homeWorkspaceSurface.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
     }
 }
