@@ -21,9 +21,28 @@ import com.android.wallpaper.picker.data.WallpaperModel
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Singleton
 class FakeOnDeviceWallpapersInteractor @Inject constructor() : OnDeviceWallpapersInteractor {
     override val defaultWallpapers: Flow<List<WallpaperModel>>
-        get() = TODO("Not yet implemented")
+        get() = MutableStateFlow(fakeOnDeviceWallpapers)
+
+    companion object {
+        val fakeOnDeviceWallpapers =
+            listOf(
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId1",
+                    collectionId = "testCollection1",
+                ),
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId2",
+                    collectionId = "testCollection3",
+                ),
+                WallpaperModelUtils.getStaticWallpaperModel(
+                    wallpaperId = "testId3",
+                    collectionId = "testCollection3",
+                ),
+            )
+    }
 }
