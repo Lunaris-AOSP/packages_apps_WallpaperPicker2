@@ -55,6 +55,7 @@ import com.android.wallpaper.picker.WallpaperPickerDelegate.VIEW_ONLY_PREVIEW_WA
 import com.android.wallpaper.picker.category.ui.view.CategoriesFragment
 import com.android.wallpaper.picker.common.preview.data.repository.PersistentWallpaperModelRepository
 import com.android.wallpaper.picker.common.preview.ui.binder.BasePreviewBinder
+import com.android.wallpaper.picker.common.preview.ui.binder.PreviewAlphaAnimationBinder
 import com.android.wallpaper.picker.common.preview.ui.binder.WorkspaceCallbackBinder
 import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationOptionsBinder
@@ -111,6 +112,10 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
     private val startForResult =
         this.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
+    // This boolean is to determine that when onCreateView, if it is a fragment reenter after the
+    // last fragment exit.
+    private var isReenterAfterExit = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -119,7 +124,8 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         if (isFromLauncher) {
             customizationPickerViewModel.selectPreviewScreen(HOME_SCREEN)
         }
-        (exitTransition as? Transition)?.let { prepareFragmentTransitionAnimation(it) }
+        prepareFragmentExitTransitionAnimation()
+        prepareFragmentReenterTransitionAnimation()
     }
 
     override fun onCreateView(
@@ -414,6 +420,20 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             preview = previewPager.requireViewById(R.id.home_preview),
             isFirstBinding = isFirstBinding,
         )
+
+        if (isReenterAfterExit) {
+            // If isReenterAfterExit true, it means that it is a fragment reenter after a fragment
+            // exit. Delay PreviewAlphaAnimationBinder.bind() until the reenter onTransitionEnd()
+            // is called.
+            isReenterAfterExit = false
+        } else {
+            // In generally cases, we will bind the animation when onViewCreated()
+            PreviewAlphaAnimationBinder.bind(
+                previewPager = previewPager,
+                customizationPickerViewModel,
+                viewLifecycleOwner,
+            )
+        }
     }
 
     private fun bindPreview(
@@ -609,11 +629,13 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         private const val ANIMATION_DURATION = 200
     }
 
-    private fun prepareFragmentTransitionAnimation(transition: Transition) {
+    private fun prepareFragmentExitTransitionAnimation() {
+        val transition = (exitTransition as? Transition) ?: return
         transition.addListener(
             object : Transition.TransitionListener {
                 override fun onTransitionStart(transition: Transition) {
                     setPreviewPagerVisible(false)
+                    isReenterAfterExit = true
                 }
 
                 override fun onTransitionEnd(transition: Transition) {
@@ -622,7 +644,32 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
                 override fun onTransitionCancel(transition: Transition) {
                     setPreviewPagerVisible(true)
+                    isReenterAfterExit = false
                 }
+
+                override fun onTransitionPause(transition: Transition) {}
+
+                override fun onTransitionResume(transition: Transition) {}
+            }
+        )
+    }
+
+    private fun prepareFragmentReenterTransitionAnimation() {
+        val transition = (reenterTransition as? Transition) ?: return
+        transition.addListener(
+            object : Transition.TransitionListener {
+                override fun onTransitionStart(transition: Transition) {}
+
+                override fun onTransitionEnd(transition: Transition) {
+                    val rootView = view ?: return
+                    PreviewAlphaAnimationBinder.bind(
+                        rootView.requireViewById(R.id.preview_pager),
+                        customizationPickerViewModel,
+                        viewLifecycleOwner,
+                    )
+                }
+
+                override fun onTransitionCancel(transition: Transition) {}
 
                 override fun onTransitionPause(transition: Transition) {}
 
