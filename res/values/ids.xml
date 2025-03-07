@@ -27,4 +27,8 @@
     <!-- View id for the  unfolded preview view in the small preview screen -->
     <item name="small_preview_unfolded_preview" type="id" />
 
+    <!-- View id for the dismiss button in the sign in banner in the category screen -->
+    <item name="dismiss_button" type="id" />
+
+    <item name="layout_sign_in_banner" type="id" />
 </resources>
