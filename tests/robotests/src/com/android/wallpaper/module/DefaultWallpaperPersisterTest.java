@@ -51,6 +51,7 @@ import com.android.wallpaper.testing.TestAsset;
 import com.android.wallpaper.testing.TestBitmapCropper;
 import com.android.wallpaper.testing.TestCurrentWallpaperInfoFactory;
 import com.android.wallpaper.testing.TestInjector;
+import com.android.wallpaper.testing.TestPackageStatusNotifier;
 import com.android.wallpaper.testing.TestStaticWallpaperInfo;
 import com.android.wallpaper.testing.TestWallpaperPreferences;
 import com.android.wallpaper.testing.TestWallpaperStatusChecker;
@@ -87,6 +88,8 @@ public class DefaultWallpaperPersisterTest {
     /** Executor to use for AsyncTask */
     private final PausedExecutorService mPausedExecutor = new PausedExecutorService();
 
+    private TestPackageStatusNotifier mTestPackageStatusNotifier;
+
     @Before
     public void setUp() {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -99,6 +102,7 @@ public class DefaultWallpaperPersisterTest {
         TestWallpaperStatusChecker statusChecker = new TestWallpaperStatusChecker();
         TestDispatcher testDispatcher = StandardTestDispatcher(null, null);
         TestScope testScope = TestScopeKt.TestScope(testDispatcher);
+        mTestPackageStatusNotifier = new TestPackageStatusNotifier();
         WallpaperInteractor wallpaperInteractor =
                 new WallpaperInteractor(
                         new WallpaperRepository(
@@ -118,7 +122,8 @@ public class DefaultWallpaperPersisterTest {
                 new FakeWallpaperClient(),
                 wallpaperInteractor,
                 mock(WallpaperPreferences.class),
-                mock(WallpaperCategoryWrapper.class)
+                mock(WallpaperCategoryWrapper.class),
+                mTestPackageStatusNotifier
         ));
 
         TestCurrentWallpaperInfoFactory wallpaperInfoFactory =
