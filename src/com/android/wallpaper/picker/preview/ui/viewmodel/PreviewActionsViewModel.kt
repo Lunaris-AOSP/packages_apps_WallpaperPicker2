@@ -273,13 +273,13 @@ constructor(
             imageEffectsModel,
             imageEffect ->
             imageEffect?.let {
-                when (imageEffectsModel.status) {
-                    EFFECT_DISABLE -> {
-                        null
-                    }
-                    else -> {
-                        getImageEffectFloatingSheetViewModel(imageEffect, imageEffectsModel)
-                    }
+                if (
+                    !flags.isExtendedWallpaperEnabled() &&
+                        imageEffectsModel.status == EFFECT_DISABLE
+                ) {
+                    null
+                } else {
+                    getImageEffectFloatingSheetViewModel(imageEffect, imageEffectsModel)
                 }
             }
         }
