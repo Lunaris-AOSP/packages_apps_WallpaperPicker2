@@ -60,6 +60,7 @@ constructor(
                     thumbnailAsset =
                         ContentUriAsset(context, staticWallpaperModel?.imageWallpaperData?.uri),
                     text = category.categoryModel.commonCategoryData.title,
+                    showTitle = false,
                     maxCategoriesInRow = SectionCardinality.Single,
                 ) {
                     navigateToPreviewScreen(wallpaperModel, CategoryType.CuratedPhotos)
@@ -80,6 +81,7 @@ constructor(
                     defaultDrawable = null,
                     thumbnailAsset = staticWallpaperModel?.commonWallpaperData?.thumbAsset,
                     text = wallpaperModel.commonWallpaperData.title ?: "",
+                    showTitle = false,
                     maxCategoriesInRow = SectionCardinality.Single,
                 ) {
                     navigateToPreviewScreen(wallpaperModel, CategoryType.Default)
@@ -98,6 +100,7 @@ constructor(
                     defaultDrawable = null,
                     thumbnailAsset = category.collectionCategoryData?.thumbAsset,
                     text = category.commonCategoryData.title,
+                    showTitle = true,
                     maxCategoriesInRow = SectionCardinality.Triple,
                 ) {
                     if (category.collectionCategoryData?.isSingleWallpaperCategory == true) {
