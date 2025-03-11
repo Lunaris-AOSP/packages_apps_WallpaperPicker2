@@ -59,7 +59,7 @@ constructor(
                     defaultDrawable = null,
                     thumbnailAsset =
                         ContentUriAsset(context, staticWallpaperModel?.imageWallpaperData?.uri),
-                    text = "",
+                    text = category.categoryModel.commonCategoryData.title,
                     maxCategoriesInRow = SectionCardinality.Single,
                 ) {
                     navigateToPreviewScreen(wallpaperModel, CategoryType.CuratedPhotos)
@@ -79,7 +79,7 @@ constructor(
                 TileViewModel(
                     defaultDrawable = null,
                     thumbnailAsset = staticWallpaperModel?.commonWallpaperData?.thumbAsset,
-                    text = "",
+                    text = wallpaperModel.commonWallpaperData.title ?: "",
                     maxCategoriesInRow = SectionCardinality.Single,
                 ) {
                     navigateToPreviewScreen(wallpaperModel, CategoryType.Default)

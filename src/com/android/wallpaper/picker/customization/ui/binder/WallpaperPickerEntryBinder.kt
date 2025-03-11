@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.wallpaper.model.Screen
 import com.android.wallpaper.picker.category.ui.view.adapter.CuratedPhotosAdapter
 import com.android.wallpaper.picker.customization.ui.view.WallpaperPickerEntry
-import com.android.wallpaper.picker.customization.ui.view.listener.WallpaperCarouselScrollListener
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
 import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel2
 import com.android.wallpaper.picker.customization.ui.viewmodel.WallpaperCarouselViewModel
@@ -130,7 +129,6 @@ object WallpaperPickerEntryBinder {
                             adapter = CuratedPhotosAdapter(it)
                             layoutManager = CarouselLayoutManager()
                         }
-                        wallpaperCarousel.addOnScrollListener(WallpaperCarouselScrollListener())
                         if (wallpaperCarousel.onFlingListener == null) {
                             CarouselSnapHelper().attachToRecyclerView(wallpaperCarousel)
                         }
