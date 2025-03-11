@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.wallpaper.model
+
+package com.android.wallpaper.module
 
 import android.net.Uri
+import com.android.wallpaper.model.CurrentWallpaperInfo
+import com.android.wallpaper.model.Screen
 
-/** Metadata for the static image wallpaper to be saved to the system preferences. */
-data class StaticWallpaperPrefMetadata(
-    val attributions: List<String>?,
-    val actionUrl: String?,
-    val collectionId: String?,
-    val hashCode: Long?,
-    val managerId: Int,
-    val remoteId: String,
-    val imageUri: Uri?,
-)
+/** Manages the CRUD of recent wallpapers. */
+interface RecentWallpaperManager {
+
+    /** Gets the uri for current wallpaper of the [Screen]. */
+    fun getCurrentWallpaperBitmapUri(wallpaperInfo: CurrentWallpaperInfo, screen: Screen): Uri?
+}
