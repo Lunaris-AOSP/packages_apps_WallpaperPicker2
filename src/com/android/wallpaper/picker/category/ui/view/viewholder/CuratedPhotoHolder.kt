@@ -19,7 +19,6 @@ package com.android.wallpaper.picker.category.ui.view.viewholder
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.wallpaper.R
 import com.android.wallpaper.picker.category.ui.viewmodel.TileViewModel
@@ -28,9 +27,8 @@ import com.android.wallpaper.util.ResourceUtils
 class CuratedPhotoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var curatedPhotoImage: ImageView = itemView.requireViewById(R.id.carousel_image_view)
-    private var curatedPhotoTitle: TextView = itemView.requireViewById(R.id.carousel_text_view)
 
-    fun bind(item: TileViewModel, context: Context, isFirst: Boolean) {
+    fun bind(item: TileViewModel, context: Context) {
         item.thumbnailAsset?.loadDrawable(
             context,
             curatedPhotoImage,
@@ -38,14 +36,6 @@ class CuratedPhotoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         )
         curatedPhotoImage.layoutParams.height =
             context.resources.getDimension(R.dimen.curated_photo_height).toInt()
-
-        curatedPhotoTitle.text = item.text
-        curatedPhotoTitle.visibility =
-            if (isFirst) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
 
         itemView.setOnClickListener { _ -> item.onClicked?.invoke() }
     }
