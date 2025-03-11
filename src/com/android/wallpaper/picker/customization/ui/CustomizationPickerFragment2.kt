@@ -78,10 +78,10 @@ import com.android.wallpaper.util.DisplayUtils
 import com.android.wallpaper.util.WallpaperConnection
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint(AppbarFragment::class)
 class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
@@ -239,7 +239,10 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                                 currentId == R.id.collapsed_header_primary
                         ) {
                             // This is when we complete the transition back to the primary screen
-                            pickerMotionContainer.setTransition(R.id.transition_primary)
+                            // Post to let this transition fully complete first
+                            pickerMotionContainer.post {
+                                pickerMotionContainer.setTransition(R.id.transition_primary)
+                            }
                             // Reset the preview only after the transition is completed, because the
                             // reset will trigger the animation of the UI components in the floating
                             // sheet content, which can possibly be interrupted by the floating
