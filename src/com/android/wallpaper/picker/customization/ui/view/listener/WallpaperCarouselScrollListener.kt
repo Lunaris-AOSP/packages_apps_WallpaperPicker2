@@ -54,7 +54,11 @@ class WallpaperCarouselScrollListener : RecyclerView.OnScrollListener() {
 
         // Update the adapter with the new visible position
         if (firstVisiblePosition != RecyclerView.NO_POSITION) {
-            (recyclerView.adapter as CuratedPhotosAdapter).setVisiblePosition(firstVisiblePosition)
+            recyclerView.post {
+                (recyclerView.adapter as CuratedPhotosAdapter).setVisiblePosition(
+                    firstVisiblePosition
+                )
+            }
         }
     }
 }
