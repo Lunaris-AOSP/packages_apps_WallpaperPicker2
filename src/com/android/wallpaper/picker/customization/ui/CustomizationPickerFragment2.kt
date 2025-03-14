@@ -78,10 +78,10 @@ import com.android.wallpaper.util.DisplayUtils
 import com.android.wallpaper.util.WallpaperConnection
 import com.android.wallpaper.util.wallpaperconnection.WallpaperConnectionUtils
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint(AppbarFragment::class)
 class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
@@ -182,6 +182,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
         initPreviewPager(
             pagerTouchInterceptor = view.requireViewById(R.id.pager_touch_interceptor),
+            clockFaceClickDelegateView = view.requireViewById(R.id.clock_face_click_delegate),
             previewPager = view.requireViewById(R.id.preview_pager),
             isFirstBinding = savedInstanceState == null,
         )
@@ -396,6 +397,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
     private fun initPreviewPager(
         pagerTouchInterceptor: View,
+        clockFaceClickDelegateView: View,
         previewPager: ClickableMotionLayout,
         isFirstBinding: Boolean,
     ) {
@@ -435,6 +437,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
         bindPreview(
             screen = LOCK_SCREEN,
+            clockFaceClickDelegateView = clockFaceClickDelegateView,
             previewPager = previewPager,
             preview = previewPager.requireViewById(R.id.lock_preview),
             isFirstBinding = isFirstBinding,
@@ -442,6 +445,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
         bindPreview(
             screen = HOME_SCREEN,
+            clockFaceClickDelegateView = clockFaceClickDelegateView,
             previewPager = previewPager,
             preview = previewPager.requireViewById(R.id.home_preview),
             isFirstBinding = isFirstBinding,
@@ -464,6 +468,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
     private fun bindPreview(
         screen: Screen,
+        clockFaceClickDelegateView: View,
         previewPager: ClickableMotionLayout,
         preview: View,
         isFirstBinding: Boolean,
@@ -483,6 +488,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
                 customizationOptionsBinder.bindClockPreview(
                     context = requireContext(),
                     clockHostView = clockHostView,
+                    clockFaceClickDelegateView = clockFaceClickDelegateView,
                     viewModel = customizationPickerViewModel,
                     colorUpdateViewModel = colorUpdateViewModel,
                     lifecycleOwner = viewLifecycleOwner,
