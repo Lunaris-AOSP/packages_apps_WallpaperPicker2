@@ -23,18 +23,29 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.wallpaper.R
 import com.android.wallpaper.picker.category.ui.viewmodel.TileViewModel
-import com.android.wallpaper.util.ResourceUtils
+import com.android.wallpaper.picker.customization.animation.view.LoadingAnimation2
+import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 
 class CuratedPhotoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private var curatedPhotoImage: ImageView = itemView.requireViewById(R.id.carousel_image_view)
-    private var curatedPhotoTitle: TextView = itemView.requireViewById(R.id.carousel_text_view)
+    var backgroundColorBinding: ColorUpdateBinder.Binding? = null
+    var loadingAnimation: LoadingAnimation2? = null
+    private val curatedPhotoImage: ImageView = itemView.requireViewById(R.id.carousel_image_view)
+    private val curatedPhotoTitle: TextView = itemView.requireViewById(R.id.carousel_text_view)
 
     fun bind(item: TileViewModel, context: Context, isFirst: Boolean) {
-        item.thumbnailAsset?.loadDrawable(
+        item.thumbnailAsset?.loadDrawableWithTransition(
             context,
             curatedPhotoImage,
-            ResourceUtils.getColorAttr(context, android.R.attr.colorSecondary),
+            context.resources.getInteger(android.R.integer.config_mediumAnimTime),
+            {
+                loadingAnimation?.playRevealAnimation {
+                    loadingAnimation = null
+                    backgroundColorBinding?.destroy()
+                    backgroundColorBinding = null
+                }
+            },
+            context.getColor(R.color.system_surface_bright),
         )
         curatedPhotoImage.layoutParams.height =
             context.resources.getDimension(R.dimen.curated_photo_height).toInt()
@@ -48,5 +59,12 @@ class CuratedPhotoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
 
         itemView.setOnClickListener { _ -> item.onClicked?.invoke() }
+    }
+
+    fun cleanUp() {
+        backgroundColorBinding?.destroy()
+        backgroundColorBinding = null
+        loadingAnimation?.cancel()
+        loadingAnimation = null
     }
 }

@@ -55,7 +55,9 @@ class CuratedPhotosAdapter(val items: List<TileViewModel>) :
     fun setVisiblePosition(position: Int) {
         val previousPosition = this.visiblePosition
         this.visiblePosition = position
-        notifyItemChanged(previousPosition)
+        if (previousPosition != -1) {
+            notifyItemChanged(previousPosition)
+        }
         notifyItemChanged(position)
     }
 }

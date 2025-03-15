@@ -25,9 +25,28 @@ import com.google.android.material.carousel.CarouselLayoutManager
  * updates the [CuratedPhotosAdapter] with that position
  */
 class WallpaperCarouselScrollListener : RecyclerView.OnScrollListener() {
+    private var lastScrollState = RecyclerView.NO_POSITION
+
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        super.onScrollStateChanged(recyclerView, newState)
+
+        if (
+            newState == RecyclerView.SCROLL_STATE_IDLE &&
+                lastScrollState != RecyclerView.SCROLL_STATE_IDLE
+        ) {
+            updateCarouselTitle(recyclerView)
+        }
+        lastScrollState = newState
+    }
+
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
+        if (lastScrollState == RecyclerView.NO_POSITION) {
+            updateCarouselTitle(recyclerView)
+        }
+    }
 
+    private fun updateCarouselTitle(recyclerView: RecyclerView) {
         // Get the LayoutManager
         val layoutManager = recyclerView.layoutManager as CarouselLayoutManager
 
@@ -54,7 +73,11 @@ class WallpaperCarouselScrollListener : RecyclerView.OnScrollListener() {
 
         // Update the adapter with the new visible position
         if (firstVisiblePosition != RecyclerView.NO_POSITION) {
-            (recyclerView.adapter as CuratedPhotosAdapter).setVisiblePosition(firstVisiblePosition)
+            recyclerView.post {
+                (recyclerView.adapter as CuratedPhotosAdapter).setVisiblePosition(
+                    firstVisiblePosition
+                )
+            }
         }
     }
 }
