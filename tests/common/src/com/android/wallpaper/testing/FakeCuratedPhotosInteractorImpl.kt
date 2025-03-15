@@ -71,6 +71,7 @@ class FakeCuratedPhotosInteractorImpl @Inject constructor() : CuratedPhotosInter
                         ),
                 ),
                 PhotosErrorData.OK,
+                null,
             )
 
         val threeCuratedPhotos =
@@ -112,6 +113,7 @@ class FakeCuratedPhotosInteractorImpl @Inject constructor() : CuratedPhotosInter
                         ),
                 ),
                 PhotosErrorData.OK,
+                null,
             )
     }
 }

@@ -16,7 +16,10 @@
 
 package com.android.wallpaper.picker.category.ui.view.viewholder
 
+import android.app.ActivityOptions
+import android.app.PendingIntent
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.ViewStub
 import android.widget.Button
@@ -30,6 +33,7 @@ import com.android.wallpaper.picker.category.ui.binder.BannerProvider
 import com.android.wallpaper.picker.category.ui.view.adapter.CategoryAdapter
 import com.android.wallpaper.picker.category.ui.view.adapter.CuratedPhotosAdapter
 import com.android.wallpaper.picker.category.ui.viewmodel.CategoriesViewModel
+import com.android.wallpaper.picker.category.ui.viewmodel.PhotosViewModel
 import com.android.wallpaper.picker.category.ui.viewmodel.SectionViewModel
 import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 import com.android.wallpaper.picker.customization.ui.viewmodel.ColorUpdateViewModel
@@ -80,15 +84,16 @@ class CategorySectionViewHolder(itemView: View, private val windowWidth: Int) :
                 sectionTiles.adapter = CuratedPhotosAdapter(item.tileViewModels)
                 val layoutManagerCuratedPhotos = CarouselLayoutManager()
                 sectionTiles.layoutManager = layoutManagerCuratedPhotos
-                val signInBannerView = bannerProvider?.getSignInBanner()
                 val snapHelper = CarouselSnapHelper()
 
                 // in case there are no suggested photos
                 if (item.tileViewModels.isEmpty()) {
+                    val signInBannerView = bannerProvider?.getSignInBanner()
                     val layoutParams = morePhotosButton.layoutParams as RelativeLayout.LayoutParams
                     layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END)
                     layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
                     morePhotosButton.layoutParams = layoutParams
+                    val pendingIntentForPhotos = (item as PhotosViewModel).pendingIntent
 
                     if (item.status == PhotosErrorData.UNAUTHENTICATED && !isSignInBannerVisible) {
                         val viewStub = categoryHeader.findViewById<ViewStub>(R.id.sign_in_banner_id)
@@ -99,10 +104,30 @@ class CategorySectionViewHolder(itemView: View, private val windowWidth: Int) :
                         categoryHeader.addView(signInBannerView, index)
                     }
 
+                    // This is needed in order to allow activity starts using pending intent
+                    // Ref:
+                    // https://developer.android.com/guide/components/activities/background-starts
+                    val options = ActivityOptions.makeBasic()
+                    options.setPendingIntentBackgroundActivityStartMode(
+                        ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_IF_VISIBLE
+                    )
+                    val bundle = options.toBundle()
+
                     val dismissButton: Button? = signInBannerView?.findViewById(R.id.dismiss_button)
+                    val signInButton: Button? = signInBannerView?.findViewById(R.id.sign_in_button)
+
                     dismissButton?.setOnClickListener({ _ ->
                         signInBannerView.visibility = View.GONE
                         onSignInBannerDismissed(true)
+                    })
+
+                    signInButton?.setOnClickListener({ _ ->
+                        try {
+                            pendingIntentForPhotos?.send(bundle)
+                        } catch (e: PendingIntent.CanceledException) {
+                            // nothing will happen in this case, so we can simply log
+                            Log.e(TAG, "PendingIntent was canceled: $e")
+                        }
                     })
                 }
                 snapHelper.attachToRecyclerView(sectionTiles)
@@ -167,5 +192,9 @@ class CategorySectionViewHolder(itemView: View, private val windowWidth: Int) :
                 outRect.left = horizontalSpace
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "CategorySectionViewHolder"
     }
 }

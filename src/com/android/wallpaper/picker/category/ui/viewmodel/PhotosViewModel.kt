@@ -16,12 +16,15 @@
 
 package com.android.wallpaper.picker.category.ui.viewmodel
 
+import android.app.PendingIntent
 import com.android.wallpaper.picker.data.PhotosErrorData
 
 /** This view model is specifically for the photos section. */
 class PhotosViewModel(
     val isDismissed: Boolean,
     override val tileViewModels: List<TileViewModel>,
+    // This pending intent initiates the Google Photos sign-in process.
+    val pendingIntent: PendingIntent?,
     override val columnCount: Int,
     override val sectionTitle: String? = null,
     override val displayType: CategoriesViewModel.DisplayType =

@@ -16,10 +16,16 @@
 
 package com.android.wallpaper.picker.data.category
 
+import android.app.PendingIntent
 import com.android.wallpaper.picker.data.PhotosErrorData
 
 /**
- * This is a wrapper class around photos category since we also need to take into account the
- * different status code returned by the PhotosClient API.
+ * This is a wrapper class around photos category since we also need to take into account
+ * 1. status: Different status code returned by the PhotosClient API
+ * 2. pendingIntent: Intent that allows user to sign in to GooglePhotos
  */
-class PhotoCategoryModel(val categoryModel: CategoryModel, val status: PhotosErrorData)
+class PhotoCategoryModel(
+    val categoryModel: CategoryModel,
+    val status: PhotosErrorData,
+    val pendingIntent: PendingIntent?,
+)

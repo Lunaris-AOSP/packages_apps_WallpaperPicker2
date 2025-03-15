@@ -300,6 +300,7 @@ constructor(
                         displayType = DisplayType.Carousel,
                         status = category.status,
                         isDismissed = curatedPhotosInteractor.dismissBanner.value,
+                        pendingIntent = category.pendingIntent,
                     ) {
                         navigateToPhotosPicker(null)
                     }
