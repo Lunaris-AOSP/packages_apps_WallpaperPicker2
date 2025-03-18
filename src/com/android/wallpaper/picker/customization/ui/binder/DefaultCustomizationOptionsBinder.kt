@@ -48,6 +48,7 @@ class DefaultCustomizationOptionsBinder @Inject constructor() : CustomizationOpt
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
         navigateToColorContrastSettingsActivity: () -> Unit,
         navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
+        navigateToPackThemeActivity: () -> Unit,
     ) {
         // Do nothing intended
     }

@@ -46,6 +46,7 @@ interface CustomizationOptionsBinder {
         navigateToMoreLockScreenSettingsActivity: () -> Unit,
         navigateToColorContrastSettingsActivity: () -> Unit,
         navigateToLockScreenNotificationsSettingsActivity: () -> Unit,
+        navigateToPackThemeActivity: () -> Unit,
     )
 
     fun bindClockPreview(
