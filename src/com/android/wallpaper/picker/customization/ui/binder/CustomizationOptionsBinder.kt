@@ -52,6 +52,7 @@ interface CustomizationOptionsBinder {
     fun bindClockPreview(
         context: Context,
         clockHostView: View,
+        clockFaceClickDelegateView: View,
         viewModel: CustomizationPickerViewModel2,
         colorUpdateViewModel: ColorUpdateViewModel,
         lifecycleOwner: LifecycleOwner,
