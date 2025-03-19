@@ -272,7 +272,7 @@ constructor(
     private val myPhotosSectionViewModel: Flow<SectionViewModel> =
         if (BaseFlags.get().isNewPickerUi()) {
                 curatedPhotosInteractor.category.distinctUntilChanged().map { category ->
-                    SectionViewModel(
+                    PhotosViewModel(
                         tileViewModels =
                             category.categoryModel.collectionCategoryData?.wallpaperModels?.map {
                                 wallpaperModel ->
@@ -299,6 +299,8 @@ constructor(
                             context.getString(R.string.choose_a_curated_photo_section_title),
                         displayType = DisplayType.Carousel,
                         status = category.status,
+                        isDismissed = curatedPhotosInteractor.dismissBanner.value,
+                        pendingIntent = category.pendingIntent,
                     ) {
                         navigateToPhotosPicker(null)
                     }
@@ -395,6 +397,11 @@ constructor(
                 }
             }
         }
+
+    /** This method sets whether the banner is dismissed by the user. */
+    fun setBannerDismissed(dismissed: Boolean) {
+        curatedPhotosInteractor.setBannerDismissed(dismissed)
+    }
 
     /** This method updates network categories */
     fun refreshNetworkCategories() {
