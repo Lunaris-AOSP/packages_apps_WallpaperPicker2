@@ -116,8 +116,15 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
     // last fragment exit.
     private var isReenterAfterExit = false
 
+    private var isInitialCreation = true // Flag to track initial creation
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            // Fragment is being restored, not initial creation
+            isInitialCreation = false
+        }
 
         val isFromLauncher =
             activity?.intent?.let { ActivityUtils.isLaunchedFromLauncher(it) } ?: false
@@ -181,6 +188,7 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         // TODO (b/348462236): adjust flow so this is always false when previewing current wallpaper
         previewViewModel.setIsWallpaperColorPreviewEnabled(false)
 
+        val previewPager: ClickableMotionLayout = view.requireViewById(R.id.preview_pager)
         initPreviewPager(
             pagerTouchInterceptor = view.requireViewById(R.id.pager_touch_interceptor),
             clockFaceClickDelegateView = view.requireViewById(R.id.clock_face_click_delegate),
@@ -188,10 +196,25 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
             isFirstBinding = savedInstanceState == null,
         )
 
+        if (isInitialCreation) {
+            // If the fragment is created the first time, hide the preview pager. This is to prevent
+            // preview surfaces like wallpaper and workspace from triggering surfaceCreated, thus
+            // binding the wallpaper and workspace surface. This can potentially block the
+            // initiation of the app start, e.g. Activity's enter animation. The preview pager will
+            // show again in the post callback of the root view.
+            setPreviewPagerVisible(previewPager = previewPager, isVisible = false)
+            isInitialCreation = false
+        }
+
         val wallpaperPickerEntry: WallpaperPickerEntry =
             view.requireViewById(R.id.wallpaper_picker_entry)
         val previewLabelPlaceHolder: View = view.requireViewById(R.id.label_placeholder)
         view.post {
+            // Show the preview pager when the view is ready. If the preview pager was invisible,
+            // making it visible will trigger the surface view's surfaceCreated callback, as well
+            // as the binding of the wallpaper preview and workspace preview.
+            setPreviewPagerVisible(previewPager = previewPager, isVisible = true)
+
             val wallpaperPickerEntryExpandedHeight = wallpaperPickerEntry.height
             val wallpaperPickerEntryCollapsedHeight = wallpaperPickerEntry.collapsedButton.height
             val previewLabelHeight = previewLabelPlaceHolder.height
@@ -679,16 +702,19 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
         transition.addListener(
             object : Transition.TransitionListener {
                 override fun onTransitionStart(transition: Transition) {
-                    setPreviewPagerVisible(false)
+                    val previewPager: View = view?.findViewById(R.id.preview_pager) ?: return
+                    setPreviewPagerVisible(previewPager = previewPager, isVisible = false)
                     isReenterAfterExit = true
                 }
 
                 override fun onTransitionEnd(transition: Transition) {
-                    setPreviewPagerVisible(true)
+                    val previewPager: View = view?.findViewById(R.id.preview_pager) ?: return
+                    setPreviewPagerVisible(previewPager = previewPager, isVisible = true)
                 }
 
                 override fun onTransitionCancel(transition: Transition) {
-                    setPreviewPagerVisible(true)
+                    val previewPager: View = view?.findViewById(R.id.preview_pager) ?: return
+                    setPreviewPagerVisible(previewPager = previewPager, isVisible = true)
                     isReenterAfterExit = false
                 }
 
@@ -729,17 +755,13 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
      * issue due to the unexpected [SurfaceView] callbacks of onSurfaceCreated and
      * onSurfaceDestroyed, during Fragment transition.
      */
-    private fun setPreviewPagerVisible(isVisible: Boolean) {
-        val lockPreviewLabel: TextView = requireView().requireViewById(R.id.lock_preview_label)
-        val homePreviewLabel: TextView = requireView().requireViewById(R.id.home_preview_label)
-        val lockPreview: View = requireView().requireViewById(R.id.lock_preview)
-        val homePreview: View = requireView().requireViewById(R.id.home_preview)
+    private fun setPreviewPagerVisible(previewPager: View, isVisible: Boolean) {
+        val lockPreview: View = previewPager.requireViewById(R.id.lock_preview)
+        val homePreview: View = previewPager.requireViewById(R.id.home_preview)
         val lockWallpaperSurface: SurfaceView = lockPreview.requireViewById(R.id.wallpaper_surface)
         val lockWorkspaceSurface: SurfaceView = lockPreview.requireViewById(R.id.workspace_surface)
         val homeWallpaperSurface: SurfaceView = homePreview.requireViewById(R.id.wallpaper_surface)
         val homeWorkspaceSurface: SurfaceView = homePreview.requireViewById(R.id.workspace_surface)
-        lockPreviewLabel.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
-        homePreviewLabel.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
         lockWallpaperSurface.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
         lockWorkspaceSurface.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
         homeWallpaperSurface.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
