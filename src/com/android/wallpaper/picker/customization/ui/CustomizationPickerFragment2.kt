@@ -58,6 +58,7 @@ import com.android.wallpaper.picker.common.preview.data.repository.PersistentWal
 import com.android.wallpaper.picker.common.preview.ui.binder.BasePreviewBinder
 import com.android.wallpaper.picker.common.preview.ui.binder.PreviewAlphaAnimationBinder
 import com.android.wallpaper.picker.common.preview.ui.binder.WorkspaceCallbackBinder
+import com.android.wallpaper.picker.customization.ui.CustomizationPickerActivity2.ActivityEnterAnimationCallback
 import com.android.wallpaper.picker.customization.ui.binder.ColorUpdateBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationOptionsBinder
 import com.android.wallpaper.picker.customization.ui.binder.CustomizationPickerBinder2
@@ -85,7 +86,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint(AppbarFragment::class)
-class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
+class CustomizationPickerFragment2 :
+    Hilt_CustomizationPickerFragment2(), ActivityEnterAnimationCallback {
 
     @Inject lateinit var customizationOptionUtil: CustomizationOptionUtil
     @Inject lateinit var customizationOptionsBinder: CustomizationOptionsBinder
@@ -198,23 +200,17 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
         if (isInitialCreation) {
             // If the fragment is created the first time, hide the preview pager. This is to prevent
-            // preview surfaces like wallpaper and workspace from triggering surfaceCreated, thus
-            // binding the wallpaper and workspace surface. This can potentially block the
-            // initiation of the app start, e.g. Activity's enter animation. The preview pager will
-            // show again in the post callback of the root view.
+            // preview surface views from triggering surfaceCreated too early and binding the
+            // wallpaper and workspace surface. This can potentially block the initiation of the app
+            // start, e.g. Activity's enter animation.
+            // The preview pager will show again when onEnterAnimationCompleteAfterActivityCreated
             setPreviewPagerVisible(previewPager = previewPager, isVisible = false)
-            isInitialCreation = false
         }
 
         val wallpaperPickerEntry: WallpaperPickerEntry =
             view.requireViewById(R.id.wallpaper_picker_entry)
         val previewLabelPlaceHolder: View = view.requireViewById(R.id.label_placeholder)
         view.post {
-            // Show the preview pager when the view is ready. If the preview pager was invisible,
-            // making it visible will trigger the surface view's surfaceCreated callback, as well
-            // as the binding of the wallpaper preview and workspace preview.
-            setPreviewPagerVisible(previewPager = previewPager, isVisible = true)
-
             val wallpaperPickerEntryExpandedHeight = wallpaperPickerEntry.height
             val wallpaperPickerEntryCollapsedHeight = wallpaperPickerEntry.collapsedButton.height
             val previewLabelHeight = previewLabelPlaceHolder.height
@@ -386,6 +382,17 @@ class CustomizationPickerFragment2 : Hilt_CustomizationPickerFragment2() {
 
         (view as ViewGroup).isTransitionGroup = true
         return view
+    }
+
+    override fun onEnterAnimationCompleteAfterActivityCreated() {
+        if (isInitialCreation) {
+            val previewPager: View = view?.findViewById(R.id.preview_pager) ?: return
+            // Show the preview pager only after enter animation completes. If the preview pager was
+            // invisible, making it visible will trigger the surface view's surfaceCreated callback,
+            // as well as the binding of the wallpaper preview and workspace preview.
+            setPreviewPagerVisible(previewPager = previewPager, isVisible = true)
+            isInitialCreation = false
+        }
     }
 
     override fun onDestroyView() {
