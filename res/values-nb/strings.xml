@@ -148,7 +148,7 @@
     <string name="default_wallpaper_title" msgid="2541071182656978180">"Bakgrunn"</string>
     <string name="small_preview_tooltip" msgid="1920430079013352071">"Trykk for å redigere bildet"</string>
     <string name="full_preview_tooltip" msgid="4648994028015322759">"Juster posisjonen, skalaen og vinkelen til bildene dine"</string>
-    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Forkast endringene?"</string>
+    <string name="discard_changes_dialog_message" msgid="8462485277292103457">"Vil du forkaste endringene?"</string>
     <string name="discard_changes_dialog_button_keep_editing" msgid="9118931326834547216">"Fortsett å redigere"</string>
     <string name="discard_changes_dialog_button_discard" msgid="6585071548322908206">"Forkast"</string>
     <string name="action_zoom_in" msgid="3326782160671405449">"Zoom inn"</string>
